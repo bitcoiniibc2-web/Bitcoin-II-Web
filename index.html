@@ -1,548 +1,1863 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Bitcoin II — A Second Chance (Prototype Dashboard)</title>
-  <meta name="description" content="Prototype dashboard for the Bitcoin II community with live CoinPaprika pricing, explorer stats, and official resource links." />
-  <style>
-    /* ----------------------
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Bitcoin II — A Second Chance (Prototype Dashboard)</title>
+    <meta
+      name="description"
+      content="Prototype dashboard for the Bitcoin II community with live CoinPaprika pricing, explorer stats, and official resource links."
+    />
+    <style>
+      /* ----------------------
        Variables + base
        ----------------------*/
-    :root{
-      --bg:#020617;
-      --panel:#071122;
-      --muted:#8aa3b3;
-      --accent:#00e0ff; /* neon cyan */
-      --accent-2:#00c0d9;
-      --glass: rgba(255,255,255,0.03);
-      --glass-2: rgba(0,224,255,0.03);
-      --radius:16px;
-      --mono: 'SFMono-Regular', ui-monospace, SFMono, Menlo, Monaco, monospace;
-      --ui-font: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;background:linear-gradient(180deg,var(--bg),#000012 60%);color:#dff6ff;font-family:var(--ui-font);margin:0}
-    a{color:inherit;text-decoration:none}
+      :root {
+        --bg: #020617;
+        --panel: #071122;
+        --muted: #8aa3b3;
+        --accent: #00e0ff; /* neon cyan */
+        --accent-2: #00c0d9;
+        --glass: rgba(255, 255, 255, 0.03);
+        --glass-2: rgba(0, 224, 255, 0.03);
+        --radius: 16px;
+        --mono:
+          "SFMono-Regular", ui-monospace, SFMono, Menlo, Monaco, monospace;
+        --ui-font:
+          Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        background: linear-gradient(180deg, var(--bg), #000012 60%);
+        color: #dff6ff;
+        font-family: var(--ui-font);
+        margin: 0;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
 
-    /* ----------------------
+      /* ----------------------
        Layout
        ----------------------*/
-    .container{max-width:1200px;margin:36px auto;padding:28px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{display:flex;align-items:center;gap:14px}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#00121b, #012233);display:inline-grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,0.6),0 0 30px rgba(0,224,255,0.06) inset}
-    .logo img{width:36px;height:36px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,224,255,0.08))}
-    .brand h1{font-size:18px;margin:0;letter-spacing:1px}
-    .brand p{margin:0;font-size:12px;color:var(--muted)}
-    nav{display:flex;gap:18px;align-items:center}
-    nav a{font-size:13px;color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
-    nav a:hover{color:var(--accent)}
-    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;color:#00121b;font-weight:700;box-shadow:0 6px 18px rgba(0,224,255,0.08);border:none}
-    .login{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--muted)}
+      .container {
+        max-width: 1200px;
+        margin: 36px auto;
+        padding: 28px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #00121b, #012233);
+        display: inline-grid;
+        place-items: center;
+        box-shadow:
+          0 6px 20px rgba(0, 0, 0, 0.6),
+          0 0 30px rgba(0, 224, 255, 0.06) inset;
+      }
+      .logo img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        filter: drop-shadow(0 8px 18px rgba(0, 224, 255, 0.08));
+      }
+      .brand h1 {
+        font-size: 18px;
+        margin: 0;
+        letter-spacing: 1px;
+      }
+      .brand p {
+        margin: 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      nav {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+      nav a {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 8px 10px;
+        border-radius: 8px;
+        transition:
+          color 0.3s ease,
+          background 0.3s ease;
+      }
+      nav a:hover,
+      nav a:focus-visible {
+        color: var(--accent);
+        background: rgba(0, 224, 255, 0.08);
+        outline: none;
+      }
+      .btn {
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        padding: 10px 14px;
+        border-radius: 10px;
+        color: #00121b;
+        font-weight: 700;
+        box-shadow: 0 6px 18px rgba(0, 224, 255, 0.08);
+        border: none;
+      }
+      .login {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 8px 12px;
+        border-radius: 10px;
+        color: var(--muted);
+      }
 
-    /* ----------------------
+      /* ----------------------
        Grid
        ----------------------*/
-    .grid{display:grid;grid-template-columns:1fr 380px;gap:22px;margin-top:22px}
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 22px;
+        margin-top: 22px;
+      }
 
-    /* ----------------------
+      /* ----------------------
        Hero / Card
        ----------------------*/
-    .card{background:linear-gradient(180deg,var(--panel), rgba(5,20,30,0.6));border-radius:var(--radius);padding:28px;box-shadow:0 10px 30px rgba(0,0,0,0.5);border:1px solid rgba(0,224,255,0.03)}
-    .hero{display:flex;gap:28px;align-items:center}
-    .hero-left{flex:1}
-    .h-title{font-size:44px;line-height:1;margin:0 0 12px;font-weight:700}
-    .h-sub{color:var(--muted);margin:0 0 18px}
-    .cta-row{display:flex;gap:12px;align-items:center}
-    .cta-primary{background:var(--accent);color:#00121b;padding:12px 18px;border-radius:12px;font-weight:700}
-    .cta-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px 14px;border-radius:10px;color:var(--muted)}
+      .card {
+        background: linear-gradient(180deg, var(--panel), rgba(5, 20, 30, 0.6));
+        border-radius: var(--radius);
+        padding: 28px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(0, 224, 255, 0.03);
+        backdrop-filter: blur(10px);
+      }
+      .hero {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+      }
+      .hero-left {
+        flex: 1;
+      }
+      .h-title {
+        font-size: 44px;
+        line-height: 1;
+        margin: 0 0 12px;
+        font-weight: 700;
+      }
+      .h-sub {
+        color: var(--muted);
+        margin: 0 0 18px;
+      }
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .cta-primary {
+        background: var(--accent);
+        color: #00121b;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+      }
+      .cta-ghost {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 10px 14px;
+        border-radius: 10px;
+        color: var(--muted);
+      }
 
-    /* 3D coin visualization placeholder */
-    .coin-wrap{width:240px;height:240px;border-radius:20px;background:radial-gradient(ellipse at center, rgba(0,224,255,0.03), transparent 40%);display:grid;place-items:center;position:relative}
-    .coin{width:160px;height:160px;border-radius:50%;background:conic-gradient(from 180deg,#001829, #003040);display:grid;place-items:center;box-shadow:0 8px 40px rgba(0,224,255,0.06),0 0 50px rgba(0,224,255,0.04) inset;border:1px solid rgba(0,224,255,0.12);transform:perspective(600px) rotateX(8deg)}
-    .coin img{width:92px;height:92px;filter:drop-shadow(0 8px 18px rgba(0,224,255,0.08));}
-    .coin-glow{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-60%);width:360px;height:360px;border-radius:999px;filter:blur(36px);background:radial-gradient(circle at 30% 40%, rgba(0,224,255,0.18), transparent 20%)}
+      /* 3D coin visualization placeholder */
+      .coin-wrap {
+        width: 240px;
+        height: 240px;
+        border-radius: 20px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 224, 255, 0.03),
+          transparent 40%
+        );
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .coin {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: conic-gradient(from 180deg, #001829, #003040);
+        display: grid;
+        place-items: center;
+        box-shadow:
+          0 8px 40px rgba(0, 224, 255, 0.06),
+          0 0 50px rgba(0, 224, 255, 0.04) inset;
+        border: 1px solid rgba(0, 224, 255, 0.12);
+        transform: perspective(600px) rotateX(8deg);
+      }
+      .coin img {
+        width: 92px;
+        height: 92px;
+        filter: drop-shadow(0 8px 18px rgba(0, 224, 255, 0.08));
+      }
+      .coin-glow {
+        position: absolute;
+        inset: 50% auto auto 50%;
+        transform: translate(-50%, -60%);
+        width: 360px;
+        height: 360px;
+        border-radius: 999px;
+        filter: blur(36px);
+        background: radial-gradient(
+          circle at 30% 40%,
+          rgba(0, 224, 255, 0.18),
+          transparent 20%
+        );
+      }
 
-    /* ----------------------
+      /* ----------------------
        Right column: widgets
        ----------------------*/
-    .widgets{display:flex;flex-direction:column;gap:18px}
-    .market{padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent)}
-    .price{display:flex;align-items:baseline;gap:12px}
-    .price .value{font-size:28px;font-weight:700}
-    .price .change{color:#8ee7b8;font-weight:700}
-    .price .change.negative{color:#ff6b8a}
-    .mini-chart{height:58px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent);border-radius:8px;margin-top:12px}
-    .market-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px;font-size:12px;color:var(--muted)}
-    .market-details div{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
-    .market-details dt{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(223,246,255,0.65)}
-    .market-details dd{margin:0;font-size:13px;color:#dff6ff;font-weight:600}
-    .services{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-    .service{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center}
-    .service svg{width:28px;height:28px;opacity:0.95}
-    .service h4{margin:0;font-size:13px}
-    .muted{color:var(--muted)}
+      .widgets {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .market {
+        padding: 18px;
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.015),
+          transparent
+        );
+      }
+      .price {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .price .value {
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .price .change {
+        color: #8ee7b8;
+        font-weight: 700;
+      }
+      .price .change.negative {
+        color: #ff6b8a;
+      }
+      .mini-chart {
+        height: 58px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.01),
+          transparent
+        );
+        border-radius: 8px;
+        margin-top: 12px;
+      }
+      .market-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 16px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .market-details div {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .market-details dt {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: rgba(223, 246, 255, 0.65);
+      }
+      .market-details dd {
+        margin: 0;
+        font-size: 13px;
+        color: #dff6ff;
+        font-weight: 600;
+      }
+      .services {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 10px;
+      }
+      .service {
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .service svg {
+        width: 28px;
+        height: 28px;
+        opacity: 0.95;
+      }
+      .service h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .muted {
+        color: var(--muted);
+      }
 
-    /* ----------------------
+      /* ----------------------
        Lower sections
        ----------------------*/
-    .lower-grid{display:grid;grid-template-columns:1fr 380px;gap:22px;margin-top:22px}
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
-    .trade-controls{display:flex;gap:8px;align-items:center}
-    .input, .select{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);color:inherit}
-    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;border:none;font-weight:700}
+      .lower-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 22px;
+        margin-top: 22px;
+      }
+      .panel {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.01),
+          transparent
+        );
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .trade-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .input,
+      .select {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        color: inherit;
+      }
+      .btn-primary {
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+      }
 
-    /* node map */
-    .node-map-wrap{margin-top:14px;position:relative;border-radius:12px;overflow:hidden;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
-    .node-map-frame{width:100%;height:340px;border:0;display:block;background:#00091a}
-    .node-map-fallback{padding:16px;color:var(--muted);font-size:13px}
+      /* node map */
+      .node-map-wrap {
+        margin-top: 14px;
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .node-map-frame {
+        width: 100%;
+        height: 340px;
+        border: 0;
+        display: block;
+        background: #00091a;
+      }
+      .node-map-fallback {
+        padding: 16px;
+        color: var(--muted);
+        font-size: 13px;
+      }
 
-    /* resources */
-    .resource-section{margin-top:24px}
-    .resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px}
-    .resource-card{padding:16px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:10px}
-    .resource-card h4{margin:0;font-size:15px}
-    .resource-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-    .resource-card a{color:var(--muted);text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px}
-    .resource-card a:hover{color:var(--accent)}
+      /* telemetry */
+      .telemetry-section {
+        margin-top: 24px;
+      }
+      .telemetry-section header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .telemetry-section header p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+      .stat-card {
+        padding: 16px;
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          transparent
+        );
+        border: 1px solid rgba(0, 224, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+      .stat-card::after {
+        content: "";
+        position: absolute;
+        inset: auto -40px -60px;
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 224, 255, 0.12),
+          transparent 70%
+        );
+        opacity: 0.6;
+      }
+      .stat-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: rgba(223, 246, 255, 0.65);
+      }
+      .stat-value {
+        font-size: 26px;
+        font-weight: 700;
+      }
+      .stat-sub {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .progress-bar {
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        position: relative;
+      }
+      .progress-bar::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        width: calc(var(--progress, 0) * 1%);
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        transition: width 0.6s ease;
+      }
+      .stat-foot {
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-    .block-list{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
-    .block-list li{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
-    .block-list strong{font-size:14px;color:#dff6ff}
-    .block-list span{display:block}
-    .block-list a{color:inherit;text-decoration:none}
-    .fundamentals{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
-    .fundamentals li{padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);color:#dff6ff}
-    .fundamentals strong{display:block;font-size:13px;color:rgba(223,246,255,0.78);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+      /* resources */
+      .resource-section {
+        margin-top: 24px;
+      }
+      .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .resource-card {
+        padding: 16px;
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.015),
+          transparent
+        );
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .resource-card h4 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .resource-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .resource-card a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .resource-card a:hover {
+        color: var(--accent);
+      }
 
-    footer{opacity:0.8;color:var(--muted);font-size:13px;margin-top:28px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.02)}
+      .block-list {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .block-list li {
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.02);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .block-list strong {
+        font-size: 14px;
+        color: #dff6ff;
+      }
+      .block-list span {
+        display: block;
+      }
+      .block-list a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .fundamentals {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .fundamentals li {
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.02);
+        color: #dff6ff;
+      }
+      .fundamentals strong {
+        display: block;
+        font-size: 13px;
+        color: rgba(223, 246, 255, 0.78);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+      }
 
-    /* small screens */
-    @media (max-width:980px){
-      .grid,.lower-grid{grid-template-columns:1fr}
-      .widgets{order:2}
-      .panel{min-height:0}
-      .container{padding:18px}
-      .h-title{font-size:34px}
-      .coin-wrap{width:180px;height:180px}
-      .node-map-frame{height:280px}
-    }
+      /* markets table */
+      .market-table-wrap {
+        margin-top: 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .market-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .market-table thead {
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .market-table th,
+      .market-table td {
+        padding: 12px 14px;
+        text-align: left;
+      }
+      .market-table tbody tr:not(:last-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .market-table tbody tr:hover {
+        background: rgba(0, 224, 255, 0.06);
+        color: #dff6ff;
+      }
+      .market-table a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(0, 224, 255, 0.08);
+        color: var(--accent);
+      }
 
-    /* subtle animations */
-    @keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-    .coin{animation:floaty 4.8s ease-in-out infinite}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <img src="Bitcoin2-logo-128.png" alt="" role="presentation">
+      footer {
+        opacity: 0.8;
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 28px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.02);
+      }
+
+      /* small screens */
+      @media (max-width: 980px) {
+        .grid,
+        .lower-grid {
+          grid-template-columns: 1fr;
+        }
+        .widgets {
+          order: 2;
+        }
+        .panel {
+          min-height: 0;
+        }
+        .container {
+          padding: 18px;
+        }
+        .h-title {
+          font-size: 34px;
+        }
+        .coin-wrap {
+          width: 180px;
+          height: 180px;
+        }
+        .node-map-frame {
+          height: 280px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .coin {
+          animation: none;
+        }
+        .progress-bar::after {
+          transition: none;
+        }
+      }
+
+      /* subtle animations */
+      @keyframes floaty {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+      .coin {
+        animation: floaty 4.8s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <img src="Bitcoin2-logo-128.png" alt="" role="presentation" />
+          </div>
+          <div>
+            <h1>BC2</h1>
+            <p>A second chance community chain</p>
+          </div>
         </div>
-        <div>
-          <h1>BC2</h1>
-          <p>A second chance community chain</p>
-        </div>
-      </div>
 
-      <nav>
-        <a href="#features">Features</a>
-        <a href="#tokenomics">Tokenomics</a>
-        <a href="#nodemap">Node map</a>
-        <a href="#resources">Resources</a>
-        <button class="login">Log in</button>
-        <button class="btn">Buy BC2</button>
-      </nav>
-    </header>
+        <nav>
+          <a href="#network-insights">Network</a>
+          <a href="#features">Features</a>
+          <a href="#tokenomics">Tokenomics</a>
+          <a href="#nodemap">Node map</a>
+          <a href="#markets">Markets</a>
+          <a href="#resources">Resources</a>
+          <button class="login">Log in</button>
+          <button class="btn">Buy BC2</button>
+        </nav>
+      </header>
 
-    <main>
-      <div class="grid">
-        <section class="card">
-          <div class="hero">
-            <div class="hero-left">
-              <h2 class="h-title">Bitcoin II — a second chance for Satoshi's vision.</h2>
-              <p class="h-sub">A proof-of-work sister chain with a brand new genesis block, mirroring Bitcoin's battle-tested design so everyday users can transact and mine from day one.</p>
-              <div class="cta-row">
-                <button class="cta-primary">Get started</button>
-                <button class="cta-ghost">Explore docs</button>
-              </div>
+      <main>
+        <div class="grid">
+          <section class="card">
+            <div class="hero">
+              <div class="hero-left">
+                <h2 class="h-title">
+                  Bitcoin II — a second chance for Satoshi's vision.
+                </h2>
+                <p class="h-sub">
+                  A proof-of-work sister chain with a brand new genesis block,
+                  mirroring Bitcoin's battle-tested design so everyday users can
+                  transact and mine from day one.
+                </p>
+                <div class="cta-row">
+                  <button class="cta-primary">Get started</button>
+                  <button class="cta-ghost">Explore docs</button>
+                </div>
 
-              <div style="display:flex;gap:18px;margin-top:18px;align-items:center">
-                <div style="min-width:240px">
-                  <h4 style="margin:0">Live market snapshot</h4>
-                  <div class="price">
-                    <div class="value" id="live-price">--</div>
-                    <div class="change" id="live-change">--</div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    margin-top: 18px;
+                    align-items: center;
+                  "
+                >
+                  <div style="min-width: 240px">
+                    <h4 style="margin: 0">Live market snapshot</h4>
+                    <div class="price">
+                      <div class="value" id="live-price">--</div>
+                      <div class="change" id="live-change">--</div>
+                    </div>
+                    <div
+                      class="mini-chart"
+                      id="mini-chart"
+                      aria-hidden="true"
+                    ></div>
                   </div>
-                  <div class="mini-chart" id="mini-chart" aria-hidden="true"></div>
-                </div>
-                <div style="flex:1">
-                  <h4 style="margin:0">Network status</h4>
-                  <p class="muted" style="margin:6px 0">Height: <strong id="height">--</strong> · Difficulty: <strong id="difficulty">--</strong></p>
-                  <p class="muted" style="margin:6px 0">Last block: <strong id="last-block-time">--</strong></p>
+                  <div style="flex: 1">
+                    <h4 style="margin: 0">Network status</h4>
+                    <p class="muted" style="margin: 6px 0">
+                      Height: <strong id="height">--</strong> · Difficulty:
+                      <strong id="difficulty">--</strong>
+                    </p>
+                    <p class="muted" style="margin: 6px 0">
+                      Last block: <strong id="last-block-time">--</strong>
+                    </p>
+                  </div>
                 </div>
               </div>
 
-            </div>
-
-            <div class="coin-wrap" aria-hidden="true">
-              <div class="coin" role="img" aria-label="BC2 coin">
-                <img src="Bitcoin2-logo-128.png" alt="">
+              <div class="coin-wrap" aria-hidden="true">
+                <div class="coin" role="img" aria-label="BC2 coin">
+                  <img src="Bitcoin2-logo-128.png" alt="" />
+                </div>
+                <div class="coin-glow"></div>
               </div>
-              <div class="coin-glow"></div>
             </div>
 
-          </div>
-
-          <div style="display:flex;gap:18px;margin-top:18px;align-items:flex-start">
-            <div style="flex:1">
-              <h3 id="features">What Bitcoin II offers</h3>
-              <ul class="muted">
-                <li>Proof-of-Work security with the same SHA-256 algorithm trusted by Bitcoin.</li>
-                <li>Fixed 21,000,000 BC2 supply and halving schedule every 210,000 blocks to preserve scarcity.</li>
-                <li>Difficulty retargeting every 2,016 blocks to keep block production steady as hashrate shifts.</li>
-                <li>A brand new genesis block so anyone can join from the beginning without legacy baggage.</li>
-              </ul>
+            <div
+              style="
+                display: flex;
+                gap: 18px;
+                margin-top: 18px;
+                align-items: flex-start;
+              "
+            >
+              <div style="flex: 1">
+                <h3 id="features">What Bitcoin II offers</h3>
+                <ul class="muted">
+                  <li>
+                    Proof-of-Work security with the same SHA-256 algorithm
+                    trusted by Bitcoin.
+                  </li>
+                  <li>
+                    Fixed 21,000,000 BC2 supply and halving schedule every
+                    210,000 blocks to preserve scarcity.
+                  </li>
+                  <li>
+                    Difficulty retargeting every 2,016 blocks to keep block
+                    production steady as hashrate shifts.
+                  </li>
+                  <li>
+                    A brand new genesis block so anyone can join from the
+                    beginning without legacy baggage.
+                  </li>
+                </ul>
+              </div>
+              <aside style="width: 200px">
+                <h4>Quick links</h4>
+                <ul
+                  class="muted"
+                  style="
+                    list-style: none;
+                    padding: 0;
+                    margin: 6px 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                  "
+                >
+                  <li>
+                    <a
+                      href="https://bitcoinii.space/"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Network Explorer</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://github.com/Bitcoin-II/BitcoinII-Core/releases"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Desktop Wallet</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://wallet-bc2.nitopool.fr/"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Web Wallet</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://bitcoin-ii.org/"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Official Site</a
+                    >
+                  </li>
+                </ul>
+              </aside>
             </div>
-            <aside style="width:200px">
-              <h4>Quick links</h4>
-              <ul class="muted" style="list-style:none;padding:0;margin:6px 0;display:flex;flex-direction:column;gap:6px">
-                <li><a href="https://bitcoinii.space/" target="_blank" rel="noreferrer">Network Explorer</a></li>
-                <li><a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" rel="noreferrer">Desktop Wallet</a></li>
-                <li><a href="https://wallet-bc2.nitopool.fr/" target="_blank" rel="noreferrer">Web Wallet</a></li>
-                <li><a href="https://bitcoin-ii.org/" target="_blank" rel="noreferrer">Official Site</a></li>
-              </ul>
-            </aside>
-          </div>
 
+            <section class="telemetry-section" id="network-insights">
+              <header>
+                <h3 style="margin: 0">Network insights</h3>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <span class="badge">Auto-refreshing</span>
+                  <p>
+                    Live emission stats derived from the
+                    <a
+                      href="https://bitcoinii.space/"
+                      target="_blank"
+                      rel="noreferrer"
+                      >BC2 explorer</a
+                    >.
+                  </p>
+                </div>
+              </header>
+              <div class="stat-grid">
+                <article class="stat-card">
+                  <span class="stat-label">Block reward</span>
+                  <div class="stat-value" id="block-reward" aria-live="polite">
+                    --
+                  </div>
+                  <p class="stat-sub">
+                    Follows the 210,000 block halving cadence published on
+                    bitcoin-ii.org.
+                  </p>
+                </article>
+                <article class="stat-card">
+                  <span class="stat-label">Circulating mined</span>
+                  <div class="stat-value" id="supply-minted" aria-live="polite">
+                    --
+                  </div>
+                  <p class="stat-sub">
+                    ≈ <strong id="supply-percent">--</strong> of the capped 21
+                    million BC2 supply.
+                  </p>
+                </article>
+                <article class="stat-card">
+                  <span class="stat-label">Halving progress</span>
+                  <div
+                    class="stat-value"
+                    id="halving-progress-label"
+                    aria-live="polite"
+                  >
+                    --
+                  </div>
+                  <div
+                    class="progress-bar"
+                    id="halving-progress"
+                    role="img"
+                    aria-label="Progress towards the next halving"
+                  ></div>
+                  <p class="stat-sub">
+                    Next halving target: block
+                    <strong id="next-halving-height">--</strong>.
+                  </p>
+                </article>
+                <article class="stat-card">
+                  <span class="stat-label">Halving ETA</span>
+                  <div class="stat-value" id="halving-eta" aria-live="polite">
+                    --
+                  </div>
+                  <p class="stat-sub">
+                    Roughly <span id="halving-countdown">--</span> at 10 minute
+                    block estimates.
+                  </p>
+                </article>
+                <article class="stat-card">
+                  <span class="stat-label">Chain tempo</span>
+                  <div
+                    class="stat-value"
+                    id="avg-block-time"
+                    aria-live="polite"
+                  >
+                    --
+                  </div>
+                  <p class="stat-sub">
+                    Difficulty trend <strong id="difficulty-trend">--</strong>.
+                  </p>
+                </article>
+              </div>
+            </section>
+          </section>
+
+          <aside class="widgets">
+            <div class="market card">
+              <h4 style="margin: 0 0 8px">Market data (CoinPaprika)</h4>
+              <div class="price">
+                <div class="value" id="side-price">--</div>
+                <div class="change" id="side-change">--</div>
+              </div>
+              <div class="mini-chart" id="side-mini" aria-hidden="true"></div>
+              <dl class="market-details">
+                <div>
+                  <dt>24h volume</dt>
+                  <dd id="market-volume">--</dd>
+                </div>
+                <div>
+                  <dt>Market cap</dt>
+                  <dd id="market-cap">--</dd>
+                </div>
+                <div>
+                  <dt>7d change</dt>
+                  <dd id="market-change-7d">--</dd>
+                </div>
+                <div>
+                  <dt>Last updated</dt>
+                  <dd id="market-updated">--</dd>
+                </div>
+              </dl>
+
+              <div class="services">
+                <div class="service">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                  </svg>
+                  <div>
+                    <h4>Explorer</h4>
+                    <div class="muted">bitcoinii.space live blocks</div>
+                  </div>
+                </div>
+                <div class="service">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 8V7a2 2 0 0 0-2-2h-3" />
+                    <path d="M3 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6" />
+                  </svg>
+                  <div>
+                    <h4>Wallets</h4>
+                    <div class="muted">Desktop, web & Android</div>
+                  </div>
+                </div>
+                <div class="service">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 6v6l4 2" />
+                    <path d="M20 21v-4a2 2 0 0 0-2-2h-4" />
+                    <path d="M4 15v4a2 2 0 0 0 2 2h4" />
+                  </svg>
+                  <div>
+                    <h4>Mining</h4>
+                    <div class="muted">CPU friendly pools</div>
+                  </div>
+                </div>
+                <div class="service">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="7" r="4" />
+                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
+                  </svg>
+                  <div>
+                    <h4>Community</h4>
+                    <div class="muted">Discord, Telegram, X</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card panel" role="region" aria-labelledby="blocks">
+              <h4 id="blocks" style="margin: 0 0 8px">Latest blocks</h4>
+              <ul class="block-list" id="block-list">
+                <li><span>Loading recent blocks…</span></li>
+              </ul>
+              <a
+                class="muted"
+                style="display: inline-block; margin-top: 12px"
+                href="https://bitcoinii.space/"
+                target="_blank"
+                rel="noreferrer"
+                >Open full explorer</a
+              >
+            </div>
+
+            <div class="card panel" role="region" aria-labelledby="trade">
+              <h4 id="trade" style="margin: 0 0 8px">Trade (simulation)</h4>
+              <div class="trade-controls">
+                <input
+                  class="input"
+                  type="text"
+                  value="0.01 BTC"
+                  aria-label="Amount"
+                />
+                <select class="select" aria-label="Action">
+                  <option>Buy</option>
+                  <option>Sell</option>
+                </select>
+                <button class="btn-primary">Place Order</button>
+              </div>
+              <p class="muted" style="margin-top: 10px">
+                Orders here are a UI mock — integrate with exchange or smart
+                contracts for live trading.
+              </p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="lower-grid">
+          <section class="panel card">
+            <h3 id="tokenomics">Network fundamentals</h3>
+            <p class="muted">
+              Core parameters published on the official Bitcoin II launch site.
+            </p>
+            <ul class="fundamentals">
+              <li>
+                <strong>Consensus</strong>Proof-of-Work secured by the SHA-256
+                hashing algorithm.
+              </li>
+              <li>
+                <strong>Max supply</strong>21,000,000 BC2 with the same halving
+                cadence of every 210,000 blocks.
+              </li>
+              <li>
+                <strong>Difficulty retarget</strong>Adjusts every 2,016 blocks
+                so block times remain consistent as hashrate changes.
+              </li>
+              <li>
+                <strong>Fresh genesis</strong>Bitcoin II starts from a brand new
+                blockchain, giving miners an even playing field.
+              </li>
+              <li>
+                <strong>Mining accessibility</strong>Launch difficulty was reset
+                to 1, making CPU mining viable for early supporters.
+              </li>
+            </ul>
+
+            <p class="muted">
+              Looking to mine? Recommended tooling includes Pooler's
+              <code>cpuminer</code> with community pools listed below.
+            </p>
+          </section>
+
+          <aside class="panel card">
+            <h3 id="nodemap">Global node map</h3>
+            <p class="muted">
+              Track active Bitcoin II peers around the world courtesy of the
+              community node scanner.
+            </p>
+            <div class="node-map-wrap">
+              <iframe
+                class="node-map-frame"
+                src="https://bitcoinii.ddns.net/NodeMap.html"
+                title="Bitcoin II node map"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+                sandbox="allow-scripts allow-same-origin allow-popups"
+              ></iframe>
+              <noscript>
+                <div class="node-map-fallback">
+                  Enable JavaScript to view the live node map, or
+                  <a
+                    href="https://bitcoinii.ddns.net/NodeMap.html"
+                    target="_blank"
+                    rel="noreferrer"
+                    >open it in a new tab</a
+                  >.
+                </div>
+              </noscript>
+            </div>
+            <p class="muted" style="margin-top: 12px">
+              Data source:
+              <a
+                href="https://bitcoinii.ddns.net/NodeMap.html"
+                target="_blank"
+                rel="noreferrer"
+                >bitcoinii.ddns.net</a
+              >
+            </p>
+          </aside>
+        </div>
+
+        <section class="panel card" id="markets">
+          <h3>Where to trade BC2</h3>
+          <p class="muted" style="margin: 6px 0 14px">
+            Top spot pairs ranked by 24h volume from CoinPaprika's
+            <code>bc2-bitcoin-ii</code> markets endpoint.
+          </p>
+          <div class="market-table-wrap">
+            <table class="market-table">
+              <thead>
+                <tr>
+                  <th scope="col">Exchange</th>
+                  <th scope="col">Pair</th>
+                  <th scope="col">Price (USD)</th>
+                  <th scope="col">24h volume</th>
+                </tr>
+              </thead>
+              <tbody id="markets-body" aria-live="polite">
+                <tr>
+                  <td colspan="4">Loading market depth…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted" style="margin-top: 12px">
+            Need direct links? Explore Rabid Rabbit, NestEX, KlingEX and nonKYC
+            listings from the community resource list below.
+          </p>
         </section>
 
-        <aside class="widgets">
-          <div class="market card">
-            <h4 style="margin:0 0 8px">Market data (CoinPaprika)</h4>
-            <div class="price">
-              <div class="value" id="side-price">--</div>
-              <div class="change" id="side-change">--</div>
+        <section class="panel card resource-section" id="resources">
+          <h3>BC2 ecosystem resources</h3>
+          <p class="muted" style="margin: 6px 0 14px">
+            Explore official hubs, trading venues, wallets, and community
+            channels for Bitcoin II.
+          </p>
+          <div class="resource-grid">
+            <div class="resource-card">
+              <h4>General</h4>
+              <ul>
+                <li>
+                  <a
+                    href="https://bitcoin-ii.org/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Official website</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/Bitcoin-II/BitcoinII-Core"
+                    target="_blank"
+                    rel="noreferrer"
+                    >GitHub repository</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://bitcoinii.space/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >BC2 explorer</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://bitcoinii.ddns.net/NodeMap.html"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Node map</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://bitcoinii.ddns.net/DailyReport.html"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Daily network report</a
+                  >
+                </li>
+              </ul>
             </div>
-            <div class="mini-chart" id="side-mini" aria-hidden="true"></div>
-            <dl class="market-details">
-              <div>
-                <dt>24h volume</dt>
-                <dd id="market-volume">--</dd>
-              </div>
-              <div>
-                <dt>Market cap</dt>
-                <dd id="market-cap">--</dd>
-              </div>
-              <div>
-                <dt>7d change</dt>
-                <dd id="market-change-7d">--</dd>
-              </div>
-              <div>
-                <dt>Last updated</dt>
-                <dd id="market-updated">--</dd>
-              </div>
-            </dl>
-
-            <div class="services">
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><div><h4>Explorer</h4><div class="muted">bitcoinii.space live blocks</div></div></div>
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8V7a2 2 0 0 0-2-2h-3"/><path d="M3 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg><div><h4>Wallets</h4><div class="muted">Desktop, web & Android</div></div></div>
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/><path d="M20 21v-4a2 2 0 0 0-2-2h-4"/><path d="M4 15v4a2 2 0 0 0 2 2h4"/></svg><div><h4>Mining</h4><div class="muted">CPU friendly pools</div></div></div>
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg><div><h4>Community</h4><div class="muted">Discord, Telegram, X</div></div></div>
+            <div class="resource-card">
+              <h4>Exchanges</h4>
+              <ul>
+                <li>
+                  <a
+                    href="https://rabid-rabbit.org/account/trade/BC2-USDT"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Rabid Rabbit — BC2/USDT</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://trade.nestex.one/spot/BC2"
+                    target="_blank"
+                    rel="noreferrer"
+                    >NestEX spot</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://klingex.io/trade/BC2-USDT"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Kling Exchange — BC2/USDT</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://nonkyc.io/market/BC2_USDT"
+                    target="_blank"
+                    rel="noreferrer"
+                    >nonKYC market</a
+                  >
+                </li>
+              </ul>
             </div>
-
+            <div class="resource-card">
+              <h4>Wallets & tools</h4>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/Bitcoin-II/BitcoinII-Core/releases"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Core wallet (desktop)</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://wallet-bc2.nitopool.fr/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Web wallet</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Android wallet</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://www.livecoinwatch.com/price/BitcoinII-BC2"
+                    target="_blank"
+                    rel="noreferrer"
+                    >LiveCoinWatch price</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://coinpaprika.com/coin/bc2-bitcoin-ii/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >CoinPaprika profile</a
+                  >
+                </li>
+              </ul>
             </div>
-
-          <div class="card panel" role="region" aria-labelledby="blocks">
-            <h4 id="blocks" style="margin:0 0 8px">Latest blocks</h4>
-            <ul class="block-list" id="block-list">
-              <li><span>Loading recent blocks…</span></li>
-            </ul>
-            <a class="muted" style="display:inline-block;margin-top:12px" href="https://bitcoinii.space/" target="_blank" rel="noreferrer">Open full explorer</a>
+            <div class="resource-card">
+              <h4>Mining</h4>
+              <ul>
+                <li>
+                  <a
+                    href="https://miningpoolstats.stream/bitcoinii"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Mining Pool Stats</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="resource-card">
+              <h4>Community</h4>
+              <ul>
+                <li>
+                  <a
+                    href="https://discord.gg/zUSkQHNVyG"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Discord</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://t.me/BitcoinIIOrganization"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Telegram</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://x.com/@TheBitcoinIIOrg"
+                    target="_blank"
+                    rel="noreferrer"
+                    >X (Twitter)</a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
-
-          <div class="card panel" role="region" aria-labelledby="trade">
-            <h4 id="trade" style="margin:0 0 8px">Trade (simulation)</h4>
-            <div class="trade-controls">
-              <input class="input" type="text" value="0.01 BTC" aria-label="Amount" />
-              <select class="select" aria-label="Action"><option>Buy</option><option>Sell</option></select>
-              <button class="btn-primary">Place Order</button>
-            </div>
-            <p class="muted" style="margin-top:10px">Orders here are a UI mock — integrate with exchange or smart contracts for live trading.</p>
-          </div>
-
-        </aside>
-      </div>
-
-      <div class="lower-grid">
-        <section class="panel card">
-          <h3 id="tokenomics">Network fundamentals</h3>
-          <p class="muted">Core parameters published on the official Bitcoin II launch site.</p>
-          <ul class="fundamentals">
-            <li><strong>Consensus</strong>Proof-of-Work secured by the SHA-256 hashing algorithm.</li>
-            <li><strong>Max supply</strong>21,000,000 BC2 with the same halving cadence of every 210,000 blocks.</li>
-            <li><strong>Difficulty retarget</strong>Adjusts every 2,016 blocks so block times remain consistent as hashrate changes.</li>
-            <li><strong>Fresh genesis</strong>Bitcoin II starts from a brand new blockchain, giving miners an even playing field.</li>
-            <li><strong>Mining accessibility</strong>Launch difficulty was reset to 1, making CPU mining viable for early supporters.</li>
-          </ul>
-
-          <p class="muted">Looking to mine? Recommended tooling includes Pooler's <code>cpuminer</code> with community pools listed below.</p>
         </section>
 
-        <aside class="panel card">
-          <h3 id="nodemap">Global node map</h3>
-          <p class="muted">Track active Bitcoin II peers around the world courtesy of the community node scanner.</p>
-          <div class="node-map-wrap">
-            <iframe
-              class="node-map-frame"
-              src="https://bitcoinii.ddns.net/NodeMap.html"
-              title="Bitcoin II node map"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-              sandbox="allow-scripts allow-same-origin allow-popups"
-            ></iframe>
-            <noscript>
-              <div class="node-map-fallback">Enable JavaScript to view the live node map, or <a href="https://bitcoinii.ddns.net/NodeMap.html" target="_blank" rel="noreferrer">open it in a new tab</a>.</div>
-            </noscript>
+        <footer>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 12px;
+              flex-wrap: wrap;
+            "
+          >
+            <div>© BC2 Protocol — Built with privacy-first design.</div>
+            <div class="muted">Terms · Privacy · Docs · Contact</div>
           </div>
-          <p class="muted" style="margin-top:12px">Data source: <a href="https://bitcoinii.ddns.net/NodeMap.html" target="_blank" rel="noreferrer">bitcoinii.ddns.net</a></p>
-        </aside>
-      </div>
+        </footer>
+      </main>
+    </div>
 
-      <section class="panel card resource-section" id="resources">
-        <h3>BC2 ecosystem resources</h3>
-        <p class="muted" style="margin:6px 0 14px">Explore official hubs, trading venues, wallets, and community channels for Bitcoin II.</p>
-        <div class="resource-grid">
-          <div class="resource-card">
-            <h4>General</h4>
-            <ul>
-              <li><a href="https://bitcoin-ii.org/" target="_blank" rel="noreferrer">Official website</a></li>
-              <li><a href="https://github.com/Bitcoin-II/BitcoinII-Core" target="_blank" rel="noreferrer">GitHub repository</a></li>
-              <li><a href="https://bitcoinii.space/" target="_blank" rel="noreferrer">BC2 explorer</a></li>
-              <li><a href="https://bitcoinii.ddns.net/NodeMap.html" target="_blank" rel="noreferrer">Node map</a></li>
-              <li><a href="https://bitcoinii.ddns.net/DailyReport.html" target="_blank" rel="noreferrer">Daily network report</a></li>
-            </ul>
-          </div>
-          <div class="resource-card">
-            <h4>Exchanges</h4>
-            <ul>
-              <li><a href="https://rabid-rabbit.org/account/trade/BC2-USDT" target="_blank" rel="noreferrer">Rabid Rabbit — BC2/USDT</a></li>
-              <li><a href="https://trade.nestex.one/spot/BC2" target="_blank" rel="noreferrer">NestEX spot</a></li>
-              <li><a href="https://klingex.io/trade/BC2-USDT" target="_blank" rel="noreferrer">Kling Exchange — BC2/USDT</a></li>
-              <li><a href="https://nonkyc.io/market/BC2_USDT" target="_blank" rel="noreferrer">nonKYC market</a></li>
-            </ul>
-          </div>
-          <div class="resource-card">
-            <h4>Wallets & tools</h4>
-            <ul>
-              <li><a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" rel="noreferrer">Core wallet (desktop)</a></li>
-              <li><a href="https://wallet-bc2.nitopool.fr/" target="_blank" rel="noreferrer">Web wallet</a></li>
-              <li><a href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US" target="_blank" rel="noreferrer">Android wallet</a></li>
-              <li><a href="https://www.livecoinwatch.com/price/BitcoinII-BC2" target="_blank" rel="noreferrer">LiveCoinWatch price</a></li>
-              <li><a href="https://coinpaprika.com/coin/bc2-bitcoin-ii/" target="_blank" rel="noreferrer">CoinPaprika profile</a></li>
-            </ul>
-          </div>
-          <div class="resource-card">
-            <h4>Mining</h4>
-            <ul>
-              <li><a href="https://miningpoolstats.stream/bitcoinii" target="_blank" rel="noreferrer">Mining Pool Stats</a></li>
-            </ul>
-          </div>
-          <div class="resource-card">
-            <h4>Community</h4>
-            <ul>
-              <li><a href="https://discord.gg/zUSkQHNVyG" target="_blank" rel="noreferrer">Discord</a></li>
-              <li><a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer">Telegram</a></li>
-              <li><a href="https://x.com/@TheBitcoinIIOrg" target="_blank" rel="noreferrer">X (Twitter)</a></li>
-            </ul>
-          </div>
-        </div>
-      </section>
+    <script>
+      (function () {
+        const dom = {
+          price: document.getElementById("live-price"),
+          change: document.getElementById("live-change"),
+          sidePrice: document.getElementById("side-price"),
+          sideChange: document.getElementById("side-change"),
+          volume: document.getElementById("market-volume"),
+          cap: document.getElementById("market-cap"),
+          change7d: document.getElementById("market-change-7d"),
+          updated: document.getElementById("market-updated"),
+          height: document.getElementById("height"),
+          difficulty: document.getElementById("difficulty"),
+          lastBlock: document.getElementById("last-block-time"),
+          blockList: document.getElementById("block-list"),
+          chart: document.getElementById("mini-chart"),
+          sideMini: document.getElementById("side-mini"),
+          blockReward: document.getElementById("block-reward"),
+          supplyMinted: document.getElementById("supply-minted"),
+          supplyPercent: document.getElementById("supply-percent"),
+          halvingProgressLabel: document.getElementById(
+            "halving-progress-label",
+          ),
+          halvingProgress: document.getElementById("halving-progress"),
+          nextHalvingHeight: document.getElementById("next-halving-height"),
+          halvingEta: document.getElementById("halving-eta"),
+          halvingCountdown: document.getElementById("halving-countdown"),
+          avgBlockTime: document.getElementById("avg-block-time"),
+          difficultyTrend: document.getElementById("difficulty-trend"),
+          marketsBody: document.getElementById("markets-body"),
+        };
 
-      <footer>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-          <div>© BC2 Protocol — Built with privacy-first design.</div>
-          <div class="muted">Terms · Privacy · Docs · Contact</div>
-        </div>
-      </footer>
-    </main>
-  </div>
+        const API = {
+          ticker: "https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii",
+          history:
+            "https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii/historical",
+          markets:
+            "https://api.coinpaprika.com/v1/coins/bc2-bitcoin-ii/markets?quotes=USD",
+          blocks: "https://bitcoinii.space/api/blocks?limit=5",
+        };
 
-  <script>
-    (function(){
-      const priceEl = document.getElementById('live-price');
-      const changeEl = document.getElementById('live-change');
-      const sidePrice = document.getElementById('side-price');
-      const sideChange = document.getElementById('side-change');
-      const volumeEl = document.getElementById('market-volume');
-      const capEl = document.getElementById('market-cap');
-      const change7dEl = document.getElementById('market-change-7d');
-      const updatedEl = document.getElementById('market-updated');
-      const heightEl = document.getElementById('height');
-      const difficultyEl = document.getElementById('difficulty');
-      const lastBlockEl = document.getElementById('last-block-time');
-      const blockList = document.getElementById('block-list');
-      const chart = document.getElementById('mini-chart');
-      const sideMini = document.getElementById('side-mini');
+        const MAX_SUPPLY = 21_000_000;
+        const HALVING_INTERVAL = 210_000;
+        const INITIAL_REWARD = 50;
 
-      const MARKET_ENDPOINT = 'https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii';
-      const BLOCKS_ENDPOINT = 'https://bitcoinii.space/api/blocks?limit=5';
-      let historyLoaded = false;
+        let historyLoaded = false;
+        let historyLoading = false;
+        let timers = [];
 
-      function renderSpark(el, series){
-        if(!el || !Array.isArray(series) || series.length < 2) return;
-        const w=200,h=60;
-        const min=Math.min(...series), max=Math.max(...series);
-        const norm=v=> ((v-min)/(max-min||1))*(h-6) + 3;
-        const step=w/(series.length-1);
-        let d='M0 '+(h - norm(series[0]));
-        for(let i=1;i<series.length;i++) d += ' L '+(i*step)+' '+(h - norm(series[i]));
-        const svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg"><path d="${d}" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#00e0ff" stop-opacity="0.95"/><stop offset="1" stop-color="#00bcd7" stop-opacity="0.95"/></linearGradient></defs></svg>`;
-        el.innerHTML = svg;
-      }
+        const numberFormatter = new Intl.NumberFormat(undefined, {
+          maximumFractionDigits: 0,
+        });
+        const percentFormatter = new Intl.NumberFormat(undefined, {
+          maximumFractionDigits: 2,
+        });
+        const relativeFormatter =
+          typeof Intl !== "undefined" && Intl.RelativeTimeFormat
+            ? new Intl.RelativeTimeFormat(undefined, { numeric: "auto" })
+            : null;
 
-      function formatCurrency(value){
-        if(value === null || value === undefined || Number.isNaN(Number(value))) return '—';
-        const num = Number(value);
-        const opts = {maximumFractionDigits: num < 1 ? 6 : 2};
-        return '$'+num.toLocaleString(undefined, opts);
-      }
-
-      function formatPercent(value){
-        if(value === null || value === undefined || Number.isNaN(Number(value))) return '—';
-        const num = Number(value);
-        const prefix = num > 0 ? '+' : '';
-        return prefix + num.toFixed(2) + '%';
-      }
-
-      function applyChange(el, value){
-        if(!el) return;
-        if(value === null || value === undefined || Number.isNaN(Number(value))){
-          el.textContent = '—';
-          el.classList.remove('negative');
-          return;
+        function fetchJson(url, timeout = 10000) {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), timeout);
+          return fetch(url, { signal: controller.signal, cache: "no-store" })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Status ${response.status}`);
+              }
+              return response.json();
+            })
+            .finally(() => clearTimeout(timer));
         }
-        const num = Number(value);
-        el.textContent = formatPercent(num);
-        if(num < 0){
-          el.classList.add('negative');
-        }else{
-          el.classList.remove('negative');
+
+        function renderSpark(el, series) {
+          if (!el || !Array.isArray(series) || series.length < 2) return;
+          const w = 200;
+          const h = 60;
+          const min = Math.min(...series);
+          const max = Math.max(...series);
+          const norm = (value) =>
+            ((value - min) / (max - min || 1)) * (h - 6) + 3;
+          const step = w / (series.length - 1);
+          let d = "M0 " + (h - norm(series[0]));
+          for (let i = 1; i < series.length; i++) {
+            d += " L " + i * step + " " + (h - norm(series[i]));
+          }
+          el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg"><path d="${d}" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#00e0ff" stop-opacity="0.95"/><stop offset="1" stop-color="#00bcd7" stop-opacity="0.95"/></linearGradient></defs></svg>`;
         }
-      }
 
-      function formatNumber(value, options){
-        if(value === null || value === undefined || Number.isNaN(Number(value))) return '—';
-        return Number(value).toLocaleString(undefined, options);
-      }
+        function formatCurrency(value) {
+          if (!Number.isFinite(Number(value))) return "—";
+          const num = Number(value);
+          const opts = { maximumFractionDigits: num < 1 ? 6 : 2 };
+          return "$" + num.toLocaleString(undefined, opts);
+        }
 
-      function formatSize(bytes){
-        if(bytes === null || bytes === undefined || Number.isNaN(Number(bytes))) return '—';
-        const num = Number(bytes);
-        if(num < 1024) return `${num} B`;
-        return (num/1024).toFixed(1) + ' kB';
-      }
+        function formatPercent(value) {
+          if (!Number.isFinite(Number(value))) return "—";
+          const num = Number(value);
+          const prefix = num > 0 ? "+" : "";
+          return prefix + num.toFixed(2) + "%";
+        }
 
-      const rtf = typeof Intl !== 'undefined' && Intl.RelativeTimeFormat ? new Intl.RelativeTimeFormat(undefined, {numeric:'auto'}) : null;
-      function formatTimeAgo(date){
-        if(!(date instanceof Date) || Number.isNaN(date.getTime())) return '—';
-        const diff = Date.now() - date.getTime();
-        const table = [
-          ['day', 86400000],
-          ['hour', 3600000],
-          ['minute', 60000],
-          ['second', 1000]
-        ];
-        for(const [unit, ms] of table){
-          const value = Math.round(diff/ms);
-          if(Math.abs(value) >= 1 || unit === 'second'){
-            return rtf ? rtf.format(-value, unit) : `${Math.abs(value)} ${unit}${Math.abs(value) === 1 ? '' : 's'} ago`;
+        function formatSignedPercent(value) {
+          if (!Number.isFinite(Number(value))) return "—";
+          const num = Number(value);
+          const prefix = num > 0 ? "+" : "";
+          return prefix + num.toFixed(2) + "%";
+        }
+
+        function applyChange(el, value) {
+          if (!el) return;
+          if (!Number.isFinite(Number(value))) {
+            el.textContent = "—";
+            el.classList.remove("negative");
+            return;
+          }
+          const num = Number(value);
+          el.textContent = formatPercent(num);
+          if (num < 0) {
+            el.classList.add("negative");
+          } else {
+            el.classList.remove("negative");
           }
         }
-        return 'just now';
-      }
 
-      async function updateHistory(){
-        try{
-          const start = new Date(Date.now() - 48*60*60*1000).toISOString().split('T')[0];
-          const historyUrl = `${MARKET_ENDPOINT}/historical?start=${start}&interval=1h`;
-          const response = await fetch(historyUrl, {cache:'no-store'});
-          if(!response.ok) throw new Error(`History status ${response.status}`);
-          const history = await response.json();
-          if(!Array.isArray(history) || history.length === 0) return;
-          const series = history.map(point => Number(point.price)).filter(num => !Number.isNaN(num));
-          if(series.length < 2) return;
-          renderSpark(chart, series);
-          renderSpark(sideMini, series);
-          historyLoaded = true;
-        }catch(err){
-          console.warn('Unable to load BC2 history', err);
+        function formatNumber(value, options) {
+          if (!Number.isFinite(Number(value))) return "—";
+          return Number(value).toLocaleString(undefined, options);
         }
-      }
 
-      async function updateMarket(){
-        try{
-          const response = await fetch(MARKET_ENDPOINT, {cache:'no-store'});
-          if(!response.ok) throw new Error(`Status ${response.status}`);
-          const data = await response.json();
-          const usd = data && data.quotes && data.quotes.USD;
-          if(!usd) throw new Error('Missing USD quote');
+        function formatSize(bytes) {
+          if (!Number.isFinite(Number(bytes))) return "—";
+          const num = Number(bytes);
+          if (num < 1024) return `${num} B`;
+          if (num < 1024 * 1024) return (num / 1024).toFixed(1) + " kB";
+          return (num / (1024 * 1024)).toFixed(2) + " MB";
+        }
 
-          priceEl.textContent = formatCurrency(usd.price);
-          sidePrice.textContent = priceEl.textContent;
-          applyChange(changeEl, usd.percent_change_24h);
-          applyChange(sideChange, usd.percent_change_24h);
-          volumeEl.textContent = formatCurrency(usd.volume_24h);
-          capEl.textContent = usd.market_cap ? formatCurrency(usd.market_cap) : '—';
-          change7dEl.textContent = formatPercent(usd.percent_change_7d);
-          const updated = data.last_updated ? new Date(data.last_updated) : new Date();
-          updatedEl.textContent = updated.toLocaleString();
+        function formatTimeAgo(date) {
+          if (!(date instanceof Date) || Number.isNaN(date.getTime()))
+            return "—";
+          const diff = Date.now() - date.getTime();
+          const table = [
+            ["day", 86_400_000],
+            ["hour", 3_600_000],
+            ["minute", 60_000],
+            ["second", 1_000],
+          ];
+          for (const [unit, ms] of table) {
+            const value = Math.round(diff / ms);
+            if (Math.abs(value) >= 1 || unit === "second") {
+              return relativeFormatter
+                ? relativeFormatter.format(-value, unit)
+                : `${Math.abs(value)} ${unit}${Math.abs(value) === 1 ? "" : "s"} ago`;
+            }
+          }
+          return "just now";
+        }
 
-          if(!historyLoaded){
+        function formatDuration(seconds) {
+          if (!Number.isFinite(Number(seconds))) return "—";
+          const total = Math.max(0, Number(seconds));
+          const days = Math.floor(total / 86_400);
+          const hours = Math.floor((total % 86_400) / 3_600);
+          const minutes = Math.floor((total % 3_600) / 60);
+          const parts = [];
+          if (days) parts.push(`${days} day${days === 1 ? "" : "s"}`);
+          if (hours) parts.push(`${hours} hr${hours === 1 ? "" : "s"}`);
+          if (parts.length < 2 && minutes)
+            parts.push(`${minutes} min${minutes === 1 ? "" : "s"}`);
+          return parts.length ? parts.join(", ") : "under a minute";
+        }
+
+        function computeReward(height) {
+          if (!Number.isFinite(Number(height))) return 0;
+          const halvings = Math.floor(Number(height) / HALVING_INTERVAL);
+          const reward = INITIAL_REWARD / Math.pow(2, halvings);
+          return reward < 0.00000001 ? 0 : reward;
+        }
+
+        function computeMinted(height) {
+          let remaining = Math.max(0, Math.floor(Number(height)));
+          let reward = INITIAL_REWARD;
+          let minted = 0;
+          while (remaining > 0 && reward > 0) {
+            const blocksThisEpoch = Math.min(HALVING_INTERVAL, remaining);
+            minted += blocksThisEpoch * reward;
+            remaining -= blocksThisEpoch;
+            reward = reward / 2;
+            if (reward < 0.00000001) break;
+          }
+          return minted;
+        }
+
+        function computeAvgBlockTime(blocks) {
+          if (!Array.isArray(blocks) || blocks.length < 2) return null;
+          let total = 0;
+          let count = 0;
+          for (let i = 0; i < blocks.length - 1; i++) {
+            const current = Number(blocks[i]?.timestamp);
+            const next = Number(blocks[i + 1]?.timestamp);
+            if (
+              Number.isFinite(current) &&
+              Number.isFinite(next) &&
+              current > next
+            ) {
+              total += current - next;
+              count++;
+            }
+          }
+          if (count === 0) return null;
+          return total / count;
+        }
+
+        function computeDifficultyTrend(blocks) {
+          if (!Array.isArray(blocks) || blocks.length < 2) return null;
+          const latest = Number(blocks[0]?.difficulty);
+          const previous = Number(blocks[1]?.difficulty);
+          if (
+            !Number.isFinite(latest) ||
+            !Number.isFinite(previous) ||
+            previous === 0
+          )
+            return null;
+          return ((latest - previous) / previous) * 100;
+        }
+
+        function updateTelemetry(height, blocks, avgSeconds) {
+          if (!dom.blockReward) return;
+          if (!Number.isFinite(Number(height))) return;
+          const reward = computeReward(height);
+          const rewardDisplay = Number.isFinite(reward)
+            ? reward < 1
+              ? reward.toFixed(8)
+              : reward.toLocaleString(undefined, { maximumFractionDigits: 2 })
+            : null;
+          dom.blockReward.textContent =
+            rewardDisplay !== null ? `${rewardDisplay} BC2` : "—";
+
+          const minted = computeMinted(height);
+          const mintedDisplay = Number.isFinite(minted)
+            ? `${minted.toLocaleString(undefined, { maximumFractionDigits: 2 })} BC2`
+            : null;
+          dom.supplyMinted.textContent = mintedDisplay ?? "—";
+          const percent = Number.isFinite(minted)
+            ? (minted / MAX_SUPPLY) * 100
+            : null;
+          dom.supplyPercent.textContent = Number.isFinite(percent)
+            ? percentFormatter.format(percent) + "%"
+            : "—";
+
+          const halvingProgress =
+            (Number(height % HALVING_INTERVAL) / HALVING_INTERVAL) * 100;
+          dom.halvingProgressLabel.textContent =
+            percentFormatter.format(halvingProgress) + "%";
+          dom.halvingProgress?.style.setProperty(
+            "--progress",
+            halvingProgress.toFixed(2),
+          );
+          if (dom.halvingProgress) {
+            dom.halvingProgress.setAttribute(
+              "aria-label",
+              `Progress towards the next halving: ${percentFormatter.format(halvingProgress)} percent`,
+            );
+          }
+
+          const nextHalvingHeight =
+            (Math.floor(Number(height) / HALVING_INTERVAL) + 1) *
+            HALVING_INTERVAL;
+          dom.nextHalvingHeight.textContent =
+            numberFormatter.format(nextHalvingHeight);
+          const blocksUntil = Math.max(nextHalvingHeight - Number(height), 0);
+          const avgTime =
+            Number.isFinite(Number(avgSeconds)) && Number(avgSeconds) > 0
+              ? Number(avgSeconds)
+              : 600;
+          const estimatedSeconds = blocksUntil * avgTime;
+          const etaDate = new Date(Date.now() + estimatedSeconds * 1000);
+          dom.halvingEta.textContent = Number.isNaN(etaDate.getTime())
+            ? "—"
+            : etaDate.toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              });
+          dom.halvingCountdown.textContent = formatDuration(estimatedSeconds);
+
+          const diffTrend = computeDifficultyTrend(blocks);
+          dom.difficultyTrend.textContent =
+            diffTrend === null ? "—" : formatSignedPercent(diffTrend);
+          dom.avgBlockTime.textContent = Number.isFinite(Number(avgSeconds))
+            ? Number(avgSeconds).toFixed(1) + " s"
+            : "—";
+        }
+
+        function renderBlockList(blocks) {
+          if (!dom.blockList) return;
+          dom.blockList.innerHTML = blocks
+            .map((block) => {
+              const blockTime = new Date(Number(block.timestamp) * 1000);
+              const height = formatNumber(block.height);
+              const txLabel = `${block.tx_count} tx`;
+              const sizeLabel = formatSize(block.size);
+              return `<li><div><strong><a href="https://bitcoinii.space/block/${block.id}" target="_blank" rel="noreferrer">#${height}</a></strong><span>${formatTimeAgo(blockTime)}</span></div><div style="text-align:right"><span>${txLabel}</span><span>${sizeLabel}</span></div></li>`;
+            })
+            .join("");
+        }
+
+        async function updateHistory(force = false) {
+          if (historyLoaded && !force) return;
+          if (historyLoading) return;
+          historyLoading = true;
+          try {
+            const start = new Date(Date.now() - 72 * 60 * 60 * 1000)
+              .toISOString()
+              .split("T")[0];
+            const history = await fetchJson(
+              `${API.history}?start=${start}&interval=1h`,
+            );
+            if (!Array.isArray(history) || history.length === 0) return;
+            const series = history
+              .map((point) => Number(point.price))
+              .filter((num) => Number.isFinite(num));
+            if (series.length < 2) return;
+            renderSpark(dom.chart, series);
+            renderSpark(dom.sideMini, series);
+            historyLoaded = true;
+          } catch (err) {
+            console.warn("Unable to load BC2 price history", err);
+          } finally {
+            historyLoading = false;
+          }
+        }
+
+        function initHistoryObserver() {
+          if (!dom.chart) {
+            return;
+          }
+          if (!("IntersectionObserver" in window)) {
             updateHistory();
+            return;
           }
-        }catch(err){
-          console.warn('Unable to load BC2 market data', err);
-          priceEl.textContent = sidePrice.textContent = '—';
-          changeEl.textContent = sideChange.textContent = '—';
-          volumeEl.textContent = capEl.textContent = change7dEl.textContent = '—';
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  updateHistory();
+                  observer.disconnect();
+                }
+              });
+            },
+            { threshold: 0.25 },
+          );
+          observer.observe(dom.chart);
         }
-      }
 
-      async function updateBlocks(){
-        try{
-          const response = await fetch(BLOCKS_ENDPOINT, {cache:'no-store'});
-          if(!response.ok) throw new Error(`Status ${response.status}`);
-          const blocks = await response.json();
-          if(!Array.isArray(blocks) || blocks.length === 0) throw new Error('No blocks returned');
-          const latest = blocks[0];
-          heightEl.textContent = formatNumber(latest.height);
-          difficultyEl.textContent = formatNumber(latest.difficulty, {maximumFractionDigits:2});
-          lastBlockEl.textContent = formatTimeAgo(new Date(latest.timestamp * 1000));
+        async function updateMarket() {
+          try {
+            const data = await fetchJson(API.ticker);
+            const usd = data?.quotes?.USD;
+            if (!usd) throw new Error("Missing USD quote");
 
-          blockList.innerHTML = blocks.map(block => {
-            const blockTime = new Date(block.timestamp * 1000);
-            const height = formatNumber(block.height);
-            const txLabel = `${block.tx_count} tx`;
-            const sizeLabel = formatSize(block.size);
-            return `<li><div><strong><a href="https://bitcoinii.space/block/${block.id}" target="_blank" rel="noreferrer">#${height}</a></strong><span>${formatTimeAgo(blockTime)}</span></div><div style="text-align:right"><span>${txLabel}</span><span>${sizeLabel}</span></div></li>`;
-          }).join('');
-        }catch(err){
-          console.warn('Unable to load BC2 blocks', err);
-          blockList.innerHTML = '<li><span>Unable to load blocks. Visit the explorer for the latest data.</span></li>';
+            dom.price.textContent = formatCurrency(usd.price);
+            dom.sidePrice.textContent = dom.price.textContent;
+            applyChange(dom.change, usd.percent_change_24h);
+            applyChange(dom.sideChange, usd.percent_change_24h);
+            dom.volume.textContent = formatCurrency(usd.volume_24h);
+            dom.cap.textContent = usd.market_cap
+              ? formatCurrency(usd.market_cap)
+              : "—";
+            dom.change7d.textContent = formatPercent(usd.percent_change_7d);
+            const updated = data.last_updated
+              ? new Date(data.last_updated)
+              : new Date();
+            dom.updated.textContent = updated.toLocaleString();
+
+            if (!historyLoaded) {
+              updateHistory();
+            }
+          } catch (err) {
+            console.warn("Unable to load BC2 market data", err);
+            dom.price.textContent = dom.sidePrice.textContent = "—";
+            dom.change.textContent = dom.sideChange.textContent = "—";
+            dom.change.classList.remove("negative");
+            dom.sideChange.classList.remove("negative");
+            dom.volume.textContent =
+              dom.cap.textContent =
+              dom.change7d.textContent =
+                "—";
+          }
         }
-      }
 
-      updateMarket();
-      updateBlocks();
-      setInterval(updateMarket, 60000);
-      setInterval(updateBlocks, 45000);
+        async function updateBlocks() {
+          try {
+            const blocks = await fetchJson(API.blocks);
+            if (!Array.isArray(blocks) || blocks.length === 0)
+              throw new Error("No blocks returned");
+            const latest = blocks[0];
+            dom.height.textContent = formatNumber(latest.height);
+            dom.difficulty.textContent = formatNumber(latest.difficulty, {
+              maximumFractionDigits: 2,
+            });
+            dom.lastBlock.textContent = formatTimeAgo(
+              new Date(Number(latest.timestamp) * 1000),
+            );
 
-      document.addEventListener('keydown', function(e){ if(e.key==='Tab') document.body.classList.add('show-focus'); });
-    })();
-  </script>
-</body>
+            renderBlockList(blocks);
+            const avgSeconds = computeAvgBlockTime(blocks);
+            updateTelemetry(Number(latest.height), blocks, avgSeconds);
+          } catch (err) {
+            console.warn("Unable to load BC2 blocks", err);
+            if (dom.blockList) {
+              dom.blockList.innerHTML =
+                "<li><span>Unable to load blocks. Visit the explorer for the latest data.</span></li>";
+            }
+          }
+        }
+
+        function renderMarketsTable(markets) {
+          if (!dom.marketsBody) return;
+          if (!Array.isArray(markets) || markets.length === 0) {
+            dom.marketsBody.innerHTML =
+              '<tr><td colspan="4">No public markets reported on CoinPaprika.</td></tr>';
+            return;
+          }
+          const sorted = markets
+            .filter((market) => market?.quotes?.USD)
+            .sort(
+              (a, b) =>
+                Number(b.quotes.USD.volume_24h || 0) -
+                Number(a.quotes.USD.volume_24h || 0),
+            )
+            .slice(0, 6);
+
+          if (sorted.length === 0) {
+            dom.marketsBody.innerHTML =
+              '<tr><td colspan="4">No USD-quoted markets available.</td></tr>';
+            return;
+          }
+
+          dom.marketsBody.innerHTML = sorted
+            .map((market) => {
+              const quote = market.quotes.USD;
+              const exchange = market.exchange_name || market.market || "—";
+              const price = formatCurrency(quote.price);
+              const volume = formatCurrency(quote.volume_24h);
+              const link =
+                market.market_url ||
+                (market.url ? `https://coinpaprika.com${market.url}` : null);
+              const exchangeCell = link
+                ? `<a href="${link}" target="_blank" rel="noreferrer">${exchange}</a>`
+                : exchange;
+              return `<tr><td>${exchangeCell}</td><td>${market.pair}</td><td>${price}</td><td>${volume}</td></tr>`;
+            })
+            .join("");
+        }
+
+        async function updateMarkets() {
+          try {
+            const markets = await fetchJson(API.markets);
+            renderMarketsTable(markets);
+          } catch (err) {
+            console.warn("Unable to load BC2 market listings", err);
+            if (dom.marketsBody) {
+              dom.marketsBody.innerHTML =
+                '<tr><td colspan="4">Unable to reach CoinPaprika. Try again later.</td></tr>';
+            }
+          }
+        }
+
+        function stopIntervals() {
+          timers.forEach((id) => clearInterval(id));
+          timers = [];
+        }
+
+        function startIntervals() {
+          stopIntervals();
+          timers.push(setInterval(updateMarket, 60_000));
+          timers.push(setInterval(updateBlocks, 45_000));
+          timers.push(setInterval(updateMarkets, 120_000));
+        }
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            stopIntervals();
+          } else {
+            updateMarket();
+            updateBlocks();
+            updateMarkets();
+            startIntervals();
+          }
+        });
+
+        window.addEventListener("beforeunload", stopIntervals);
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Tab") document.body.classList.add("show-focus");
+        });
+
+        updateMarket();
+        updateBlocks();
+        updateMarkets();
+        initHistoryObserver();
+        startIntervals();
+      })();
+    </script>
+  </body>
 </html>
-
