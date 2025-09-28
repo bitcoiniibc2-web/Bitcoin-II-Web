@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BC2 — NextGen Crypto Platform (Prototype)</title>
-  <meta name="description" content="BC2 - secure, fast, decentralized. Prototype single-page UI with market dashboard, trading mock, wallet and tokenomics." />
+  <title>Bitcoin II — A Second Chance (Prototype Dashboard)</title>
+  <meta name="description" content="Prototype dashboard for the Bitcoin II community with live CoinPaprika pricing, explorer stats, and official resource links." />
   <style>
     /* ----------------------
        Variables + base
@@ -72,7 +72,12 @@
     .price{display:flex;align-items:baseline;gap:12px}
     .price .value{font-size:28px;font-weight:700}
     .price .change{color:#8ee7b8;font-weight:700}
+    .price .change.negative{color:#ff6b8a}
     .mini-chart{height:58px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent);border-radius:8px;margin-top:12px}
+    .market-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px;font-size:12px;color:var(--muted)}
+    .market-details div{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
+    .market-details dt{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(223,246,255,0.65)}
+    .market-details dd{margin:0;font-size:13px;color:#dff6ff;font-weight:600}
     .services{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
     .service{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center}
     .service svg{width:28px;height:28px;opacity:0.95}
@@ -88,10 +93,6 @@
     .input, .select{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);color:inherit}
     .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;border:none;font-weight:700}
 
-    /* tokenomics bars */
-    .bar{height:12px;border-radius:999px;background:rgba(255,255,255,0.04);overflow:hidden}
-    .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:40%}
-
     /* roadmap */
     .roadmap{display:flex;flex-direction:column;gap:12px}
     .mile{display:flex;gap:12px;align-items:flex-start}
@@ -105,6 +106,15 @@
     .resource-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
     .resource-card a{color:var(--muted);text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px}
     .resource-card a:hover{color:var(--accent)}
+
+    .block-list{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
+    .block-list li{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+    .block-list strong{font-size:14px;color:#dff6ff}
+    .block-list span{display:block}
+    .block-list a{color:inherit;text-decoration:none}
+    .fundamentals{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
+    .fundamentals li{padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);color:#dff6ff}
+    .fundamentals strong{display:block;font-size:13px;color:rgba(223,246,255,0.78);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
 
     footer{opacity:0.8;color:var(--muted);font-size:13px;margin-top:28px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.02)}
 
@@ -132,7 +142,7 @@
         </div>
         <div>
           <h1>BC2</h1>
-          <p>NextGen decentralized token</p>
+          <p>A second chance community chain</p>
         </div>
       </div>
 
@@ -151,25 +161,26 @@
         <section class="card">
           <div class="hero">
             <div class="hero-left">
-              <h2 class="h-title">BC2 — scalable, private, lightning-fast.</h2>
-              <p class="h-sub">Secure blockchain primitives for real-world finance. Low fees, instant settlement, and developer-friendly smart contracts.</p>
+              <h2 class="h-title">Bitcoin II — a second chance for Satoshi's vision.</h2>
+              <p class="h-sub">A proof-of-work sister chain with a brand new genesis block, mirroring Bitcoin's battle-tested design so everyday users can transact and mine from day one.</p>
               <div class="cta-row">
                 <button class="cta-primary">Get started</button>
                 <button class="cta-ghost">Explore docs</button>
               </div>
 
               <div style="display:flex;gap:18px;margin-top:18px;align-items:center">
-                <div style="min-width:220px">
-                  <h4 style="margin:0">Live price</h4>
+                <div style="min-width:240px">
+                  <h4 style="margin:0">Live market snapshot</h4>
                   <div class="price">
-                    <div class="value" id="live-price">$23,456.89</div>
-                    <div class="change" id="live-change">+3.25%</div>
+                    <div class="value" id="live-price">--</div>
+                    <div class="change" id="live-change">--</div>
                   </div>
                   <div class="mini-chart" id="mini-chart" aria-hidden="true"></div>
                 </div>
                 <div style="flex:1">
                   <h4 style="margin:0">Network status</h4>
-                  <p class="muted" style="margin:6px 0">Finalized: <strong id="finalized">99.99%</strong> · TPS: <strong id="tps">4,320</strong></p>
+                  <p class="muted" style="margin:6px 0">Height: <strong id="height">--</strong> · Difficulty: <strong id="difficulty">--</strong></p>
+                  <p class="muted" style="margin:6px 0">Last block: <strong id="last-block-time">--</strong></p>
                 </div>
               </div>
 
@@ -186,11 +197,12 @@
 
           <div style="display:flex;gap:18px;margin-top:18px;align-items:flex-start">
             <div style="flex:1">
-              <h3 id="features">What BC2 offers</h3>
+              <h3 id="features">What Bitcoin II offers</h3>
               <ul class="muted">
-                <li>Layer-1 throughput with adaptive sharding</li>
-                <li>Privacy-preserving transactions (zk primitives)</li>
-                <li>Low-cost on-chain smart contracts</li>
+                <li>Proof-of-Work security with the same SHA-256 algorithm trusted by Bitcoin.</li>
+                <li>Fixed 21,000,000 BC2 supply and halving schedule every 210,000 blocks to preserve scarcity.</li>
+                <li>Difficulty retargeting every 2,016 blocks to keep block production steady as hashrate shifts.</li>
+                <li>A brand new genesis block so anyone can join from the beginning without legacy baggage.</li>
               </ul>
             </div>
             <aside style="width:200px">
@@ -208,20 +220,46 @@
 
         <aside class="widgets">
           <div class="market card">
-            <h4 style="margin:0 0 8px">Market Snapshot</h4>
+            <h4 style="margin:0 0 8px">Market data (CoinPaprika)</h4>
             <div class="price">
-              <div class="value" id="side-price">$23,456.89</div>
-              <div class="change" id="side-change">+3.25%</div>
+              <div class="value" id="side-price">--</div>
+              <div class="change" id="side-change">--</div>
             </div>
             <div class="mini-chart" id="side-mini" aria-hidden="true"></div>
+            <dl class="market-details">
+              <div>
+                <dt>24h volume</dt>
+                <dd id="market-volume">--</dd>
+              </div>
+              <div>
+                <dt>Market cap</dt>
+                <dd id="market-cap">--</dd>
+              </div>
+              <div>
+                <dt>7d change</dt>
+                <dd id="market-change-7d">--</dd>
+              </div>
+              <div>
+                <dt>Last updated</dt>
+                <dd id="market-updated">--</dd>
+              </div>
+            </dl>
 
             <div class="services">
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><div><h4>Blockchain</h4><div class="muted">Secure L1</div></div></div>
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/></svg><div><h4>Trading</h4><div class="muted">AMM + orderbook</div></div></div>
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8V7a2 2 0 0 0-2-2h-3"/><path d="M3 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg><div><h4>Wallet</h4><div class="muted">Custodial & non-custodial</div></div></div>
-              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/></svg><div><h4>Developer</h4><div class="muted">SDKs & APIs</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><div><h4>Explorer</h4><div class="muted">bitcoinii.space live blocks</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8V7a2 2 0 0 0-2-2h-3"/><path d="M3 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg><div><h4>Wallets</h4><div class="muted">Desktop, web & Android</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/><path d="M20 21v-4a2 2 0 0 0-2-2h-4"/><path d="M4 15v4a2 2 0 0 0 2 2h4"/></svg><div><h4>Mining</h4><div class="muted">CPU friendly pools</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg><div><h4>Community</h4><div class="muted">Discord, Telegram, X</div></div></div>
             </div>
 
+            </div>
+
+          <div class="card panel" role="region" aria-labelledby="blocks">
+            <h4 id="blocks" style="margin:0 0 8px">Latest blocks</h4>
+            <ul class="block-list" id="block-list">
+              <li><span>Loading recent blocks…</span></li>
+            </ul>
+            <a class="muted" style="display:inline-block;margin-top:12px" href="https://bitcoinii.space/" target="_blank" rel="noreferrer">Open full explorer</a>
           </div>
 
           <div class="card panel" role="region" aria-labelledby="trade">
@@ -239,34 +277,17 @@
 
       <div class="lower-grid">
         <section class="panel card">
-          <h3 id="tokenomics">Tokenomics</h3>
-          <p class="muted">BC2 total supply: <strong>1,000,000,000 BC2</strong></p>
-          <div style="display:grid;gap:10px;margin-top:10px">
-            <div>
-              <div style="display:flex;justify-content:space-between"><small>Foundation & Ecosystem</small><small>25%</small></div>
-              <div class="bar"><i style="width:25%"></i></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between"><small>Team (vesting)</small><small>15%</small></div>
-              <div class="bar"><i style="width:15%"></i></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between"><small>Staking rewards</small><small>30%</small></div>
-              <div class="bar"><i style="width:30%"></i></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between"><small>Liquidity</small><small>10%</small></div>
-              <div class="bar"><i style="width:10%"></i></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between"><small>Public sale</small><small>20%</small></div>
-              <div class="bar"><i style="width:20%"></i></div>
-            </div>
-          </div>
+          <h3 id="tokenomics">Network fundamentals</h3>
+          <p class="muted">Core parameters published on the official Bitcoin II launch site.</p>
+          <ul class="fundamentals">
+            <li><strong>Consensus</strong>Proof-of-Work secured by the SHA-256 hashing algorithm.</li>
+            <li><strong>Max supply</strong>21,000,000 BC2 with the same halving cadence of every 210,000 blocks.</li>
+            <li><strong>Difficulty retarget</strong>Adjusts every 2,016 blocks so block times remain consistent as hashrate changes.</li>
+            <li><strong>Fresh genesis</strong>Bitcoin II starts from a brand new blockchain, giving miners an even playing field.</li>
+            <li><strong>Mining accessibility</strong>Launch difficulty was reset to 1, making CPU mining viable for early supporters.</li>
+          </ul>
 
-          <h4 style="margin-top:18px">Staking</h4>
-          <p class="muted">Stake BC2 to earn protocol fees and voting power. APR varies by lockup.</p>
-
+          <p class="muted">Looking to mine? Recommended tooling includes Pooler's <code>cpuminer</code> with community pools listed below.</p>
         </section>
 
         <aside class="panel card">
@@ -340,31 +361,31 @@
   </div>
 
   <script>
-    /* Simple demo JS to animate price and mini charts for prototype preview */
     (function(){
       const priceEl = document.getElementById('live-price');
       const changeEl = document.getElementById('live-change');
       const sidePrice = document.getElementById('side-price');
       const sideChange = document.getElementById('side-change');
+      const volumeEl = document.getElementById('market-volume');
+      const capEl = document.getElementById('market-cap');
+      const change7dEl = document.getElementById('market-change-7d');
+      const updatedEl = document.getElementById('market-updated');
+      const heightEl = document.getElementById('height');
+      const difficultyEl = document.getElementById('difficulty');
+      const lastBlockEl = document.getElementById('last-block-time');
+      const blockList = document.getElementById('block-list');
       const chart = document.getElementById('mini-chart');
       const sideMini = document.getElementById('side-mini');
 
-      // Random walk generator
-      function generateSeries(len, start){
-        const a=[start];
-        for(let i=1;i<len;i++){
-          const prev=a[i-1];
-          const change=(Math.random()-0.48)*0.02*start; // small volatility
-          a.push(Math.max(0,prev+change));
-        }
-        return a;
-      }
+      const MARKET_ENDPOINT = 'https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii';
+      const BLOCKS_ENDPOINT = 'https://bitcoinii.space/api/blocks?limit=5';
+      let historyLoaded = false;
 
       function renderSpark(el, series){
-        // create a tiny svg sparkline
+        if(!el || !Array.isArray(series) || series.length < 2) return;
         const w=200,h=60;
         const min=Math.min(...series), max=Math.max(...series);
-        const norm=v=> ( (v-min)/(max-min||1) )*(h-6) + 3;
+        const norm=v=> ((v-min)/(max-min||1))*(h-6) + 3;
         const step=w/(series.length-1);
         let d='M0 '+(h - norm(series[0]));
         for(let i=1;i<series.length;i++) d += ' L '+(i*step)+' '+(h - norm(series[i]));
@@ -372,37 +393,143 @@
         el.innerHTML = svg;
       }
 
-      // initial
-      let series = generateSeries(40,23456.89);
-      renderSpark(chart,series);
-      renderSpark(sideMini,series.slice());
-
-      function update(){
-        // tick
-        const last = series[series.length-1];
-        const changePct = (Math.random()-0.48)*0.4; // -0.2% .. +0.2%
-        const next = Math.max(1, last * (1 + changePct/100));
-        series.push(next);
-        if(series.length>60) series.shift();
-        renderSpark(chart,series);
-        renderSpark(sideMini,series);
-        const cur = next.toFixed(2);
-        priceEl.textContent = '$'+Number(cur).toLocaleString();
-        sidePrice.textContent = priceEl.textContent;
-
-        // simple percent from first of series
-        const perc = ((next - series[0])/series[0]*100).toFixed(2);
-        changeEl.textContent = (perc>0?'+':'')+perc+'%';
-        sideChange.textContent = changeEl.textContent;
-
-        // network stats mock
-        document.getElementById('finalized').textContent = (99.8 + Math.random()*0.18).toFixed(2) + '%';
-        document.getElementById('tps').textContent = Math.floor(2000 + Math.random()*6000);
+      function formatCurrency(value){
+        if(value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+        const num = Number(value);
+        const opts = {maximumFractionDigits: num < 1 ? 6 : 2};
+        return '$'+num.toLocaleString(undefined, opts);
       }
 
-      setInterval(update, 1100);
+      function formatPercent(value){
+        if(value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+        const num = Number(value);
+        const prefix = num > 0 ? '+' : '';
+        return prefix + num.toFixed(2) + '%';
+      }
 
-      // small accessibility: allow keyboard focus outline for interactive elements
+      function applyChange(el, value){
+        if(!el) return;
+        if(value === null || value === undefined || Number.isNaN(Number(value))){
+          el.textContent = '—';
+          el.classList.remove('negative');
+          return;
+        }
+        const num = Number(value);
+        el.textContent = formatPercent(num);
+        if(num < 0){
+          el.classList.add('negative');
+        }else{
+          el.classList.remove('negative');
+        }
+      }
+
+      function formatNumber(value, options){
+        if(value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+        return Number(value).toLocaleString(undefined, options);
+      }
+
+      function formatSize(bytes){
+        if(bytes === null || bytes === undefined || Number.isNaN(Number(bytes))) return '—';
+        const num = Number(bytes);
+        if(num < 1024) return `${num} B`;
+        return (num/1024).toFixed(1) + ' kB';
+      }
+
+      const rtf = typeof Intl !== 'undefined' && Intl.RelativeTimeFormat ? new Intl.RelativeTimeFormat(undefined, {numeric:'auto'}) : null;
+      function formatTimeAgo(date){
+        if(!(date instanceof Date) || Number.isNaN(date.getTime())) return '—';
+        const diff = Date.now() - date.getTime();
+        const table = [
+          ['day', 86400000],
+          ['hour', 3600000],
+          ['minute', 60000],
+          ['second', 1000]
+        ];
+        for(const [unit, ms] of table){
+          const value = Math.round(diff/ms);
+          if(Math.abs(value) >= 1 || unit === 'second'){
+            return rtf ? rtf.format(-value, unit) : `${Math.abs(value)} ${unit}${Math.abs(value) === 1 ? '' : 's'} ago`;
+          }
+        }
+        return 'just now';
+      }
+
+      async function updateHistory(){
+        try{
+          const start = new Date(Date.now() - 48*60*60*1000).toISOString().split('T')[0];
+          const historyUrl = `${MARKET_ENDPOINT}/historical?start=${start}&interval=1h`;
+          const response = await fetch(historyUrl, {cache:'no-store'});
+          if(!response.ok) throw new Error(`History status ${response.status}`);
+          const history = await response.json();
+          if(!Array.isArray(history) || history.length === 0) return;
+          const series = history.map(point => Number(point.price)).filter(num => !Number.isNaN(num));
+          if(series.length < 2) return;
+          renderSpark(chart, series);
+          renderSpark(sideMini, series);
+          historyLoaded = true;
+        }catch(err){
+          console.warn('Unable to load BC2 history', err);
+        }
+      }
+
+      async function updateMarket(){
+        try{
+          const response = await fetch(MARKET_ENDPOINT, {cache:'no-store'});
+          if(!response.ok) throw new Error(`Status ${response.status}`);
+          const data = await response.json();
+          const usd = data && data.quotes && data.quotes.USD;
+          if(!usd) throw new Error('Missing USD quote');
+
+          priceEl.textContent = formatCurrency(usd.price);
+          sidePrice.textContent = priceEl.textContent;
+          applyChange(changeEl, usd.percent_change_24h);
+          applyChange(sideChange, usd.percent_change_24h);
+          volumeEl.textContent = formatCurrency(usd.volume_24h);
+          capEl.textContent = usd.market_cap ? formatCurrency(usd.market_cap) : '—';
+          change7dEl.textContent = formatPercent(usd.percent_change_7d);
+          const updated = data.last_updated ? new Date(data.last_updated) : new Date();
+          updatedEl.textContent = updated.toLocaleString();
+
+          if(!historyLoaded){
+            updateHistory();
+          }
+        }catch(err){
+          console.warn('Unable to load BC2 market data', err);
+          priceEl.textContent = sidePrice.textContent = '—';
+          changeEl.textContent = sideChange.textContent = '—';
+          volumeEl.textContent = capEl.textContent = change7dEl.textContent = '—';
+        }
+      }
+
+      async function updateBlocks(){
+        try{
+          const response = await fetch(BLOCKS_ENDPOINT, {cache:'no-store'});
+          if(!response.ok) throw new Error(`Status ${response.status}`);
+          const blocks = await response.json();
+          if(!Array.isArray(blocks) || blocks.length === 0) throw new Error('No blocks returned');
+          const latest = blocks[0];
+          heightEl.textContent = formatNumber(latest.height);
+          difficultyEl.textContent = formatNumber(latest.difficulty, {maximumFractionDigits:2});
+          lastBlockEl.textContent = formatTimeAgo(new Date(latest.timestamp * 1000));
+
+          blockList.innerHTML = blocks.map(block => {
+            const blockTime = new Date(block.timestamp * 1000);
+            const height = formatNumber(block.height);
+            const txLabel = `${block.tx_count} tx`;
+            const sizeLabel = formatSize(block.size);
+            return `<li><div><strong><a href="https://bitcoinii.space/block/${block.id}" target="_blank" rel="noreferrer">#${height}</a></strong><span>${formatTimeAgo(blockTime)}</span></div><div style="text-align:right"><span>${txLabel}</span><span>${sizeLabel}</span></div></li>`;
+          }).join('');
+        }catch(err){
+          console.warn('Unable to load BC2 blocks', err);
+          blockList.innerHTML = '<li><span>Unable to load blocks. Visit the explorer for the latest data.</span></li>';
+        }
+      }
+
+      updateMarket();
+      updateBlocks();
+      setInterval(updateMarket, 60000);
+      setInterval(updateBlocks, 45000);
+
       document.addEventListener('keydown', function(e){ if(e.key==='Tab') document.body.classList.add('show-focus'); });
     })();
   </script>
