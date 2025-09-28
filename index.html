@@ -1,256 +1,208 @@
-
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Rocket, Coins, Users, Download, Cpu, Github, Twitter, MessageSquare, Blocks, Smartphone, Server, Calendar } from "lucide-react";
 
 export default function BC2Landing() {
-  const [stats, setStats] = useState({
-    price: "--",
-    marketCap: "--",
-    circulating: "--",
-    blockHeight: "--",
-    hashrate: "--",
-  });
-  const [latestBlocks, setLatestBlocks] = useState([]);
+  const [price, setPrice] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const links = {
+    website: "https://bitcoin-ii.org/",
+    github: "https://github.com/Bitcoin-II/BitcoinII-Core",
+    explorer: "https://bitcoinii.ddns.net/explorer/",
+    nodemap: "https://bitcoinii.ddns.net/NodeMap.html",
+    dailyReport: "https://bitcoinii.ddns.net/DailyReport.html",
+    livePrice: "https://www.livecoinwatch.com/price/BitcoinII-BC2",
+    exchanges: [
+      { name: "Rabid Rabbit", url: "https://rabid-rabbit.org/account/trade/BC2-USDT" },
+      { name: "Nestex", url: "https://trade.nestex.one/spot/BC2" },
+      { name: "Klingex", url: "https://klingex.io/trade/BC2-USDT" },
+      { name: "NonKYC", url: "https://nonkyc.io/market/BC2_USDT" },
+      { name: "CoinEx (coming soon)", url: "#" },
+    ],
+    miningPools: "https://miningpoolstats.stream/bitcoinii",
+    wallets: [
+      { name: "Desktop releases (GitHub)", url: "https://github.com/Bitcoin-II/BitcoinII-Core/releases" },
+      { name: "Nitopool web-wallet", url: "https://wallet-bc2.nitopool.fr/" },
+      { name: "BlueWallet (Android)", url: "https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US" },
+      { name: "iOS (coming soon)", url: "#" },
+    ],
+    community: {
+      discord: "https://discord.gg/zUSkQHNVyG",
+      telegram: "https://t.me/BitcoinIIOrganization",
+      x: "https://x.com/TheBitcoinIIOrg",
+    }
+  };
+
   useEffect(() => {
-    let mounted = true;
-
-    async function fetchStats() {
+    async function fetchPrice() {
       try {
-        const resp = await fetch("https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii");
-        if (!resp.ok) throw new Error("Network response was not ok");
-        const data = await resp.json();
-
-        const price = data.quotes.USD.price;
-        const marketCap = data.quotes.USD.market_cap;
-        const circulating = data.circulating_supply;
-
-        if (mounted) {
-          setStats((prev) => ({
-            ...prev,
-            price: price.toFixed(6),
-            marketCap: formatNumber(marketCap),
-            circulating: formatNumber(circulating),
-          }));
-          setLoading(false);
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin-ii&vs_currencies=usd");
+        const data = await res.json();
+        if (data["bitcoin-ii"] && data["bitcoin-ii"].usd) {
+          setPrice(data["bitcoin-ii"].usd);
+        } else {
+          setPrice(null);
         }
       } catch (err) {
-        console.error("Failed to load BC2 stats:", err);
-        if (mounted) setLoading(false);
+        setPrice(null);
+      } finally {
+        setLoading(false);
       }
     }
-
-    async function fetchExplorer() {
-      try {
-        // Placeholder API — replace with real BC2 explorer when available
-        const resp = await fetch("https://api.blockcypher.com/v1/btc/main");
-        if (!resp.ok) throw new Error("Explorer API not ok");
-        const data = await resp.json();
-
-        if (mounted) {
-          setStats((prev) => ({
-            ...prev,
-            blockHeight: formatNumber(data.height),
-            hashrate: data.hashrate ? `${(data.hashrate / 1e9).toFixed(2)} GH/s` : "--",
-          }));
-
-          setLatestBlocks([
-            { height: data.height, hash: data.hash?.slice(0, 16) + "..." },
-            { height: data.height - 1, hash: "prev-block..." },
-          ]);
-        }
-      } catch (err) {
-        console.error("Failed to load explorer data:", err);
-      }
-    }
-
-    fetchStats();
-    fetchExplorer();
-    const interval = setInterval(() => {
-      fetchStats();
-      fetchExplorer();
-    }, 30 * 1000);
-
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
+    fetchPrice();
   }, []);
 
+  const ResponsiveIframe = ({ src, title }) => (
+    <div className="relative w-full overflow-hidden rounded border" style={{ paddingTop: "56.25%" }}>
+      <iframe
+        src={src}
+        title={title}
+        className="absolute top-0 left-0 w-full h-full"
+        frameBorder="0"
+      ></iframe>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50 text-slate-900">
-      {/* Header */}
-      <header className="max-w-6xl mx-auto p-6 flex items-center justify-between">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">BC2</div>
-          <div>
-            <h1 className="text-xl font-semibold">Bitcoin II (BC2)</h1>
-            <p className="text-sm text-slate-500">A SHA‑256 proof-of-work chain — community-driven & open source</p>
+    <div className="min-h-screen bg-gray-50 text-slate-800">
+      <header className="bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 text-white">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center font-bold">BC2</div>
+            <div>
+              <h1 className="text-xl font-semibold">BitcoinII (BC2)</h1>
+              <p className="text-sm opacity-90">Community-driven Bitcoin fork — network info, wallets, exchanges, mining</p>
+            </div>
           </div>
-        </motion.div>
-        <nav className="hidden md:flex gap-6 items-center text-sm text-slate-700">
-          <a href="#about" className="hover:text-amber-600">About</a>
-          <a href="#mining" className="hover:text-amber-600">Mining</a>
-          <a href="#wallets" className="hover:text-amber-600">Wallets</a>
-          <a href="#roadmap" className="hover:text-amber-600">Roadmap</a>
-          <a href="#explorer" className="hover:text-amber-600">Explorer</a>
-          <a href="#community" className="hover:text-amber-600">Community</a>
-        </nav>
-        <div className="hidden md:block">
-          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm shadow-md flex items-center gap-2">
-            <Download className="w-4 h-4" /> Download Wallet
-          </button>
+          <nav className="hidden md:flex gap-4 items-center">
+            <a href="#about" className="hover:underline">About</a>
+            <a href="#explorer" className="hover:underline">Explorer</a>
+            <a href="#exchanges" className="hover:underline">Exchanges</a>
+            <a href="#wallets" className="hover:underline">Wallets</a>
+            <a href="#community" className="hover:underline">Community</a>
+            <a href={links.website} target="_blank" rel="noreferrer" className="ml-4 inline-block bg-white/20 px-3 py-1 rounded">Official site</a>
+          </nav>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <main className="max-w-6xl mx-auto px-6 pb-24">
-        <section className="grid md:grid-cols-2 gap-8 items-center py-16">
-          <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 className="text-5xl font-extrabold leading-tight text-slate-900">Bitcoin II (BC2)</h2>
-            <p className="mt-4 text-slate-600 max-w-xl text-lg">
-              BC2 is a community-focused SHA‑256 proof-of-work cryptocurrency with a capped supply of 21,000,000.
-              Built for miners, traders, and believers in decentralized finance.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#wallets" className="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm shadow">Get a Wallet</a>
-              <a href="#mining" className="px-4 py-2 rounded-lg border border-slate-200 text-sm hover:border-amber-400">How to Mine</a>
-              <a href="#explorer" className="px-4 py-2 rounded-lg border border-amber-300 text-amber-700 text-sm">Explore Chain</a>
+      <main className="max-w-6xl mx-auto px-6 py-10">
+        <section className="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-3xl font-extrabold mb-3">Welcome to the BitcoinII (BC2) hub</h2>
+            <p className="text-lg mb-6 leading-relaxed">This simple site gathers the most useful links for BC2: explorer, nodes, exchanges, wallets, mining, and community resources. Use the quick links to jump where you need.</p>
+
+            <div className="flex gap-3 flex-wrap items-center">
+              <span className="px-4 py-2 rounded bg-indigo-600 text-white font-semibold">
+                {loading ? "Loading price..." : price ? `$${price}` : "Price unavailable"}
+              </span>
+              <a href={links.github} target="_blank" rel="noreferrer" className="px-4 py-2 rounded border border-slate-200">GitHub</a>
+              <a href={links.explorer} target="_blank" rel="noreferrer" className="px-4 py-2 rounded border border-slate-200">Explorer</a>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Live Stats */}
-          <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} className="bg-white rounded-2xl p-6 shadow-xl border border-amber-100">
-            <h3 className="text-sm text-slate-500 flex items-center gap-2"><Coins className="w-4 h-4 text-amber-500" /> Live Market Stats</h3>
-            {loading ? (
-              <p className="mt-4">Loading...</p>
-            ) : (
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <Stat label="Price (USD)" value={`$${stats.price}`} />
-                <Stat label="Market Cap" value={`$${stats.marketCap}`} />
-                <Stat label="Circulating" value={stats.circulating} />
-                <Stat label="Block Height" value={stats.blockHeight} />
-                <div className="col-span-2 mt-2">
-                  <p className="text-xs text-slate-400">Hashrate</p>
-                  <p className="text-lg font-medium">{stats.hashrate}</p>
-                </div>
-              </div>
-            )}
-            <small className="text-xs text-slate-400 mt-4 block">Market data via CoinPaprika API. Explorer data placeholder.</small>
-          </motion.div>
-        </section>
-
-        {/* About Section */}
-        <section id="about" className="py-16 border-t border-slate-200">
-          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Rocket className="w-6 h-6 text-amber-500" /> About Bitcoin II</h3>
-          <p className="text-slate-600 max-w-3xl text-lg">
-            Bitcoin II (BC2) is an independent cryptocurrency launched with a capped supply of 21 million coins.
-            It uses SHA-256 proof-of-work mining, making it familiar to Bitcoin miners, but with its own ecosystem and growth roadmap.
-          </p>
-        </section>
-
-        {/* Mining Section */}
-        <section id="mining" className="py-16 border-t border-slate-200">
-          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Cpu className="w-6 h-6 text-amber-500" /> Mining</h3>
-          <p className="text-slate-600 text-lg mb-4">Mine BC2 with SHA-256 ASICs or join a pool. Get started quickly with our community mining guides and resources.</p>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-4 rounded-xl border shadow">
-              <h4 className="font-semibold mb-2 flex items-center gap-2"><Server className="w-4 h-4 text-amber-500" /> Mining Pools</h4>
-              <ul className="list-disc pl-6 text-slate-600 space-y-1">
-                <li><a href="#" className="hover:text-amber-600">Pool A (example.com)</a></li>
-                <li><a href="#" className="hover:text-amber-600">Pool B (example.net)</a></li>
+          <div className="space-y-4">
+            <div className="p-4 bg-white rounded-2xl shadow">
+              <h3 className="font-semibold mb-2">Network status</h3>
+              <p className="text-sm mb-3">Quick diagnostics and tools:</p>
+              <ul className="text-sm space-y-2">
+                <li><a href="#nodemap" className="hover:underline">Node Map (embedded below)</a></li>
+                <li><a href="#dailyreport" className="hover:underline">Daily Report (embedded below)</a></li>
+                <li><a href="#mining" className="hover:underline">Mining pool stats (embedded below)</a></li>
               </ul>
             </div>
-            <div className="bg-white p-4 rounded-xl border shadow">
-              <h4 className="font-semibold mb-2 flex items-center gap-2"><Cpu className="w-4 h-4 text-amber-500" /> Mining Software</h4>
-              <p className="text-slate-600 text-sm">Compatible with common SHA‑256 miners (CGMiner, BFGMiner, etc.). Setup guides available.</p>
+
+            <div className="p-4 bg-white rounded-2xl shadow">
+              <h3 className="font-semibold mb-2">Explorer</h3>
+              <p className="text-sm mb-3">Open transaction and block data in the network explorer below.</p>
+              <a href="#explorer" className="inline-block px-4 py-2 rounded bg-emerald-600 text-white">Scroll to Explorer</a>
             </div>
           </div>
         </section>
 
-        {/* Wallet Section */}
-        <section id="wallets" className="py-16 border-t border-slate-200">
-          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Download className="w-6 h-6 text-amber-500" /> Wallets</h3>
-          <p className="text-slate-600 text-lg mb-4">Download official wallets for desktop and mobile. Choose your platform below.</p>
-          <div className="flex flex-wrap gap-4">
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow">Windows</button>
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow">Mac</button>
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow">Linux</button>
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow flex items-center gap-2"><Smartphone className="w-4 h-4" /> Android</button>
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow flex items-center gap-2"><Smartphone className="w-4 h-4" /> iOS</button>
+        <section id="explorer" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Explorer</h3>
+          <ResponsiveIframe src={links.explorer} title="BC2 Explorer" />
+        </section>
+
+        <section id="nodemap" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Node Map</h3>
+          <ResponsiveIframe src={links.nodemap} title="BC2 Node Map" />
+        </section>
+
+        <section id="dailyreport" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Daily Report</h3>
+          <ResponsiveIframe src={links.dailyReport} title="BC2 Daily Report" />
+        </section>
+
+        <section id="exchanges" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Exchanges</h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {links.exchanges.map((ex) => (
+              <a key={ex.name} href={ex.url} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow hover:shadow-lg transition">
+                <div className="font-semibold">{ex.name}</div>
+                <div className="text-sm text-slate-500 mt-1">Open trading pair / market page</div>
+              </a>
+            ))}
+          </div>
+          <p className="text-sm opacity-80 mt-3">Note: CoinEx listing coming soon — link will appear once available.</p>
+        </section>
+
+        <section id="wallets" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Wallets & Downloads</h3>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {links.wallets.map((w) => (
+              <a key={w.name} href={w.url} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow hover:shadow-lg transition">
+                <div className="font-semibold">{w.name}</div>
+                <div className="text-sm text-slate-500 mt-1">{w.url === '#' ? 'Coming soon' : w.url}</div>
+              </a>
+            ))}
           </div>
         </section>
 
-        {/* Roadmap Section */}
-        <section id="roadmap" className="py-16 border-t border-slate-200">
-          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Calendar className="w-6 h-6 text-amber-500" /> Roadmap</h3>
-          <ul className="list-disc pl-6 text-slate-600 text-lg space-y-2">
-            <li><span className="font-semibold">Phase 1:</span> Launch, distribution, and initial listings ✅</li>
-            <li><span className="font-semibold">Phase 2:</span> Wallet improvements and explorer integration 🔄</li>
-            <li><span className="font-semibold">Phase 3:</span> Mobile wallets and additional exchange partnerships 📱</li>
-            <li><span className="font-semibold">Phase 4:</span> Community governance and DAO exploration 🌱</li>
-            <li><span className="font-semibold">Phase 5:</span> Ecosystem growth: DeFi tools, payment gateways, and merchant adoption 🚀</li>
-          </ul>
+        <section id="mining" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Mining</h3>
+          <ResponsiveIframe src={links.miningPools} title="BC2 Mining Pools" />
         </section>
 
-        {/* Explorer Section */}
-        <section id="explorer" className="py-16 border-t border-slate-200">
-          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Blocks className="w-6 h-6 text-amber-500" /> Explorer</h3>
-          <p className="text-slate-600 text-lg mb-4">Check the latest blocks and transactions on the BC2 chain.</p>
-          <div className="bg-white border rounded-2xl p-6 shadow grid gap-4">
-            {latestBlocks.length === 0 ? (
-              <p className="text-slate-400">Loading latest blocks...</p>
-            ) : (
-              latestBlocks.map((b, i) => (
-                <div key={i} className="p-3 border rounded-lg flex justify-between text-sm bg-slate-50">
-                  <span className="font-medium">Block {b.height}</span>
-                  <span className="text-slate-500">{b.hash}</span>
-                </div>
-              ))
-            )}
+        <section id="community" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Community</h3>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <a href={links.community.discord} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow">
+              <div className="font-semibold">Discord</div>
+              <div className="text-sm text-slate-500 mt-1">Join the community chat</div>
+            </a>
+            <a href={links.community.telegram} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow">
+              <div className="font-semibold">Telegram</div>
+              <div className="text-sm text-slate-500 mt-1">BitcoinIIOrganization</div>
+            </a>
+            <a href={links.community.x} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow">
+              <div className="font-semibold">X (Twitter)</div>
+              <div className="text-sm text-slate-500 mt-1">@TheBitcoinIIOrg</div>
+            </a>
           </div>
         </section>
 
-        {/* Community Section */}
-        <section id="community" className="py-16 border-t border-slate-200">
-          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Users className="w-6 h-6 text-amber-500" /> Community</h3>
-          <p className="text-slate-600 text-lg mb-4">Join BC2 on social platforms to connect with miners, traders, and developers.</p>
-          <div className="flex gap-4">
-            <a href="#" className="p-3 bg-slate-100 rounded-xl hover:bg-amber-100 transition"><Twitter className="w-5 h-5 text-amber-600" /></a>
-            <a href="#" className="p-3 bg-slate-100 rounded-xl hover:bg-amber-100 transition"><MessageSquare className="w-5 h-5 text-amber-600" /></a>
-            <a href="#" className="p-3 bg-slate-100 rounded-xl hover:bg-amber-100 transition"><Github className="w-5 h-5 text-amber-600" /></a>
+        <section id="dev" className="mt-12">
+          <h3 className="text-2xl font-bold mb-4">Developers</h3>
+          <div className="p-4 bg-white rounded-xl shadow">
+            <p className="mb-3">Source code, releases, and developer resources.</p>
+            <a href={links.github} target="_blank" rel="noreferrer" className="inline-block px-4 py-2 rounded border">GitHub repository</a>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-200 py-8">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm">© {new Date().getFullYear()} Bitcoin II (BC2). All rights reserved.</p>
-          <div className="flex gap-4 text-sm">
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-            <a href="#" className="hover:text-white">Contact</a>
+      <footer className="bg-slate-900 text-slate-200 mt-12">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between gap-4">
+          <div>
+            <div className="font-semibold">BitcoinII (BC2)</div>
+            <div className="text-sm opacity-80">This page aggregates community links and resources. Not an official exchange or custodian.</div>
+          </div>
+          <div className="flex gap-3 items-center">
+            <a href={links.livePrice} target="_blank" rel="noreferrer" className="text-sm hover:underline">Live price</a>
+            <a href={links.website} target="_blank" rel="noreferrer" className="text-sm hover:underline">Official site</a>
+            <a href={links.github} target="_blank" rel="noreferrer" className="text-sm hover:underline">GitHub</a>
           </div>
         </div>
       </footer>
     </div>
   );
-}
-
-function Stat({ label, value }) {
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-3 rounded-lg bg-slate-50 border shadow-sm">
-      <p className="text-xs text-slate-400">{label}</p>
-      <p className="text-lg font-semibold">{value}</p>
-    </motion.div>
-  );
-}
-
-function formatNumber(n) {
-  if (n === null || n === undefined) return "--";
-  if (typeof n === "number") return n.toLocaleString();
-  return n;
 }
