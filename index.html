@@ -351,10 +351,26 @@
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.02);
       }
-      .trade-controls {
+      .trade-card {
         display: flex;
-        gap: 8px;
-        align-items: center;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .trade-controls {
+        display: grid;
+        gap: 12px;
+      }
+      .trade-controls label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .trade-input-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
       }
       .input,
       .select {
@@ -363,6 +379,29 @@
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.03);
         color: inherit;
+        font: inherit;
+      }
+      .input:focus,
+      .select:focus,
+      .trade-slider:focus {
+        outline: 1px solid rgba(0, 224, 255, 0.5);
+        outline-offset: 2px;
+      }
+      .trade-slider-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .trade-slider {
+        flex: 1;
+        accent-color: var(--accent);
+      }
+      .trade-slider-value {
+        min-width: 64px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-size: 13px;
+        color: #dff6ff;
       }
       .btn-primary {
         background: linear-gradient(90deg, var(--accent), var(--accent-2));
@@ -370,6 +409,65 @@
         border-radius: 10px;
         border: none;
         font-weight: 700;
+        cursor: pointer;
+      }
+      .trade-summary {
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 12px;
+        background: rgba(0, 224, 255, 0.03);
+        padding: 12px 14px;
+        display: grid;
+        gap: 10px;
+      }
+      .trade-summary dl {
+        margin: 0;
+        display: grid;
+        gap: 6px;
+      }
+      .trade-summary div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .trade-summary dt {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .trade-summary dd {
+        margin: 0;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .trade-footnote {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .block-follow {
+        margin-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        padding-top: 12px;
+        display: grid;
+        gap: 8px;
+        font-size: 13px;
+      }
+      .block-follow-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .block-follow-item dt {
+        margin: 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .block-follow-item dd {
+        margin: 0;
+        font-weight: 600;
+        color: #dff6ff;
+        font-variant-numeric: tabular-nums;
       }
 
       /* node map */
@@ -705,7 +803,6 @@
         <nav>
           <a href="#network-insights">Network</a>
           <a href="#features">Features</a>
-          <a href="#tokenomics">Tokenomics</a>
           <a href="#nodemap">Node map</a>
           <a href="#markets">Markets</a>
           <a href="#resources">Resources</a>
@@ -1031,25 +1128,113 @@
               >
             </div>
 
-            <div class="card panel" role="region" aria-labelledby="trade">
-              <h4 id="trade" style="margin: 0 0 8px">Trade (simulation)</h4>
-              <div class="trade-controls">
-                <input
-                  class="input"
-                  type="text"
-                  value="0.01 BTC"
-                  aria-label="Amount"
-                />
-                <select class="select" aria-label="Action">
-                  <option>Buy</option>
-                  <option>Sell</option>
-                </select>
-                <button class="btn-primary">Place Order</button>
-              </div>
-              <p class="muted" style="margin-top: 10px">
-                Orders here are a UI mock — integrate with exchange or smart
-                contracts for live trading.
+            <div class="card panel" role="region" aria-labelledby="follow">
+              <h4 id="follow" style="margin: 0 0 8px">Explorer follow</h4>
+              <p class="muted" style="margin: 0">
+                Snapshot of the freshest block from bitcoinii.space.
               </p>
+              <dl class="block-follow" id="block-follow">
+                <div class="block-follow-item">
+                  <dt>Height</dt>
+                  <dd id="follow-height">--</dd>
+                </div>
+                <div class="block-follow-item">
+                  <dt>Time</dt>
+                  <dd id="follow-time">--</dd>
+                </div>
+                <div class="block-follow-item">
+                  <dt>Transactions</dt>
+                  <dd id="follow-tx">--</dd>
+                </div>
+                <div class="block-follow-item">
+                  <dt>Miner</dt>
+                  <dd id="follow-miner">--</dd>
+                </div>
+                <div class="block-follow-item">
+                  <dt>Reward</dt>
+                  <dd id="follow-reward">--</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div
+              class="card panel trade-card"
+              role="region"
+              aria-labelledby="trade"
+            >
+              <h4 id="trade" style="margin: 0">Trade simulation</h4>
+              <p class="muted" style="margin: 0">
+                Estimate a market order using the live CoinPaprika ticker.
+              </p>
+              <form class="trade-controls" id="trade-form">
+                <div class="trade-input-row">
+                  <label for="trade-amount">
+                    Amount (BC2)
+                    <input
+                      class="input"
+                      type="number"
+                      id="trade-amount"
+                      name="amount"
+                      min="0"
+                      step="0.000001"
+                      value="1"
+                      inputmode="decimal"
+                    />
+                  </label>
+                  <label for="trade-side">
+                    Action
+                    <select class="select" id="trade-side" name="side">
+                      <option value="buy">Buy</option>
+                      <option value="sell">Sell</option>
+                    </select>
+                  </label>
+                </div>
+                <label for="trade-slippage">
+                  Price impact
+                  <div class="trade-slider-wrap">
+                    <input
+                      class="trade-slider"
+                      type="range"
+                      id="trade-slippage"
+                      name="impact"
+                      min="-5"
+                      max="5"
+                      step="0.1"
+                      value="0.5"
+                    />
+                    <output
+                      class="trade-slider-value"
+                      id="trade-impact"
+                      for="trade-slippage"
+                      >+0.50%</output
+                    >
+                  </div>
+                </label>
+                <button class="btn-primary" type="submit">Preview order</button>
+              </form>
+              <div class="trade-summary" aria-live="polite">
+                <dl>
+                  <div class="block-follow-item">
+                    <dt>Reference price</dt>
+                    <dd id="trade-price">--</dd>
+                  </div>
+                  <div class="block-follow-item">
+                    <dt>Est. fill price</dt>
+                    <dd id="trade-fill">--</dd>
+                  </div>
+                  <div class="block-follow-item">
+                    <dt>Total</dt>
+                    <dd id="trade-total">--</dd>
+                  </div>
+                  <div class="block-follow-item">
+                    <dt>Price delta</dt>
+                    <dd id="trade-delta">--</dd>
+                  </div>
+                </dl>
+                <p class="trade-footnote" id="trade-status">
+                  Waiting for live price data…
+                </p>
+              </div>
             </div>
           </aside>
         </div>
@@ -1383,6 +1568,21 @@
           avgBlockTime: document.getElementById("avg-block-time"),
           difficultyTrend: document.getElementById("difficulty-trend"),
           marketsBody: document.getElementById("markets-body"),
+          tradeForm: document.getElementById("trade-form"),
+          tradeAmount: document.getElementById("trade-amount"),
+          tradeSide: document.getElementById("trade-side"),
+          tradeSlippage: document.getElementById("trade-slippage"),
+          tradeImpact: document.getElementById("trade-impact"),
+          tradePrice: document.getElementById("trade-price"),
+          tradeFill: document.getElementById("trade-fill"),
+          tradeTotal: document.getElementById("trade-total"),
+          tradeDelta: document.getElementById("trade-delta"),
+          tradeStatus: document.getElementById("trade-status"),
+          followHeight: document.getElementById("follow-height"),
+          followTime: document.getElementById("follow-time"),
+          followTx: document.getElementById("follow-tx"),
+          followMiner: document.getElementById("follow-miner"),
+          followReward: document.getElementById("follow-reward"),
         };
 
         const API = {
@@ -1401,6 +1601,10 @@
         let historyLoaded = false;
         let historyLoading = false;
         let timers = [];
+        const state = {
+          lastPrice: null,
+          change24h: null,
+        };
 
         const numberFormatter = new Intl.NumberFormat(undefined, {
           maximumFractionDigits: 0,
@@ -1482,6 +1686,141 @@
         function formatNumber(value, options) {
           if (!Number.isFinite(Number(value))) return "—";
           return Number(value).toLocaleString(undefined, options);
+        }
+
+        function updateImpactLabel(value) {
+          if (!dom.tradeImpact) return;
+          const num = Number(value);
+          if (!Number.isFinite(num)) {
+            dom.tradeImpact.textContent = "—";
+            return;
+          }
+          const prefix = num > 0 ? "+" : "";
+          dom.tradeImpact.textContent = `${prefix}${num.toFixed(2)}%`;
+        }
+
+        function updateTradeSimulation() {
+          if (!dom.tradePrice || !dom.tradeAmount) return;
+          const price = Number(state.lastPrice);
+          const amountValue = Number(dom.tradeAmount.value);
+          const impactValue = Number(dom.tradeSlippage?.value ?? 0);
+          const side = dom.tradeSide?.value || "buy";
+
+          if (!Number.isFinite(price) || price <= 0) {
+            dom.tradePrice.textContent =
+              dom.tradeFill.textContent =
+              dom.tradeTotal.textContent =
+              dom.tradeDelta.textContent =
+                "—";
+            if (dom.tradeStatus) {
+              dom.tradeStatus.textContent = "Waiting for live price data…";
+            }
+            return;
+          }
+
+          const hasAmount = Number.isFinite(amountValue) && amountValue > 0;
+          const qty = hasAmount ? amountValue : 0;
+          const impact = Number.isFinite(impactValue) ? impactValue : 0;
+          const fillPrice = price * (1 + impact / 100);
+          const total = qty * fillPrice;
+          const deltaPercent = ((fillPrice - price) / price) * 100;
+
+          dom.tradePrice.textContent = formatCurrency(price);
+          dom.tradeFill.textContent = formatCurrency(fillPrice);
+          dom.tradeTotal.textContent = hasAmount ? formatCurrency(total) : "—";
+          if (dom.tradeDelta) {
+            dom.tradeDelta.textContent = formatSignedPercent(deltaPercent);
+            if (deltaPercent < 0) {
+              dom.tradeDelta.classList.add("negative");
+            } else {
+              dom.tradeDelta.classList.remove("negative");
+            }
+          }
+
+          if (dom.tradeStatus) {
+            if (!hasAmount) {
+              dom.tradeStatus.textContent =
+                "Enter an amount to simulate an order.";
+            } else {
+              const sideLabel = side === "sell" ? "Proceeds" : "Cost";
+              const qtyLabel = qty.toLocaleString(undefined, {
+                maximumFractionDigits: qty < 1 ? 6 : 2,
+              });
+              const changeSuffix = Number.isFinite(Number(state.change24h))
+                ? ` 24h move: ${formatSignedPercent(state.change24h)}.`
+                : "";
+              dom.tradeStatus.textContent = `${sideLabel} estimate for ${qtyLabel} BC2 at ${
+                dom.tradeImpact?.textContent ?? `${impact.toFixed(2)}%`
+              } impact.${changeSuffix}`;
+            }
+          }
+        }
+
+        function updateBlockFollow(block) {
+          if (!dom.followHeight) {
+            return;
+          }
+          if (!block) {
+            dom.followHeight.textContent = "—";
+            if (dom.followTime) dom.followTime.textContent = "—";
+            if (dom.followTx) dom.followTx.textContent = "—";
+            if (dom.followMiner) dom.followMiner.textContent = "—";
+            if (dom.followReward) dom.followReward.textContent = "—";
+            return;
+          }
+          if (dom.followHeight) {
+            dom.followHeight.textContent = formatNumber(block.height);
+          }
+          if (dom.followTime) {
+            const timestamp = Number(block.timestamp) * 1000;
+            dom.followTime.textContent = Number.isFinite(timestamp)
+              ? formatTimeAgo(new Date(timestamp))
+              : "—";
+          }
+          if (dom.followTx) {
+            dom.followTx.textContent = Number.isFinite(Number(block.tx_count))
+              ? Number(block.tx_count).toLocaleString()
+              : "—";
+          }
+          if (dom.followMiner) {
+            const miner =
+              block?.extras?.pool?.name ||
+              block?.extras?.coinbaseAddress ||
+              (Array.isArray(block?.extras?.coinbaseAddresses)
+                ? block.extras.coinbaseAddresses[0]
+                : null);
+            dom.followMiner.textContent = miner || "Unknown";
+          }
+          if (dom.followReward) {
+            const rewardSat = block?.extras?.reward;
+            if (Number.isFinite(Number(rewardSat))) {
+              const rewardBtc = Number(rewardSat) / 100_000_000;
+              dom.followReward.textContent =
+                rewardBtc < 1
+                  ? `${rewardBtc.toFixed(8)} BC2`
+                  : `${rewardBtc.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })} BC2`;
+            } else {
+              dom.followReward.textContent = "—";
+            }
+          }
+        }
+
+        function initTradeSimulation() {
+          if (!dom.tradeForm) return;
+          dom.tradeForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            updateTradeSimulation();
+          });
+          dom.tradeAmount?.addEventListener("input", updateTradeSimulation);
+          dom.tradeSide?.addEventListener("change", updateTradeSimulation);
+          dom.tradeSlippage?.addEventListener("input", (event) => {
+            updateImpactLabel(event.target.value);
+            updateTradeSimulation();
+          });
+          updateImpactLabel(dom.tradeSlippage?.value ?? 0);
+          updateTradeSimulation();
         }
 
         function formatSize(bytes) {
@@ -1730,6 +2069,10 @@
               : new Date();
             dom.updated.textContent = updated.toLocaleString();
 
+            state.lastPrice = Number(usd.price);
+            state.change24h = Number(usd.percent_change_24h);
+            updateTradeSimulation();
+
             if (!historyLoaded) {
               updateHistory();
             }
@@ -1743,6 +2086,9 @@
               dom.cap.textContent =
               dom.change7d.textContent =
                 "—";
+            state.lastPrice = null;
+            state.change24h = null;
+            updateTradeSimulation();
           }
         }
 
@@ -1752,6 +2098,7 @@
             if (!Array.isArray(blocks) || blocks.length === 0)
               throw new Error("No blocks returned");
             const latest = blocks[0];
+            updateBlockFollow(latest);
             dom.height.textContent = formatNumber(latest.height);
             dom.difficulty.textContent = formatNumber(latest.difficulty, {
               maximumFractionDigits: 2,
@@ -1769,6 +2116,7 @@
               dom.blockList.innerHTML =
                 "<li><span>Unable to load blocks. Visit the explorer for the latest data.</span></li>";
             }
+            updateBlockFollow(null);
           }
         }
 
@@ -1852,6 +2200,7 @@
           if (e.key === "Tab") document.body.classList.add("show-focus");
         });
 
+        initTradeSimulation();
         updateMarket();
         updateBlocks();
         updateMarkets();
