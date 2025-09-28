@@ -208,6 +208,18 @@
           border-color 0.3s ease,
           background 0.3s ease;
       }
+      .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: rgba(223, 246, 255, 0.72);
+        background: rgba(0, 224, 255, 0.08);
+        border-radius: 999px;
+        padding: 4px 10px;
+      }
       .cta-primary:hover,
       .cta-primary:focus-visible {
         transform: translateY(-1px);
@@ -267,6 +279,59 @@
           rgba(0, 224, 255, 0.18),
           transparent 20%
         );
+      }
+      .ecosystem-section {
+        margin-top: 32px;
+        display: grid;
+        gap: 18px;
+      }
+      .ecosystem-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .ecosystem-card {
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        border-radius: 14px;
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.02);
+        display: grid;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+      .ecosystem-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          160deg,
+          rgba(0, 224, 255, 0.08),
+          transparent 60%
+        );
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      .ecosystem-card h4 {
+        margin: 0;
+        font-size: 16px;
+        z-index: 1;
+      }
+      .ecosystem-card p,
+      .ecosystem-card ul {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+        z-index: 1;
+      }
+      .ecosystem-card ul {
+        padding-left: 18px;
+        display: grid;
+        gap: 6px;
+      }
+      .ecosystem-card a {
+        color: inherit;
+        text-decoration: none;
       }
 
       /* ----------------------
@@ -782,6 +847,9 @@
         .panel {
           min-height: 0;
         }
+        .ecosystem-grid {
+          grid-template-columns: 1fr;
+        }
         .container {
           padding: 18px;
         }
@@ -840,6 +908,7 @@
           <a href="#network-insights">Network</a>
           <a href="#features">Features</a>
           <a href="#nodemap">Node map</a>
+          <a href="#ecosystem">Ecosystem</a>
           <a href="#markets">Markets</a>
           <a href="#resources">Resources</a>
           <a
@@ -996,6 +1065,138 @@
                 </ul>
               </aside>
             </div>
+
+            <section class="ecosystem-section" id="ecosystem">
+              <span class="section-label">Ecosystem snapshot</span>
+              <h3 style="margin: 0">What's live right now</h3>
+              <div class="ecosystem-grid">
+                <article class="ecosystem-card">
+                  <h4>Where to trade BC2</h4>
+                  <p>
+                    Listings span the community's preferred non-custodial and
+                    centralized venues so you can match liquidity to your risk
+                    profile.
+                  </p>
+                  <ul>
+                    <li>
+                      <a
+                        href="https://trade.nestex.one/spot/BC2"
+                        target="_blank"
+                        rel="noreferrer"
+                        >NestEx BC2/USDT spot market</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://rabid-rabbit.org/account/trade/BC2-USDT"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Rabid Rabbit community exchange</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://klingex.io/trade/BC2-USDT"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Klingex BC2 listings</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://nonkyc.io/market/BC2_USDT"
+                        target="_blank"
+                        rel="noreferrer"
+                        >nonKYC.io peer-to-peer board</a
+                      >
+                    </li>
+                  </ul>
+                </article>
+                <article class="ecosystem-card">
+                  <h4>Wallet coverage</h4>
+                  <p>
+                    Choose the official core client or lightweight web and
+                    mobile experiences maintained by the Bitcoin II community.
+                  </p>
+                  <ul>
+                    <li>
+                      <a
+                        href="https://github.com/Bitcoin-II/BitcoinII-Core/releases"
+                        target="_blank"
+                        rel="noreferrer"
+                        >BitcoinII-Core desktop releases</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://wallet-bc2.nitopool.fr/"
+                        target="_blank"
+                        rel="noreferrer"
+                        >NitoPool hosted web wallet</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Android wallet by the organization</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://bitcoin-ii.org/"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Official site setup guide</a
+                      >
+                    </li>
+                  </ul>
+                </article>
+                <article class="ecosystem-card">
+                  <h4>Monitor the network</h4>
+                  <p>
+                    Stay on top of the chain health with the explorer-backed
+                    telemetry and daily community summaries that inform miners
+                    and node operators.
+                  </p>
+                  <ul>
+                    <li>
+                      <a
+                        href="https://bitcoinii.space/"
+                        target="_blank"
+                        rel="noreferrer"
+                        >bitcoinii.space explorer</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://bitcoinii.ddns.net/DailyReport.html"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Daily network report digest</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://bitcoinii.ddns.net/NodeMap.html"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Global community node map</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.livecoinwatch.com/price/BitcoinII-BC2"
+                        target="_blank"
+                        rel="noreferrer"
+                        >LiveCoinWatch secondary pricing</a
+                      >
+                    </li>
+                  </ul>
+                </article>
+              </div>
+            </section>
 
             <section class="telemetry-section" id="network-insights">
               <header>
