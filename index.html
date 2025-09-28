@@ -111,6 +111,10 @@
         outline: none;
       }
       .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
         background: linear-gradient(90deg, var(--accent), var(--accent-2));
         padding: 10px 14px;
         border-radius: 10px;
@@ -118,13 +122,17 @@
         font-weight: 700;
         box-shadow: 0 6px 18px rgba(0, 224, 255, 0.08);
         border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
       }
-      .login {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        padding: 8px 12px;
-        border-radius: 10px;
-        color: var(--muted);
+      .btn:hover,
+      .btn:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(0, 224, 255, 0.18);
+        outline: none;
       }
 
       /* ----------------------
@@ -172,18 +180,46 @@
         align-items: center;
       }
       .cta-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         background: var(--accent);
         color: #00121b;
         padding: 12px 18px;
         border-radius: 12px;
         font-weight: 700;
+        text-decoration: none;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
       }
       .cta-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.04);
         padding: 10px 14px;
         border-radius: 10px;
         color: var(--muted);
+        text-decoration: none;
+        transition:
+          color 0.3s ease,
+          border-color 0.3s ease,
+          background 0.3s ease;
+      }
+      .cta-primary:hover,
+      .cta-primary:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 30px rgba(0, 224, 255, 0.2);
+        outline: none;
+      }
+      .cta-ghost:hover,
+      .cta-ghost:focus-visible {
+        color: var(--accent);
+        border-color: rgba(0, 224, 255, 0.3);
+        background: rgba(0, 224, 255, 0.05);
+        outline: none;
       }
 
       /* 3D coin visualization placeholder */
@@ -806,8 +842,14 @@
           <a href="#nodemap">Node map</a>
           <a href="#markets">Markets</a>
           <a href="#resources">Resources</a>
-          <button class="login">Log in</button>
-          <button class="btn">Buy BC2</button>
+          <a
+            class="btn"
+            href="https://trade.nestex.one/spot/BC2"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Trade BC2
+          </a>
         </nav>
       </header>
 
@@ -825,8 +867,15 @@
                   transact and mine from day one.
                 </p>
                 <div class="cta-row">
-                  <button class="cta-primary">Get started</button>
-                  <button class="cta-ghost">Explore docs</button>
+                  <a class="cta-primary" href="#markets">View live markets</a>
+                  <a
+                    class="cta-ghost"
+                    href="https://github.com/Bitcoin-II/BitcoinII-Core#readme"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Explore docs
+                  </a>
                 </div>
 
                 <div
