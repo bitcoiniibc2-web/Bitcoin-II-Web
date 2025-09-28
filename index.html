@@ -1,420 +1,374 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin II (BC2) - A Peer-to-Peer Electronic Cash System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-            color: #1a202c; /* A slightly softer black */
-        }
-        .bitcoin-orange {
-            color: #f7931a;
-        }
-        .bitcoin-orange-bg {
-            background-color: #f7931a;
-        }
-        .bitcoin-orange-bg:hover {
-            background-color: #f68b0a;
-        }
-        .bitcoin-orange-border {
-            border-color: #f7931a;
-        }
-        .nav-link {
-            transition: color 0.3s ease;
-            position: relative;
-            padding-bottom: 4px;
-        }
-        .nav-link:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background-color: #f7931a;
-            transition: all 0.3s ease-out;
-            transform: translateX(-50%);
-        }
-        .nav-link:hover {
-            color: #f7931a;
-        }
-        .nav-link:hover:after {
-            width: 100%;
-        }
-        .card {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-color: #f7931a;
-        }
-        .faq-item summary {
-            cursor: pointer;
-            outline: none;
-        }
-        .faq-item[open] summary svg {
-            transform: rotate(180deg);
-        }
-        summary::-webkit-details-marker {
-            display: none;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BC2 — NextGen Crypto Platform (Prototype)</title>
+  <meta name="description" content="BC2 - secure, fast, decentralized. Prototype single-page UI with market dashboard, trading mock, wallet and tokenomics." />
+  <style>
+    /* ----------------------
+       Variables + base
+       ----------------------*/
+    :root{
+      --bg:#020617;
+      --panel:#071122;
+      --muted:#8aa3b3;
+      --accent:#00e0ff; /* neon cyan */
+      --accent-2:#00c0d9;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(0,224,255,0.03);
+      --radius:16px;
+      --mono: 'SFMono-Regular', ui-monospace, SFMono, Menlo, Monaco, monospace;
+      --ui-font: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;background:linear-gradient(180deg,var(--bg),#000012 60%);color:#dff6ff;font-family:var(--ui-font);margin:0}
+    a{color:inherit}
+
+    /* ----------------------
+       Layout
+       ----------------------*/
+    .container{max-width:1200px;margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#00121b, #012233);display:inline-grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,0.6),0 0 30px rgba(0,224,255,0.06) inset}
+    .logo svg{width:36px;height:36px}
+    .brand h1{font-size:18px;margin:0;letter-spacing:1px}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{font-size:13px;color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    nav a:hover{color:var(--accent)}
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;color:#00121b;font-weight:700;box-shadow:0 6px 18px rgba(0,224,255,0.08);border:none}
+    .login{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--muted)}
+
+    /* ----------------------
+       Grid
+       ----------------------*/
+    .grid{display:grid;grid-template-columns:1fr 380px;gap:22px;margin-top:22px}
+
+    /* ----------------------
+       Hero / Card
+       ----------------------*/
+    .card{background:linear-gradient(180deg,var(--panel), rgba(5,20,30,0.6));border-radius:var(--radius);padding:28px;box-shadow:0 10px 30px rgba(0,0,0,0.5);border:1px solid rgba(0,224,255,0.03)}
+    .hero{display:flex;gap:28px;align-items:center}
+    .hero-left{flex:1}
+    .h-title{font-size:44px;line-height:1;margin:0 0 12px;font-weight:700}
+    .h-sub{color:var(--muted);margin:0 0 18px}
+    .cta-row{display:flex;gap:12px;align-items:center}
+    .cta-primary{background:var(--accent);color:#00121b;padding:12px 18px;border-radius:12px;font-weight:700}
+    .cta-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px 14px;border-radius:10px;color:var(--muted)}
+
+    /* 3D coin visualization placeholder */
+    .coin-wrap{width:240px;height:240px;border-radius:20px;background:radial-gradient(ellipse at center, rgba(0,224,255,0.03), transparent 40%);display:grid;place-items:center;position:relative}
+    .coin{width:160px;height:160px;border-radius:50%;background:conic-gradient(from 180deg,#001829, #003040);display:grid;place-items:center;box-shadow:0 8px 40px rgba(0,224,255,0.06),0 0 50px rgba(0,224,255,0.04) inset;border:1px solid rgba(0,224,255,0.12);transform:perspective(600px) rotateX(8deg)}
+    .coin svg{width:92px;height:92px;filter:drop-shadow(0 8px 18px rgba(0,224,255,0.08));}
+    .coin-glow{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-60%);width:360px;height:360px;border-radius:999px;filter:blur(36px);background:radial-gradient(circle at 30% 40%, rgba(0,224,255,0.18), transparent 20%)}
+
+    /* ----------------------
+       Right column: widgets
+       ----------------------*/
+    .widgets{display:flex;flex-direction:column;gap:18px}
+    .market{padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent)}
+    .price{display:flex;align-items:baseline;gap:12px}
+    .price .value{font-size:28px;font-weight:700}
+    .price .change{color:#8ee7b8;font-weight:700}
+    .mini-chart{height:58px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent);border-radius:8px;margin-top:12px}
+    .services{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+    .service{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center}
+    .service svg{width:28px;height:28px;opacity:0.95}
+    .service h4{margin:0;font-size:13px}
+    .muted{color:var(--muted)}
+
+    /* ----------------------
+       Lower sections
+       ----------------------*/
+    .lower-grid{display:grid;grid-template-columns:1fr 380px;gap:22px;margin-top:22px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+    .trade-controls{display:flex;gap:8px;align-items:center}
+    .input, .select{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);color:inherit}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;border:none;font-weight:700}
+
+    /* tokenomics bars */
+    .bar{height:12px;border-radius:999px;background:rgba(255,255,255,0.04);overflow:hidden}
+    .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:40%}
+
+    /* roadmap */
+    .roadmap{display:flex;flex-direction:column;gap:12px}
+    .mile{display:flex;gap:12px;align-items:flex-start}
+    .dot{width:14px;height:14px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));margin-top:6px;box-shadow:0 6px 16px rgba(0,224,255,0.06)}
+
+    footer{opacity:0.8;color:var(--muted);font-size:13px;margin-top:28px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.02)}
+
+    /* small screens */
+    @media (max-width:980px){
+      .grid,.lower-grid{grid-template-columns:1fr}
+      .widgets{order:2}
+      .panel{min-height:0}
+      .container{padding:18px}
+      .h-title{font-size:34px}
+      .coin-wrap{width:180px;height:180px}
+    }
+
+    /* subtle animations */
+    @keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+    .coin{animation:floaty 4.8s ease-in-out infinite}
+  </style>
 </head>
-<body class="bg-white text-gray-800">
-
-    <!-- Header -->
-    <header class="bg-white/80 sticky top-0 z-50 border-b border-gray-200 backdrop-blur-md">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-3">
-                <img src="https://raw.githubusercontent.com/bitcoiniibc2-web/Bitcoin-II-Web/refs/heads/main/Bitcoin2-logo-128.png" alt="Bitcoin II Logo" class="w-10 h-10">
-                <span class="text-2xl font-bold text-gray-900 hidden sm:block">Bitcoin II</span>
-            </a>
-            
-            <div class="hidden lg:flex items-center justify-center flex-1 space-x-10">
-                <a href="#about" class="text-gray-600 font-semibold nav-link">About</a>
-                <a href="#wallets" class="text-gray-600 font-semibold nav-link">Wallets</a>
-                <a href="#exchanges" class="text-gray-600 font-semibold nav-link">Exchanges</a>
-                <a href="#resources" class="text-gray-600 font-semibold nav-link">Resources</a>
-                <a href="#community" class="text-gray-600 font-semibold nav-link">Community</a>
-            </div>
-
-            <div class="hidden lg:flex items-center space-x-4">
-                 <a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" class="bitcoin-orange-bg text-white font-semibold py-2 px-5 rounded-md shadow-md hover:shadow-lg transition-shadow">Download Core</a>
-            </div>
-
-            <div class="lg:hidden">
-                <button id="menu-btn" class="text-gray-800 focus:outline-none">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200">
-            <a href="#about" class="block py-3 px-6 text-gray-600 hover:bg-gray-50 text-center">About</a>
-            <a href="#wallets" class="block py-3 px-6 text-gray-600 hover:bg-gray-50 text-center">Wallets</a>
-            <a href="#exchanges" class="block py-3 px-6 text-gray-600 hover:bg-gray-50 text-center">Exchanges</a>
-            <a href="#resources" class="block py-3 px-6 text-gray-600 hover:bg-gray-50 text-center">Resources</a>
-            <a href="#community" class="block py-3 px-6 text-gray-600 hover:bg-gray-50 text-center">Community</a>
-            <a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" class="block py-3 px-6 text-orange-500 font-bold hover:bg-gray-50 text-center">Download Core</a>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- BC2 logo: stylized B with 2 -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#00e0ff" />
+                <stop offset="1" stop-color="#00bcd7" />
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="48" fill="url(#g1)" opacity="0.12" />
+            <g transform="translate(18,18) scale(0.64)">
+              <rect x="12" y="8" width="56" height="12" rx="6" fill="#001820" />
+              <rect x="12" y="36" width="56" height="12" rx="6" fill="#001820" />
+              <path d="M36 16c8 0 14 6 14 14s-6 14-14 14h-8v-28h8z" fill="#001820" />
+              <text x="42" y="76" font-size="22" fill="#001820" font-family="sans-serif" font-weight="700">2</text>
+            </g>
+          </svg>
         </div>
+        <div>
+          <h1>BC2</h1>
+          <p>NextGen decentralized token</p>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#roadmap">Roadmap</a>
+        <button class="login">Log in</button>
+        <button class="btn">Buy BC2</button>
+      </nav>
     </header>
 
-    <!-- Main Content -->
     <main>
-        <!-- Hero Section -->
-        <section class="text-center py-24 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <h1 class="text-5xl md:text-7xl font-extrabold mb-4 text-gray-900 leading-tight">
-                    Bitcoin II.
-                </h1>
-                <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-gray-800">
-                    Fair, Decentralized Digital Cash.
-                </h2>
-                <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-600 mb-10">
-                    Bitcoin II is an open-source global payment network, secured by the X11 algorithm to ensure fair mining opportunities for everyone, not just large-scale operations.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                    <a href="#wallets" class="w-full sm:w-auto bitcoin-orange-bg text-white font-bold py-4 px-10 rounded-lg text-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">Create Wallet</a>
-                    <a href="#exchanges" class="w-full sm:w-auto bg-white border-2 border-gray-300 text-gray-800 font-bold py-4 px-10 rounded-lg text-lg hover:border-gray-400 transition-colors">Buy BC2</a>
+      <div class="grid">
+        <section class="card">
+          <div class="hero">
+            <div class="hero-left">
+              <h2 class="h-title">BC2 — scalable, private, lightning-fast.</h2>
+              <p class="h-sub">Secure blockchain primitives for real-world finance. Low fees, instant settlement, and developer-friendly smart contracts.</p>
+              <div class="cta-row">
+                <button class="cta-primary">Get started</button>
+                <button class="cta-ghost">Explore docs</button>
+              </div>
+
+              <div style="display:flex;gap:18px;margin-top:18px;align-items:center">
+                <div style="min-width:220px">
+                  <h4 style="margin:0">Live price</h4>
+                  <div class="price">
+                    <div class="value" id="live-price">$23,456.89</div>
+                    <div class="change" id="live-change">+3.25%</div>
+                  </div>
+                  <div class="mini-chart" id="mini-chart" aria-hidden="true"></div>
                 </div>
+                <div style="flex:1">
+                  <h4 style="margin:0">Network status</h4>
+                  <p class="muted" style="margin:6px 0">Finalized: <strong id="finalized">99.99%</strong> · TPS: <strong id="tps">4,320</strong></p>
+                </div>
+              </div>
+
             </div>
+
+            <div class="coin-wrap" aria-hidden="true">
+              <div class="coin" role="img" aria-label="BC2 coin">
+                <!-- stylized BC2 mark -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="coing" x1="0" x2="1">
+                      <stop offset="0" stop-color="#00e0ff" />
+                      <stop offset="1" stop-color="#00bcd7" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="50" cy="50" r="48" fill="transparent" stroke="url(#coing)" stroke-width="2"/>
+                  <g transform="translate(20,20) scale(0.6)" fill="url(#coing)">
+                    <path d="M24 12c6 0 10 4 10 10s-4 10-10 10h-8v-20h8z" fill-opacity="0.95" />
+                    <text x="56" y="72" font-size="22" font-weight="700">2</text>
+                  </g>
+                </svg>
+              </div>
+              <div class="coin-glow"></div>
+            </div>
+
+          </div>
+
+          <div style="display:flex;gap:18px;margin-top:18px;align-items:flex-start">
+            <div style="flex:1">
+              <h3 id="features">What BC2 offers</h3>
+              <ul class="muted">
+                <li>Layer-1 throughput with adaptive sharding</li>
+                <li>Privacy-preserving transactions (zk primitives)</li>
+                <li>Low-cost on-chain smart contracts</li>
+              </ul>
+            </div>
+            <aside style="width:200px">
+              <h4>Quick links</h4>
+              <p class="muted" style="margin:6px 0">Wallet · Staking · Docs · Explorer</p>
+            </aside>
+          </div>
+
         </section>
 
-        <!-- Stats Bar -->
-        <section class="bg-white py-8 border-b border-gray-200">
-             <div class="container mx-auto px-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div>
-                        <p class="text-sm text-gray-500 uppercase tracking-wider">Ticker</p>
-                        <p class="text-2xl font-bold text-gray-900">BC2</p>
-                    </div>
-                     <div>
-                        <p class="text-sm text-gray-500 uppercase tracking-wider">Algorithm</p>
-                        <p class="text-2xl font-bold text-gray-900">X11</p>
-                    </div>
-                     <div>
-                        <p class="text-sm text-gray-500 uppercase tracking-wider">Total Supply</p>
-                        <p class="text-2xl font-bold text-gray-900">21 Million</p>
-                    </div>
-                     <div>
-                        <p class="text-sm text-gray-500 uppercase tracking-wider">Block Time</p>
-                        <p class="text-2xl font-bold text-gray-900">~2.5 Minutes</p>
-                    </div>
-                </div>
+        <aside class="widgets">
+          <div class="market card">
+            <h4 style="margin:0 0 8px">Market Snapshot</h4>
+            <div class="price">
+              <div class="value" id="side-price">$23,456.89</div>
+              <div class="change" id="side-change">+3.25%</div>
             </div>
-        </section>
-        
-        <!-- About Section -->
-        <section id="about" class="py-24 scroll-mt-20">
-            <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div class="text-center md:text-left">
-                        <h2 class="text-4xl font-extrabold mb-6 text-gray-900">Resilient Peer-to-Peer Money</h2>
-                        <p class="text-lg text-gray-600 mb-4">
-                            Bitcoin II (BC2) was created in 2025 to fulfill the original promise of Bitcoin as "A Peer-to-Peer Electronic Cash System." It enables instant, near-zero cost payments directly between individuals without relying on a central authority.
-                        </p>
-                         <p class="text-lg text-gray-600">
-                            Its core mission is to maintain a truly decentralized network. By using the X11 hashing algorithm, Bitcoin II is designed to be resistant to the specialized ASIC hardware that has centralized mining power on other networks. This ensures that anyone with consumer-grade computer hardware can participate in securing the network.
-                        </p>
-                    </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/bitcoiniibc2-web/Bitcoin-II-Web/refs/heads/main/Bitcoin2-logo-128.png" alt="Bitcoin II Logo" class="w-48 h-48">
-                    </div>
-                </div>
-            </div>
-        </section>
+            <div class="mini-chart" id="side-mini" aria-hidden="true"></div>
 
-        <!-- Features Section -->
-        <section class="py-24 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-extrabold text-center mb-16 text-gray-900">The Bitcoin II Advantage</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-                    <div class="text-center p-6">
-                        <div class="flex items-center justify-center h-20 w-20 rounded-full bg-orange-100 mx-auto mb-5">
-                            <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3.75v-6m3.75 6v-6m3.75-6.75h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5h15a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0019.5 3z" /></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">ASIC Resistant Mining</h3>
-                        <p class="text-gray-600">The X11 algorithm allows for profitable mining with GPUs, preventing centralization and keeping the network secure and fair for everyone.</p>
-                    </div>
-                    <div class="text-center p-6">
-                        <div class="flex items-center justify-center h-20 w-20 rounded-full bg-orange-100 mx-auto mb-5">
-                             <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">Faster Transactions</h3>
-                        <p class="text-gray-600">With a block time of approximately 2.5 minutes, BC2 transactions confirm 4x faster than Bitcoin (BTC).</p>
-                    </div>
-                    <div class="text-center p-6">
-                        <div class="flex items-center justify-center h-20 w-20 rounded-full bg-orange-100 mx-auto mb-5">
-                           <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">Energy Efficient</h3>
-                        <p class="text-gray-600">Compared to SHA-256, the X11 algorithm requires less electricity to mine, resulting in a smaller environmental footprint.</p>
-                    </div>
-                    <div class="text-center p-6">
-                        <div class="flex items-center justify-center h-20 w-20 rounded-full bg-orange-100 mx-auto mb-5">
-                            <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">Open Source</h3>
-                        <p class="text-gray-600">All source code is publicly available, allowing anyone to review, audit, and contribute to the project's development.</p>
-                    </div>
-                </div>
+            <div class="services">
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><div><h4>Blockchain</h4><div class="muted">Secure L1</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/></svg><div><h4>Trading</h4><div class="muted">AMM + orderbook</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8V7a2 2 0 0 0-2-2h-3"/><path d="M3 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg><div><h4>Wallet</h4><div class="muted">Custodial & non-custodial</div></div></div>
+              <div class="service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/></svg><div><h4>Developer</h4><div class="muted">SDKs & APIs</div></div></div>
             </div>
+
+          </div>
+
+          <div class="card panel" role="region" aria-labelledby="trade">
+            <h4 id="trade" style="margin:0 0 8px">Trade (simulation)</h4>
+            <div class="trade-controls">
+              <input class="input" type="text" value="0.01 BTC" aria-label="Amount" />
+              <select class="select" aria-label="Action"><option>Buy</option><option>Sell</option></select>
+              <button class="btn-primary">Place Order</button>
+            </div>
+            <p class="muted" style="margin-top:10px">Orders here are a UI mock — integrate with exchange or smart contracts for live trading.</p>
+          </div>
+
+        </aside>
+      </div>
+
+      <div class="lower-grid">
+        <section class="panel card">
+          <h3 id="tokenomics">Tokenomics</h3>
+          <p class="muted">BC2 total supply: <strong>1,000,000,000 BC2</strong></p>
+          <div style="display:grid;gap:10px;margin-top:10px">
+            <div>
+              <div style="display:flex;justify-content:space-between"><small>Foundation & Ecosystem</small><small>25%</small></div>
+              <div class="bar"><i style="width:25%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between"><small>Team (vesting)</small><small>15%</small></div>
+              <div class="bar"><i style="width:15%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between"><small>Staking rewards</small><small>30%</small></div>
+              <div class="bar"><i style="width:30%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between"><small>Liquidity</small><small>10%</small></div>
+              <div class="bar"><i style="width:10%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between"><small>Public sale</small><small>20%</small></div>
+              <div class="bar"><i style="width:20%"></i></div>
+            </div>
+          </div>
+
+          <h4 style="margin-top:18px">Staking</h4>
+          <p class="muted">Stake BC2 to earn protocol fees and voting power. APR varies by lockup.</p>
+
         </section>
 
-        <!-- Wallets Section -->
-        <section id="wallets" class="py-24 scroll-mt-20">
-            <h2 class="text-4xl font-extrabold text-center mb-16 text-gray-900">Choose your Wallet</h2>
-            <div class="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" class="card rounded-lg p-8 text-center">
-                    <svg class="w-16 h-16 text-orange-500 mx-auto mb-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h9.75a2.25 2.25 0 012.25 2.25z" /></svg>
-                    <h3 class="text-2xl font-bold">Core (Desktop)</h3>
-                    <p class="text-gray-600 mt-3">Full node wallet for Windows, macOS, and Linux for maximum security and control.</p>
-                </a>
-                <a href="https://wallet-bc2.nitopool.fr/" target="_blank" class="card rounded-lg p-8 text-center">
-                    <svg class="w-16 h-16 text-orange-500 mx-auto mb-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
-                    <h3 class="text-2xl font-bold">Web Wallet</h3>
-                    <p class="text-gray-600 mt-3">Access your wallet instantly from any web browser for convenience.</p>
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet" target="_blank" class="card rounded-lg p-8 text-center">
-                    <svg class="w-16 h-16 text-orange-500 mx-auto mb-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
-                    <h3 class="text-2xl font-bold">Android Wallet</h3>
-                    <p class="text-gray-600 mt-3">Manage your BC2 on the go with our dedicated wallet for Android.</p>
-                </a>
-            </div>
-            <p class="text-center text-gray-500 mt-10">(An iOS Wallet is currently in development and will be available soon)</p>
-        </section>
+        <aside class="panel card">
+          <h3 id="roadmap">Roadmap</h3>
+          <div class="roadmap">
+            <div class="mile"><div class="dot" aria-hidden></div><div><strong>Q1 — Mainnet alpha</strong><p class="muted">Consensus & gas optimizations</p></div></div>
+            <div class="mile"><div class="dot"></div><div><strong>Q2 — Cross-chain bridges</strong><p class="muted">Secure bridging and liquidity</p></div></div>
+            <div class="mile"><div class="dot"></div><div><strong>Q3 — Mobile wallet</strong><p class="muted">iOS & Android mobile wallet launch</p></div></div>
+            <div class="mile"><div class="dot"></div><div><strong>Q4 — Governance</strong><p class="muted">On-chain DAO and staking v2</p></div></div>
+          </div>
+        </aside>
+      </div>
 
-        <!-- Exchanges Section -->
-        <section id="exchanges" class="py-24 scroll-mt-20 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-extrabold text-center mb-16 text-gray-900">Buy & Sell Bitcoin II</h2>
-                <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                     <a href="https://rabid-rabbit.org/account/trade/BC2-USDT" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center h-28">
-                        <h3 class="text-2xl font-bold">Rabid Rabbit</h3>
-                    </a>
-                     <a href="https://trade.nestex.one/spot/BC2" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center h-28">
-                        <h3 class="text-2xl font-bold">Nestex</h3>
-                    </a>
-                     <a href="https://klingex.io/trade/BC2-USDT" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center h-28">
-                        <h3 class="text-2xl font-bold">Klingex</h3>
-                    </a>
-                     <a href="https://nonkyc.io/market/BC2_USDT" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center h-28">
-                        <h3 class="text-2xl font-bold">NonKYC</h3>
-                    </a>
-                </div>
-                 <p class="text-center text-gray-500 mt-10">(Integration with CoinEx is in progress and coming soon)</p>
-            </div>
-        </section>
-
-        <!-- Resources Section -->
-        <section id="resources" class="py-24 scroll-mt-20">
-             <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-extrabold text-center mb-16 text-gray-900">Live Network & Market Data</h2>
-                
-                <!-- Live Price Chart -->
-                <div class="mb-20">
-                    <h3 class="text-3xl font-bold text-center mb-8">Live Price Chart</h3>
-                    <div class="rounded-lg border border-gray-200 shadow-xl overflow-hidden bg-white">
-                        <iframe src="https://www.livecoinwatch.com/price/BitcoinII-BC2" style="width: 100%; height: 700px; border: none;" title="Live Bitcoin II Price Chart"></iframe>
-                    </div>
-                </div>
-
-                <!-- Block Explorer -->
-                <div class="mb-20">
-                     <h3 class="text-3xl font-bold text-center mb-8">Block Explorer</h3>
-                     <div class="rounded-lg border border-gray-200 shadow-xl overflow-hidden bg-white">
-                        <iframe src="https://bitcoinii.ddns.net/explorer/" style="width: 100%; height: 700px; border: none;" title="Bitcoin II Block Explorer"></iframe>
-                     </div>
-                </div>
-
-                <!-- Node Map -->
-                <div class="mb-20">
-                    <h3 class="text-3xl font-bold text-center mb-8">Network Node Map</h3>
-                    <div class="rounded-lg border border-gray-200 shadow-xl overflow-hidden bg-white">
-                        <iframe src="https://bitcoinii.ddns.net/NodeMap.html" style="width: 100%; height: 600px; border: none;" title="Bitcoin II Network Node Map"></iframe>
-                    </div>
-                </div>
-
-                <!-- Mining Pool Stats -->
-                <div>
-                    <h3 class="text-3xl font-bold text-center mb-8">Mining Pool Stats</h3>
-                    <div class="rounded-lg border border-gray-200 shadow-xl overflow-hidden bg-white">
-                        <iframe src="https://miningpoolstats.stream/bitcoinii" style="width: 100%; height: 800px; border: none;" title="Bitcoin II Mining Pool Stats"></iframe>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" class="py-24 scroll-mt-20 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-extrabold text-center mb-16 text-gray-900">Frequently Asked Questions</h2>
-                <div class="max-w-3xl mx-auto space-y-5">
-                    <details class="faq-item bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <summary class="font-bold text-xl flex justify-between items-center list-none">
-                            How is Bitcoin II different from Bitcoin (BTC)?
-                            <svg class="w-6 h-6 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-                        </summary>
-                        <p class="text-gray-600 mt-4 text-lg">The main difference is the mining algorithm. Bitcoin (BTC) uses SHA-256, which is now dominated by large, corporate-owned ASIC mining farms. Bitcoin II uses X11, an algorithm designed to be ASIC-resistant, which allows ordinary users to mine with their computer's GPU. This leads to a more decentralized and secure network, preventing a few large players from controlling the issuance of new coins.</p>
-                    </details>
-                    <details class="faq-item bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <summary class="font-bold text-xl flex justify-between items-center list-none">
-                           Why use the X11 algorithm?
-                            <svg class="w-6 h-6 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-                        </summary>
-                        <p class="text-gray-600 mt-4 text-lg">X11 is a chained hashing algorithm that uses a sequence of eleven different hashing functions. This complexity makes it significantly harder and more expensive to create specialized ASIC miners for it. The benefits are a more decentralized network, improved security through cryptographic depth, and lower energy consumption for GPU miners compared to SHA-256.</p>
-                    </details>
-                    <details class="faq-item bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <summary class="font-bold text-xl flex justify-between items-center list-none">
-                            How can I start mining BC2?
-                            <svg class="w-6 h-6 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-                        </summary>
-                        <p class="text-gray-600 mt-4 text-lg">You can mine Bitcoin II with a compatible GPU. To get started, you will need to download the core wallet, configure your mining software, and join a mining pool. You can find a list of active mining pools in our <a href="#resources" class="text-orange-500 hover:underline">resources section</a>.</p>
-                    </details>
-                </div>
-            </div>
-        </section>
-
-        <!-- Community / CTA Section -->
-        <section id="community" class="py-24 scroll-mt-20">
-            <div class="container mx-auto px-6 text-center">
-                 <h2 class="text-4xl font-extrabold mb-5 text-gray-900">Join the Global Community</h2>
-                 <p class="max-w-2xl mx-auto text-xl text-gray-600 mb-10">
-                    Connect with other users and developers to discuss, learn, and build the future of Bitcoin II.
-                </p>
-                <div class="flex flex-wrap justify-center gap-6">
-                    <a href="https://discord.gg/zUSkQHNVyG" target="_blank" class="flex items-center space-x-3 bg-white border border-gray-300 py-3 px-6 rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <svg class="w-7 h-7 text-[#5865F2]" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8257-.698 1.333-.9095-.2338-1.8447-.2338-2.7542 0-.2517-.5072-.4872-.9577-.698-1.333a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0233c-1.9452 4.0583-2.3157 8.2872-1.2541 12.2886a.0741.0741 0 00.0434.0565c1.7821.5597 3.6152 1.0115 5.4854 1.302.0741.0117.1423-.0313.166-.1004.1487-.4323.2824-.8697.4109-1.3131a.0741.0741 0 00-.0434-.0823c-.39-.117-.7743-.2456-1.1587-.3855a.0741.0741 0 01-.055-.0687c.0058-.0233.0233-.041.0492-.0313.816.222 1.6378.364 2.4735.4282.1603.0117.3048-.076.3165-.2338a10.0468 10.0468 0 00.3846-2.9436.0741.0741 0 00-.1718-.041c-.499.1603-.9922.294-1.4795.405-.055.0117-.1063-.0117-.1237-.0628-.0233-.0687.0058-.1347.0642-.1544 2.227-1.0233 3.3902-3.4116 3.3902-3.4116a.069.069 0 00-.0117-.088c-.4673-.3753-.9405-.698-1.4237-.9635a.0741.0741 0 01-.0175-.1112c.1603-.1603.3108-.3265.4554-.4926a.0741.0741 0 01.088-.0175c.4813.1897.9464.3855 1.394.591a.0741.0741 0 00.0823.0058c.222-.088.438-.1838.6482-.294.0741-.0371.055-.1481-.0292-.166zM8.0201 15.112c-.8754 0-1.5839-.7658-1.5839-1.7126 0-.9468.7085-1.7126 1.5839-1.7126.8871 0 1.5956.7658 1.5839 1.7126.0117.9468-.7085 1.7126-1.5839 1.7126zm7.9545 0c-.8754 0-1.5839-.7658-1.5839-1.7126 0-.9468.7085-1.7126 1.5839-1.7126.8871 0 1.5956.7658 1.5839 1.7126.0117.9468-.7085 1.7126-1.5839 1.7126z"/></svg>
-                        <span class="font-semibold text-lg">Discord</span>
-                    </a>
-                    <a href="https://t.me/BitcoinIIOrganization" target="_blank" class="flex items-center space-x-3 bg-white border border-gray-300 py-3 px-6 rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <svg class="w-7 h-7 text-[#26A5E4]" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>Telegram</title><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.17.91-.494 1.208-.822 1.23-.696.045-1.225-.46-1.902-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.04-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.662 3.488-1.373 5.55-2.296 6.544-2.736a42.245 42.245 0 0 1 3.39-1.262z"/></svg>
-                        <span class="font-semibold text-lg">Telegram</span>
-                    </a>
-                    <a href="https://twitter.com/TheBitcoinIIOrg" target="_blank" class="flex items-center space-x-3 bg-white border border-gray-300 py-3 px-6 rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <svg class="w-7 h-7 text-gray-800" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
-                        <span class="font-semibold text-lg">X (Twitter)</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-    </main>
-    
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white">
-        <div class="container mx-auto px-6 py-16">
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-                <div class="mb-6 lg:mb-0">
-                    <a href="#" class="flex items-center space-x-3 mb-4">
-                        <img src="https://raw.githubusercontent.com/bitcoiniibc2-web/Bitcoin-II-Web/refs/heads/main/Bitcoin2-logo-128.png" alt="Bitcoin II Logo" class="w-10 h-10">
-                        <span class="text-2xl font-bold">Bitcoin II</span>
-                    </a>
-                    <p class="text-gray-400">The Peer-to-Peer Electronic Cash System.</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4 tracking-wide">General</h4>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="#about" class="hover:text-white transition-colors">About BC2</a></li>
-                        <li><a href="#wallets" class="hover:text-white transition-colors">Wallets</a></li>
-                        <li><a href="#exchanges" class="hover:text-white transition-colors">Exchanges</a></li>
-                        <li><a href="#faq" class="hover:text-white transition-colors">FAQ</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4 tracking-wide">Resources</h4>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="https://github.com/Bitcoin-II/BitcoinII-Core" target="_blank" class="hover:text-white transition-colors">Source Code</a></li>
-                        <li><a href="https://bitcoinii.ddns.net/explorer/" target="_blank" class="hover:text-white transition-colors">Block Explorer</a></li>
-                        <li><a href="https://miningpoolstats.stream/bitcoinii" target="_blank" class="hover:text-white transition-colors">Mining Pools</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4 tracking-wide">Community</h4>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="https://discord.gg/zUSkQHNVyG" target="_blank" class="hover:text-white transition-colors">Discord</a></li>
-                        <li><a href="https://t.me/BitcoinIIOrganization" target="_blank" class="hover:text-white transition-colors">Telegram</a></li>
-                        <li><a href="https://twitter.com/TheBitcoinIIOrg" target="_blank" class="hover:text-white transition-colors">X (Twitter)</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mt-12 pt-8 border-t border-gray-700 text-center text-gray-500">
-                 <p>&copy; 2024 Bitcoin II Organization. This project is open source.</p>
-            </div>
+      <footer>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>© BC2 Protocol — Built with privacy-first design.</div>
+          <div class="muted">Terms · Privacy · Docs · Contact</div>
         </div>
-    </footer>
-    
-    <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
+      </footer>
+    </main>
+  </div>
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-    </script>
+  <script>
+    /* Simple demo JS to animate price and mini charts for prototype preview */
+    (function(){
+      const priceEl = document.getElementById('live-price');
+      const changeEl = document.getElementById('live-change');
+      const sidePrice = document.getElementById('side-price');
+      const sideChange = document.getElementById('side-change');
+      const chart = document.getElementById('mini-chart');
+      const sideMini = document.getElementById('side-mini');
 
+      // Random walk generator
+      function generateSeries(len, start){
+        const a=[start];
+        for(let i=1;i<len;i++){
+          const prev=a[i-1];
+          const change=(Math.random()-0.48)*0.02*start; // small volatility
+          a.push(Math.max(0,prev+change));
+        }
+        return a;
+      }
+
+      function renderSpark(el, series){
+        // create a tiny svg sparkline
+        const w=200,h=60;
+        const min=Math.min(...series), max=Math.max(...series);
+        const norm=v=> ( (v-min)/(max-min||1) )*(h-6) + 3;
+        const step=w/(series.length-1);
+        let d='M0 '+(h - norm(series[0]));
+        for(let i=1;i<series.length;i++) d += ' L '+(i*step)+' '+(h - norm(series[i]));
+        const svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg"><path d="${d}" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#00e0ff" stop-opacity="0.95"/><stop offset="1" stop-color="#00bcd7" stop-opacity="0.95"/></linearGradient></defs></svg>`;
+        el.innerHTML = svg;
+      }
+
+      // initial
+      let series = generateSeries(40,23456.89);
+      renderSpark(chart,series);
+      renderSpark(sideMini,series.slice());
+
+      function update(){
+        // tick
+        const last = series[series.length-1];
+        const changePct = (Math.random()-0.48)*0.4; // -0.2% .. +0.2%
+        const next = Math.max(1, last * (1 + changePct/100));
+        series.push(next);
+        if(series.length>60) series.shift();
+        renderSpark(chart,series);
+        renderSpark(sideMini,series);
+        const cur = next.toFixed(2);
+        priceEl.textContent = '$'+Number(cur).toLocaleString();
+        sidePrice.textContent = priceEl.textContent;
+
+        // simple percent from first of series
+        const perc = ((next - series[0])/series[0]*100).toFixed(2);
+        changeEl.textContent = (perc>0?'+':'')+perc+'%';
+        sideChange.textContent = changeEl.textContent;
+
+        // network stats mock
+        document.getElementById('finalized').textContent = (99.8 + Math.random()*0.18).toFixed(2) + '%';
+        document.getElementById('tps').textContent = Math.floor(2000 + Math.random()*6000);
+      }
+
+      setInterval(update, 1100);
+
+      // small accessibility: allow keyboard focus outline for interactive elements
+      document.addEventListener('keydown', function(e){ if(e.key==='Tab') document.body.classList.add('show-focus'); });
+    })();
+  </script>
 </body>
 </html>
-
 
