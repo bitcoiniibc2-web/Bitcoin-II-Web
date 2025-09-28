@@ -1,208 +1,246 @@
-import React, { useEffect, useState } from "react";
-
-export default function BC2Landing() {
-  const [price, setPrice] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const links = {
-    website: "https://bitcoin-ii.org/",
-    github: "https://github.com/Bitcoin-II/BitcoinII-Core",
-    explorer: "https://bitcoinii.ddns.net/explorer/",
-    nodemap: "https://bitcoinii.ddns.net/NodeMap.html",
-    dailyReport: "https://bitcoinii.ddns.net/DailyReport.html",
-    livePrice: "https://www.livecoinwatch.com/price/BitcoinII-BC2",
-    exchanges: [
-      { name: "Rabid Rabbit", url: "https://rabid-rabbit.org/account/trade/BC2-USDT" },
-      { name: "Nestex", url: "https://trade.nestex.one/spot/BC2" },
-      { name: "Klingex", url: "https://klingex.io/trade/BC2-USDT" },
-      { name: "NonKYC", url: "https://nonkyc.io/market/BC2_USDT" },
-      { name: "CoinEx (coming soon)", url: "#" },
-    ],
-    miningPools: "https://miningpoolstats.stream/bitcoinii",
-    wallets: [
-      { name: "Desktop releases (GitHub)", url: "https://github.com/Bitcoin-II/BitcoinII-Core/releases" },
-      { name: "Nitopool web-wallet", url: "https://wallet-bc2.nitopool.fr/" },
-      { name: "BlueWallet (Android)", url: "https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US" },
-      { name: "iOS (coming soon)", url: "#" },
-    ],
-    community: {
-      discord: "https://discord.gg/zUSkQHNVyG",
-      telegram: "https://t.me/BitcoinIIOrganization",
-      x: "https://x.com/TheBitcoinIIOrg",
-    }
-  };
-
-  useEffect(() => {
-    async function fetchPrice() {
-      try {
-        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin-ii&vs_currencies=usd");
-        const data = await res.json();
-        if (data["bitcoin-ii"] && data["bitcoin-ii"].usd) {
-          setPrice(data["bitcoin-ii"].usd);
-        } else {
-          setPrice(null);
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin II (BC2) - A Peer-to-Peer Electronic Cash System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #0d1117;
         }
-      } catch (err) {
-        setPrice(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPrice();
-  }, []);
+        .bitcoin-orange {
+            color: #f7931a;
+        }
+        .bitcoin-orange-bg {
+            background-color: #f7931a;
+        }
+        .bitcoin-orange-bg:hover {
+            background-color: #f68b0a;
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #f7931a;
+        }
+        .card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
 
-  const ResponsiveIframe = ({ src, title }) => (
-    <div className="relative w-full overflow-hidden rounded border" style={{ paddingTop: "56.25%" }}>
-      <iframe
-        src={src}
-        title={title}
-        className="absolute top-0 left-0 w-full h-full"
-        frameBorder="0"
-      ></iframe>
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-50 text-slate-800">
-      <header className="bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center font-bold">BC2</div>
-            <div>
-              <h1 className="text-xl font-semibold">BitcoinII (BC2)</h1>
-              <p className="text-sm opacity-90">Community-driven Bitcoin fork — network info, wallets, exchanges, mining</p>
+    <!-- Header -->
+    <header class="bg-white sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                <div class="bg-orange-500 rounded-full p-1">
+                   <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 10v-1m0-13a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+                </div>
+                <span class="text-2xl font-bold text-gray-900">Bitcoin II</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#wallets" class="text-gray-600 font-medium nav-link">Wallets</a>
+                <a href="#exchanges" class="text-gray-600 font-medium nav-link">Exchanges</a>
+                <a href="#resources" class="text-gray-600 font-medium nav-link">Resources</a>
+                <a href="#community" class="text-gray-600 font-medium nav-link">Community</a>
             </div>
-          </div>
-          <nav className="hidden md:flex gap-4 items-center">
-            <a href="#about" className="hover:underline">About</a>
-            <a href="#explorer" className="hover:underline">Explorer</a>
-            <a href="#exchanges" className="hover:underline">Exchanges</a>
-            <a href="#wallets" className="hover:underline">Wallets</a>
-            <a href="#community" className="hover:underline">Community</a>
-            <a href={links.website} target="_blank" rel="noreferrer" className="ml-4 inline-block bg-white/20 px-3 py-1 rounded">Official site</a>
-          </nav>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-gray-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <a href="#wallets" class="block py-3 px-6 text-gray-600 hover:bg-gray-50">Wallets</a>
+            <a href="#exchanges" class="block py-3 px-6 text-gray-600 hover:bg-gray-50">Exchanges</a>
+            <a href="#resources" class="block py-3 px-6 text-gray-600 hover:bg-gray-50">Resources</a>
+            <a href="#community" class="block py-3 px-6 text-gray-600 hover:bg-gray-50">Community</a>
         </div>
-      </header>
+    </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <section className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h2 className="text-3xl font-extrabold mb-3">Welcome to the BitcoinII (BC2) hub</h2>
-            <p className="text-lg mb-6 leading-relaxed">This simple site gathers the most useful links for BC2: explorer, nodes, exchanges, wallets, mining, and community resources. Use the quick links to jump where you need.</p>
+    <!-- Main Content -->
+    <main class="container mx-auto px-6">
 
-            <div className="flex gap-3 flex-wrap items-center">
-              <span className="px-4 py-2 rounded bg-indigo-600 text-white font-semibold">
-                {loading ? "Loading price..." : price ? `$${price}` : "Price unavailable"}
-              </span>
-              <a href={links.github} target="_blank" rel="noreferrer" className="px-4 py-2 rounded border border-slate-200">GitHub</a>
-              <a href={links.explorer} target="_blank" rel="noreferrer" className="px-4 py-2 rounded border border-slate-200">Explorer</a>
+        <!-- Hero Section -->
+        <section class="text-center py-20">
+             <div class="inline-block bg-orange-500 rounded-full p-2 mb-6">
+                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 10v-1m0-13a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+             </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 text-gray-900">
+                Bitcoin II
+            </h1>
+            <p class="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 mb-8">
+                An open-source, peer-to-peer digital currency.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#wallets" class="w-full sm:w-auto bitcoin-orange-bg text-white font-semibold py-3 px-8 rounded-md text-lg">Get Started with BC2</a>
+                <a href="#exchanges" class="w-full sm:w-auto bg-gray-200 text-gray-800 font-semibold py-3 px-8 rounded-md text-lg hover:bg-gray-300">Trade BC2</a>
             </div>
-          </div>
+        </section>
 
-          <div className="space-y-4">
-            <div className="p-4 bg-white rounded-2xl shadow">
-              <h3 className="font-semibold mb-2">Network status</h3>
-              <p className="text-sm mb-3">Quick diagnostics and tools:</p>
-              <ul className="text-sm space-y-2">
-                <li><a href="#nodemap" className="hover:underline">Node Map (embedded below)</a></li>
-                <li><a href="#dailyreport" className="hover:underline">Daily Report (embedded below)</a></li>
-                <li><a href="#mining" className="hover:underline">Mining pool stats (embedded below)</a></li>
-              </ul>
+        <!-- Get Started Intro -->
+        <section class="py-16 bg-gray-50 -mx-6 px-6">
+             <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">Get started with Bitcoin II</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto mb-12">
+                    Before you start using Bitcoin II, there are a few things that you need to know in order to use it securely and avoid common pitfalls.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 text-left">
+                    <div class="p-6">
+                         <h3 class="text-xl font-semibold mb-2">1. Inform Yourself</h3>
+                         <p class="text-gray-600">Bitcoin II is different than what you know and use every day. You should take some time to inform yourself before using BC2 for any serious transaction. <a href="#resources" class="text-orange-500 font-medium">Learn more</a></p>
+                    </div>
+                     <div class="p-6">
+                         <h3 class="text-xl font-semibold mb-2">2. Choose your wallet</h3>
+                         <p class="text-gray-600">You can install a Bitcoin II wallet on your mobile device or computer. In just a few easy steps you will be ready to start making transactions. <a href="#wallets" class="text-orange-500 font-medium">See all wallets</a></p>
+                    </div>
+                     <div class="p-6">
+                         <h3 class="text-xl font-semibold mb-2">3. Get BC2</h3>
+                         <p class="text-gray-600">You can get BC2 by accepting it as a payment for goods and services or by buying it from a friend or someone near you. You can also buy it directly from an exchange. <a href="#exchanges" class="text-orange-500 font-medium">Find an exchange</a></p>
+                    </div>
+                </div>
             </div>
-
-            <div className="p-4 bg-white rounded-2xl shadow">
-              <h3 className="font-semibold mb-2">Explorer</h3>
-              <p className="text-sm mb-3">Open transaction and block data in the network explorer below.</p>
-              <a href="#explorer" className="inline-block px-4 py-2 rounded bg-emerald-600 text-white">Scroll to Explorer</a>
+        </section>
+        
+        <!-- Wallets Section -->
+        <section id="wallets" class="py-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-12">Choose your Wallet</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Core Wallet -->
+                <a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" class="card rounded-lg p-6 text-center">
+                    <svg class="w-12 h-12 text-orange-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h9.75a2.25 2.25 0 012.25 2.25z" /></svg>
+                    <h3 class="text-xl font-semibold">Core (Desktop)</h3>
+                    <p class="text-gray-600 mt-2">Full node wallet for Windows, macOS, and Linux for maximum security.</p>
+                </a>
+                <!-- Web Wallet -->
+                <a href="https://wallet-bc2.nitopool.fr/" target="_blank" class="card rounded-lg p-6 text-center">
+                    <svg class="w-12 h-12 text-orange-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+                    <h3 class="text-xl font-semibold">Web Wallet</h3>
+                    <p class="text-gray-600 mt-2">Access your wallet from any web browser for convenience.</p>
+                </a>
+                <!-- Android Wallet -->
+                <a href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet" target="_blank" class="card rounded-lg p-6 text-center">
+                    <svg class="w-12 h-12 text-orange-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+                    <h3 class="text-xl font-semibold">Android Wallet</h3>
+                    <p class="text-gray-600 mt-2">Manage your BC2 on the go with your Android device.</p>
+                </a>
             </div>
-          </div>
+            <p class="text-center text-gray-500 mt-8">(iOS Wallet coming soon)</p>
         </section>
 
-        <section id="explorer" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Explorer</h3>
-          <ResponsiveIframe src={links.explorer} title="BC2 Explorer" />
+        <!-- Exchanges Section -->
+        <section id="exchanges" class="py-20 scroll-mt-20 bg-gray-50 -mx-6 px-6">
+            <div class="container mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">Trade BC2 on Exchanges</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                     <a href="https://rabid-rabbit.org/account/trade/BC2-USDT" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center">
+                        <h3 class="text-xl font-semibold">Rabid Rabbit</h3>
+                    </a>
+                     <a href="https://trade.nestex.one/spot/BC2" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center">
+                        <h3 class="text-xl font-semibold">Nestex</h3>
+                    </a>
+                     <a href="https://klingex.io/trade/BC2-USDT" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center">
+                        <h3 class="text-xl font-semibold">Klingex</h3>
+                    </a>
+                     <a href="https://nonkyc.io/market/BC2_USDT" target="_blank" class="card rounded-lg p-6 flex items-center justify-center text-center">
+                        <h3 class="text-xl font-semibold">NonKYC</h3>
+                    </a>
+                </div>
+                 <p class="text-center text-gray-500 mt-8">(Support on CoinEx coming soon)</p>
+            </div>
         </section>
 
-        <section id="nodemap" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Node Map</h3>
-          <ResponsiveIframe src={links.nodemap} title="BC2 Node Map" />
+        <!-- Resources Section -->
+        <section id="resources" class="py-20 scroll-mt-20">
+             <div class="container mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">Ecosystem & Resources</h2>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 text-center">
+                    <div class="card rounded-lg p-6">
+                        <h3 class="text-2xl font-semibold mb-4">General Information</h3>
+                        <ul class="space-y-3">
+                            <li><a href="https://bitcoin-ii.org/" target="_blank" class="text-orange-500 hover:underline">Official Website</a></li>
+                            <li><a href="https://www.livecoinwatch.com/price/BitcoinII-BC2" target="_blank" class="text-orange-500 hover:underline">Live Price Chart</a></li>
+                        </ul>
+                    </div>
+                    <div class="card rounded-lg p-6">
+                        <h3 class="text-2xl font-semibold mb-4">Network & Development</h3>
+                        <ul class="space-y-3">
+                            <li><a href="https://github.com/Bitcoin-II/BitcoinII-Core" target="_blank" class="text-orange-500 hover:underline">GitHub Repository</a></li>
+                            <li><a href="https://bitcoinii.ddns.net/explorer/" target="_blank" class="text-orange-500 hover:underline">Block Explorer</a></li>
+                            <li><a href="https://bitcoinii.ddns.net/NodeMap.html" target="_blank" class="text-orange-500 hover:underline">Network Node Map</a></li>
+                            <li><a href="https://bitcoinii.ddns.net/DailyReport.html" target="_blank" class="text-orange-500 hover:underline">Daily Network Report</a></li>
+                        </ul>
+                    </div>
+                     <div class="card rounded-lg p-6 md:col-span-2">
+                        <h3 class="text-2xl font-semibold mb-4">Mining</h3>
+                        <ul class="space-y-3">
+                            <li><a href="https://miningpoolstats.stream/bitcoinii" target="_blank" class="text-orange-500 hover:underline">Mining Pool Stats</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section id="dailyreport" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Daily Report</h3>
-          <ResponsiveIframe src={links.dailyReport} title="BC2 Daily Report" />
+        <!-- Community Section -->
+        <section id="community" class="py-20 scroll-mt-20 bg-gray-50 -mx-6 px-6">
+             <div class="container mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">Join the Community</h2>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="https://discord.gg/zUSkQHNVyG" target="_blank" class="flex items-center space-x-3 bg-white border border-gray-300 py-3 px-6 rounded-md hover:bg-gray-100 transition-colors">
+                        <svg class="w-6 h-6 text-[#5865F2]" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8257-.698 1.333-.9095-.2338-1.8447-.2338-2.7542 0-.2517-.5072-.4872-.9577-.698-1.333a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0233c-1.9452 4.0583-2.3157 8.2872-1.2541 12.2886a.0741.0741 0 00.0434.0565c1.7821.5597 3.6152 1.0115 5.4854 1.302.0741.0117.1423-.0313.166-.1004.1487-.4323.2824-.8697.4109-1.3131a.0741.0741 0 00-.0434-.0823c-.39-.117-.7743-.2456-1.1587-.3855a.0741.0741 0 01-.055-.0687c.0058-.0233.0233-.041.0492-.0313.816.222 1.6378.364 2.4735.4282.1603.0117.3048-.076.3165-.2338a10.0468 10.0468 0 00.3846-2.9436.0741.0741 0 00-.1718-.041c-.499.1603-.9922.294-1.4795.405-.055.0117-.1063-.0117-.1237-.0628-.0233-.0687.0058-.1347.0642-.1544 2.227-1.0233 3.3902-3.4116 3.3902-3.4116a.069.069 0 00-.0117-.088c-.4673-.3753-.9405-.698-1.4237-.9635a.0741.0741 0 01-.0175-.1112c.1603-.1603.3108-.3265.4554-.4926a.0741.0741 0 01.088-.0175c.4813.1897.9464.3855 1.394.591a.0741.0741 0 00.0823.0058c.222-.088.438-.1838.6482-.294.0741-.0371.055-.1481-.0292-.166zM8.0201 15.112c-.8754 0-1.5839-.7658-1.5839-1.7126 0-.9468.7085-1.7126 1.5839-1.7126.8871 0 1.5956.7658 1.5839 1.7126.0117.9468-.7085 1.7126-1.5839 1.7126zm7.9545 0c-.8754 0-1.5839-.7658-1.5839-1.7126 0-.9468.7085-1.7126 1.5839-1.7126.8871 0 1.5956.7658 1.5839 1.7126.0117.9468-.7085 1.7126-1.5839 1.7126z"/></svg>
+                        <span class="font-medium">Discord</span>
+                    </a>
+                    <a href="https://t.me/BitcoinIIOrganization" target="_blank" class="flex items-center space-x-3 bg-white border border-gray-300 py-3 px-6 rounded-md hover:bg-gray-100 transition-colors">
+                        <svg class="w-6 h-6 text-[#26A5E4]" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>Telegram</title><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.17.91-.494 1.208-.822 1.23-.696.045-1.225-.46-1.902-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.04-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.662 3.488-1.373 5.55-2.296 6.544-2.736a42.245 42.245 0 0 1 3.39-1.262z"/></svg>
+                        <span class="font-medium">Telegram</span>
+                    </a>
+                    <a href="https://twitter.com/TheBitcoinIIOrg" target="_blank" class="flex items-center space-x-3 bg-white border border-gray-300 py-3 px-6 rounded-md hover:bg-gray-100 transition-colors">
+                        <svg class="w-6 h-6 text-gray-800" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                        <span class="font-medium">X (Twitter)</span>
+                    </a>
+                </div>
+            </div>
         </section>
 
-        <section id="exchanges" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Exchanges</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {links.exchanges.map((ex) => (
-              <a key={ex.name} href={ex.url} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow hover:shadow-lg transition">
-                <div className="font-semibold">{ex.name}</div>
-                <div className="text-sm text-slate-500 mt-1">Open trading pair / market page</div>
-              </a>
-            ))}
-          </div>
-          <p className="text-sm opacity-80 mt-3">Note: CoinEx listing coming soon — link will appear once available.</p>
-        </section>
-
-        <section id="wallets" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Wallets & Downloads</h3>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {links.wallets.map((w) => (
-              <a key={w.name} href={w.url} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow hover:shadow-lg transition">
-                <div className="font-semibold">{w.name}</div>
-                <div className="text-sm text-slate-500 mt-1">{w.url === '#' ? 'Coming soon' : w.url}</div>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section id="mining" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Mining</h3>
-          <ResponsiveIframe src={links.miningPools} title="BC2 Mining Pools" />
-        </section>
-
-        <section id="community" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Community</h3>
-          <div className="grid sm:grid-cols-3 gap-4">
-            <a href={links.community.discord} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow">
-              <div className="font-semibold">Discord</div>
-              <div className="text-sm text-slate-500 mt-1">Join the community chat</div>
-            </a>
-            <a href={links.community.telegram} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow">
-              <div className="font-semibold">Telegram</div>
-              <div className="text-sm text-slate-500 mt-1">BitcoinIIOrganization</div>
-            </a>
-            <a href={links.community.x} target="_blank" rel="noreferrer" className="p-4 bg-white rounded-xl shadow">
-              <div className="font-semibold">X (Twitter)</div>
-              <div className="text-sm text-slate-500 mt-1">@TheBitcoinIIOrg</div>
-            </a>
-          </div>
-        </section>
-
-        <section id="dev" className="mt-12">
-          <h3 className="text-2xl font-bold mb-4">Developers</h3>
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="mb-3">Source code, releases, and developer resources.</p>
-            <a href={links.github} target="_blank" rel="noreferrer" className="inline-block px-4 py-2 rounded border">GitHub repository</a>
-          </div>
-        </section>
-      </main>
-
-      <footer className="bg-slate-900 text-slate-200 mt-12">
-        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between gap-4">
-          <div>
-            <div className="font-semibold">BitcoinII (BC2)</div>
-            <div className="text-sm opacity-80">This page aggregates community links and resources. Not an official exchange or custodian.</div>
-          </div>
-          <div className="flex gap-3 items-center">
-            <a href={links.livePrice} target="_blank" rel="noreferrer" className="text-sm hover:underline">Live price</a>
-            <a href={links.website} target="_blank" rel="noreferrer" className="text-sm hover:underline">Official site</a>
-            <a href={links.github} target="_blank" rel="noreferrer" className="text-sm hover:underline">GitHub</a>
-          </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-16">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-500">
+             <p>&copy; 2024 Bitcoin II Organization. This website is open source and can be found on GitHub.</p>
         </div>
-      </footer>
-    </div>
-  );
-}
+    </footer>
+    
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close menu when a link is clicked
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+
+</body>
+</html>
+
