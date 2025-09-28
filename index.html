@@ -1,1 +1,256 @@
 
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Rocket, Coins, Users, Download, Cpu, Github, Twitter, MessageSquare, Blocks, Smartphone, Server, Calendar } from "lucide-react";
+
+export default function BC2Landing() {
+  const [stats, setStats] = useState({
+    price: "--",
+    marketCap: "--",
+    circulating: "--",
+    blockHeight: "--",
+    hashrate: "--",
+  });
+  const [latestBlocks, setLatestBlocks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function fetchStats() {
+      try {
+        const resp = await fetch("https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii");
+        if (!resp.ok) throw new Error("Network response was not ok");
+        const data = await resp.json();
+
+        const price = data.quotes.USD.price;
+        const marketCap = data.quotes.USD.market_cap;
+        const circulating = data.circulating_supply;
+
+        if (mounted) {
+          setStats((prev) => ({
+            ...prev,
+            price: price.toFixed(6),
+            marketCap: formatNumber(marketCap),
+            circulating: formatNumber(circulating),
+          }));
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Failed to load BC2 stats:", err);
+        if (mounted) setLoading(false);
+      }
+    }
+
+    async function fetchExplorer() {
+      try {
+        // Placeholder API — replace with real BC2 explorer when available
+        const resp = await fetch("https://api.blockcypher.com/v1/btc/main");
+        if (!resp.ok) throw new Error("Explorer API not ok");
+        const data = await resp.json();
+
+        if (mounted) {
+          setStats((prev) => ({
+            ...prev,
+            blockHeight: formatNumber(data.height),
+            hashrate: data.hashrate ? `${(data.hashrate / 1e9).toFixed(2)} GH/s` : "--",
+          }));
+
+          setLatestBlocks([
+            { height: data.height, hash: data.hash?.slice(0, 16) + "..." },
+            { height: data.height - 1, hash: "prev-block..." },
+          ]);
+        }
+      } catch (err) {
+        console.error("Failed to load explorer data:", err);
+      }
+    }
+
+    fetchStats();
+    fetchExplorer();
+    const interval = setInterval(() => {
+      fetchStats();
+      fetchExplorer();
+    }, 30 * 1000);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50 text-slate-900">
+      {/* Header */}
+      <header className="max-w-6xl mx-auto p-6 flex items-center justify-between">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">BC2</div>
+          <div>
+            <h1 className="text-xl font-semibold">Bitcoin II (BC2)</h1>
+            <p className="text-sm text-slate-500">A SHA‑256 proof-of-work chain — community-driven & open source</p>
+          </div>
+        </motion.div>
+        <nav className="hidden md:flex gap-6 items-center text-sm text-slate-700">
+          <a href="#about" className="hover:text-amber-600">About</a>
+          <a href="#mining" className="hover:text-amber-600">Mining</a>
+          <a href="#wallets" className="hover:text-amber-600">Wallets</a>
+          <a href="#roadmap" className="hover:text-amber-600">Roadmap</a>
+          <a href="#explorer" className="hover:text-amber-600">Explorer</a>
+          <a href="#community" className="hover:text-amber-600">Community</a>
+        </nav>
+        <div className="hidden md:block">
+          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm shadow-md flex items-center gap-2">
+            <Download className="w-4 h-4" /> Download Wallet
+          </button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="max-w-6xl mx-auto px-6 pb-24">
+        <section className="grid md:grid-cols-2 gap-8 items-center py-16">
+          <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }}>
+            <h2 className="text-5xl font-extrabold leading-tight text-slate-900">Bitcoin II (BC2)</h2>
+            <p className="mt-4 text-slate-600 max-w-xl text-lg">
+              BC2 is a community-focused SHA‑256 proof-of-work cryptocurrency with a capped supply of 21,000,000.
+              Built for miners, traders, and believers in decentralized finance.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href="#wallets" className="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm shadow">Get a Wallet</a>
+              <a href="#mining" className="px-4 py-2 rounded-lg border border-slate-200 text-sm hover:border-amber-400">How to Mine</a>
+              <a href="#explorer" className="px-4 py-2 rounded-lg border border-amber-300 text-amber-700 text-sm">Explore Chain</a>
+            </div>
+          </motion.div>
+
+          {/* Live Stats */}
+          <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} className="bg-white rounded-2xl p-6 shadow-xl border border-amber-100">
+            <h3 className="text-sm text-slate-500 flex items-center gap-2"><Coins className="w-4 h-4 text-amber-500" /> Live Market Stats</h3>
+            {loading ? (
+              <p className="mt-4">Loading...</p>
+            ) : (
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <Stat label="Price (USD)" value={`$${stats.price}`} />
+                <Stat label="Market Cap" value={`$${stats.marketCap}`} />
+                <Stat label="Circulating" value={stats.circulating} />
+                <Stat label="Block Height" value={stats.blockHeight} />
+                <div className="col-span-2 mt-2">
+                  <p className="text-xs text-slate-400">Hashrate</p>
+                  <p className="text-lg font-medium">{stats.hashrate}</p>
+                </div>
+              </div>
+            )}
+            <small className="text-xs text-slate-400 mt-4 block">Market data via CoinPaprika API. Explorer data placeholder.</small>
+          </motion.div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="py-16 border-t border-slate-200">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Rocket className="w-6 h-6 text-amber-500" /> About Bitcoin II</h3>
+          <p className="text-slate-600 max-w-3xl text-lg">
+            Bitcoin II (BC2) is an independent cryptocurrency launched with a capped supply of 21 million coins.
+            It uses SHA-256 proof-of-work mining, making it familiar to Bitcoin miners, but with its own ecosystem and growth roadmap.
+          </p>
+        </section>
+
+        {/* Mining Section */}
+        <section id="mining" className="py-16 border-t border-slate-200">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Cpu className="w-6 h-6 text-amber-500" /> Mining</h3>
+          <p className="text-slate-600 text-lg mb-4">Mine BC2 with SHA-256 ASICs or join a pool. Get started quickly with our community mining guides and resources.</p>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white p-4 rounded-xl border shadow">
+              <h4 className="font-semibold mb-2 flex items-center gap-2"><Server className="w-4 h-4 text-amber-500" /> Mining Pools</h4>
+              <ul className="list-disc pl-6 text-slate-600 space-y-1">
+                <li><a href="#" className="hover:text-amber-600">Pool A (example.com)</a></li>
+                <li><a href="#" className="hover:text-amber-600">Pool B (example.net)</a></li>
+              </ul>
+            </div>
+            <div className="bg-white p-4 rounded-xl border shadow">
+              <h4 className="font-semibold mb-2 flex items-center gap-2"><Cpu className="w-4 h-4 text-amber-500" /> Mining Software</h4>
+              <p className="text-slate-600 text-sm">Compatible with common SHA‑256 miners (CGMiner, BFGMiner, etc.). Setup guides available.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Wallet Section */}
+        <section id="wallets" className="py-16 border-t border-slate-200">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Download className="w-6 h-6 text-amber-500" /> Wallets</h3>
+          <p className="text-slate-600 text-lg mb-4">Download official wallets for desktop and mobile. Choose your platform below.</p>
+          <div className="flex flex-wrap gap-4">
+            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow">Windows</button>
+            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow">Mac</button>
+            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow">Linux</button>
+            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow flex items-center gap-2"><Smartphone className="w-4 h-4" /> Android</button>
+            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow flex items-center gap-2"><Smartphone className="w-4 h-4" /> iOS</button>
+          </div>
+        </section>
+
+        {/* Roadmap Section */}
+        <section id="roadmap" className="py-16 border-t border-slate-200">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Calendar className="w-6 h-6 text-amber-500" /> Roadmap</h3>
+          <ul className="list-disc pl-6 text-slate-600 text-lg space-y-2">
+            <li><span className="font-semibold">Phase 1:</span> Launch, distribution, and initial listings ✅</li>
+            <li><span className="font-semibold">Phase 2:</span> Wallet improvements and explorer integration 🔄</li>
+            <li><span className="font-semibold">Phase 3:</span> Mobile wallets and additional exchange partnerships 📱</li>
+            <li><span className="font-semibold">Phase 4:</span> Community governance and DAO exploration 🌱</li>
+            <li><span className="font-semibold">Phase 5:</span> Ecosystem growth: DeFi tools, payment gateways, and merchant adoption 🚀</li>
+          </ul>
+        </section>
+
+        {/* Explorer Section */}
+        <section id="explorer" className="py-16 border-t border-slate-200">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Blocks className="w-6 h-6 text-amber-500" /> Explorer</h3>
+          <p className="text-slate-600 text-lg mb-4">Check the latest blocks and transactions on the BC2 chain.</p>
+          <div className="bg-white border rounded-2xl p-6 shadow grid gap-4">
+            {latestBlocks.length === 0 ? (
+              <p className="text-slate-400">Loading latest blocks...</p>
+            ) : (
+              latestBlocks.map((b, i) => (
+                <div key={i} className="p-3 border rounded-lg flex justify-between text-sm bg-slate-50">
+                  <span className="font-medium">Block {b.height}</span>
+                  <span className="text-slate-500">{b.hash}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+
+        {/* Community Section */}
+        <section id="community" className="py-16 border-t border-slate-200">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-2"><Users className="w-6 h-6 text-amber-500" /> Community</h3>
+          <p className="text-slate-600 text-lg mb-4">Join BC2 on social platforms to connect with miners, traders, and developers.</p>
+          <div className="flex gap-4">
+            <a href="#" className="p-3 bg-slate-100 rounded-xl hover:bg-amber-100 transition"><Twitter className="w-5 h-5 text-amber-600" /></a>
+            <a href="#" className="p-3 bg-slate-100 rounded-xl hover:bg-amber-100 transition"><MessageSquare className="w-5 h-5 text-amber-600" /></a>
+            <a href="#" className="p-3 bg-slate-100 rounded-xl hover:bg-amber-100 transition"><Github className="w-5 h-5 text-amber-600" /></a>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-slate-200 py-8">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm">© {new Date().getFullYear()} Bitcoin II (BC2). All rights reserved.</p>
+          <div className="flex gap-4 text-sm">
+            <a href="#" className="hover:text-white">Privacy</a>
+            <a href="#" className="hover:text-white">Terms</a>
+            <a href="#" className="hover:text-white">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-3 rounded-lg bg-slate-50 border shadow-sm">
+      <p className="text-xs text-slate-400">{label}</p>
+      <p className="text-lg font-semibold">{value}</p>
+    </motion.div>
+  );
+}
+
+function formatNumber(n) {
+  if (n === null || n === undefined) return "--";
+  if (typeof n === "number") return n.toLocaleString();
+  return n;
+}
