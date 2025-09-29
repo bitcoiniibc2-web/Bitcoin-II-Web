@@ -235,12 +235,6 @@
         flex: 1;
         min-width: 260px;
       }
-      .hero-links {
-        width: 220px;
-      }
-      .hero-links h4 {
-        margin: 0;
-      }
       .feature-list {
         display: grid;
         gap: 10px;
@@ -250,16 +244,6 @@
       }
       .feature-list strong {
         color: #dff6ff;
-      }
-      .hero-quicklinks {
-        list-style: none;
-        padding: 0;
-        margin: 6px 0 0;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        font-size: 13px;
-        color: var(--muted);
       }
       .as-of {
         font-size: 12px;
@@ -895,14 +879,17 @@
         color: var(--muted);
         font-size: 13px;
       }
-      .footer-links {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
       .footer-meta {
         margin-top: 10px;
         font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        color: rgba(223, 246, 255, 0.72);
+      }
+      .footer-donate {
+        font-family: var(--mono);
+        color: rgba(223, 246, 255, 0.86);
       }
 
       @media (max-width: 1100px) {
@@ -942,9 +929,6 @@
         }
         .hero-metrics {
           flex-direction: column;
-        }
-        .hero-links {
-          width: 100%;
         }
         .node-map-frame {
           height: 280px;
@@ -1062,51 +1046,6 @@
                   </li>
                 </ul>
               </div>
-              <aside class="hero-links" aria-label="Essential resources">
-                <h4>Quick links</h4>
-                <ul class="hero-quicklinks">
-                  <li>
-                    <a
-                      href="https://bitcoinii.space/"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Network Explorer</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="https://github.com/Bitcoin-II/BitcoinII-Core/releases"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Desktop Wallet</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="https://wallet-bc2.nitopool.fr/"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Web Wallet</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="https://www.livecoinwatch.com/price/BitcoinII-BC2"
-                      target="_blank"
-                      rel="noreferrer"
-                      >LiveCoinWatch price tracker</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="https://Bitcoin-II.org/#mining"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Official mining guide</a
-                    >
-                  </li>
-                </ul>
-              </aside>
             </div>
 
             <section class="ecosystem-section" id="ecosystem">
@@ -1833,37 +1772,15 @@
         </section>
 
         <footer>
-          <div class="footer-links">
-            <a href="https://bitcoinii.space/" target="_blank" rel="noreferrer"
-              >Explorer</a
-            >
-            <a
-              href="https://github.com/Bitcoin-II/BitcoinII-Core"
-              target="_blank"
-              rel="noreferrer"
-              >GitHub</a
-            >
-            <a
-              href="https://Bitcoin-II.org/#mining"
-              target="_blank"
-              rel="noreferrer"
-              >Mining guide</a
-            >
-            <a
-              href="https://bitcoinii.ddns.net/DailyReport.html"
-              target="_blank"
-              rel="noreferrer"
-              >Daily report</a
-            >
-            <a
-              href="https://discord.gg/zUSkQHNVyG"
-              target="_blank"
-              rel="noreferrer"
-              >Community Discord</a
-            >
-          </div>
           <div class="footer-meta">
-            © BC2 Protocol — Data sourced from CoinPaprika & bitcoinii.space.
+            <span
+              >© BC2 Protocol — Data sourced from CoinPaprika &
+              bitcoinii.space.</span
+            >
+            <span>
+              Support the dashboard: send BC2 tips to
+              <span class="footer-donate">bc2dev1qs8n4k9a7h3p2w5z0</span>.
+            </span>
           </div>
         </footer>
       </main>
