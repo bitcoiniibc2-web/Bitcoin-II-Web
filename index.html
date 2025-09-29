@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Bitcoin II — The Second Chance (Prototype Dashboard)</title>
+    <title>Bitcoin II — The Second Chance Dashboard</title>
     <meta
       name="description"
-      content="Prototype dashboard for the Bitcoin II community with live CoinPaprika pricing, explorer stats, and official resource links."
+      content="Community dashboard for Bitcoin II (BC2) with live CoinPaprika pricing, explorer telemetry, mining guidance, and verified resource links."
     />
     <style>
       /* ----------------------
@@ -41,6 +41,27 @@
       a {
         color: inherit;
         text-decoration: none;
+      }
+      a:hover {
+        color: var(--accent);
+      }
+      body.show-focus a:focus-visible,
+      body.show-focus button:focus-visible,
+      body.show-focus .cta-primary:focus-visible,
+      body.show-focus .cta-ghost:focus-visible,
+      body.show-focus .btn-primary:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
       }
 
       /* ----------------------
@@ -187,6 +208,63 @@
         border-color: rgba(0, 224, 255, 0.3);
         background: rgba(0, 224, 255, 0.05);
         outline: none;
+      }
+
+      .hero-metrics {
+        display: flex;
+        gap: 18px;
+        margin-top: 18px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .hero-metrics + .hero-metrics {
+        margin-top: 18px;
+      }
+      .hero-market-card {
+        min-width: 240px;
+      }
+      .hero-network-card {
+        flex: 1;
+        min-width: 220px;
+      }
+      .hero-market-card h4,
+      .hero-network-card h4 {
+        margin: 0;
+      }
+      .hero-feature {
+        flex: 1;
+        min-width: 260px;
+      }
+      .hero-links {
+        width: 220px;
+      }
+      .hero-links h4 {
+        margin: 0;
+      }
+      .feature-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+      .feature-list strong {
+        color: #dff6ff;
+      }
+      .hero-quicklinks {
+        list-style: none;
+        padding: 0;
+        margin: 6px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .as-of {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 6px 0 0;
       }
 
       /* 3D coin visualization placeholder */
@@ -453,6 +531,17 @@
         border: none;
         font-weight: 700;
         cursor: pointer;
+        color: #00121b;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease,
+          filter 0.2s ease;
+      }
+      .btn-primary:hover,
+      .btn-primary:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px rgba(0, 224, 255, 0.25);
+        filter: saturate(1.1);
       }
       .trade-summary {
         border: 1px solid rgba(255, 255, 255, 0.04);
@@ -481,6 +570,9 @@
         margin: 0;
         font-weight: 600;
         font-variant-numeric: tabular-nums;
+      }
+      .trade-summary dd.negative {
+        color: #ff6b8a;
       }
       .trade-footnote {
         font-size: 12px;
@@ -720,6 +812,34 @@
         letter-spacing: 0.5px;
         margin-bottom: 4px;
       }
+      .callout {
+        margin-top: 16px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(0, 224, 255, 0.06);
+        border: 1px solid rgba(0, 224, 255, 0.12);
+        display: grid;
+        gap: 8px;
+      }
+      .callout strong {
+        text-transform: none;
+        letter-spacing: normal;
+        color: #dff6ff;
+      }
+      .callout code {
+        background: rgba(0, 0, 0, 0.35);
+        padding: 6px 8px;
+        border-radius: 8px;
+        font-family: var(--mono);
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .callout code svg {
+        width: 14px;
+        height: 14px;
+      }
 
       /* markets table */
       .market-table-wrap {
@@ -769,38 +889,62 @@
       }
 
       footer {
-        opacity: 0.8;
+        margin-top: 40px;
+        padding: 16px 0 28px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
         color: var(--muted);
         font-size: 13px;
-        margin-top: 28px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .footer-links {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .footer-meta {
+        margin-top: 10px;
+        font-size: 12px;
       }
 
-      /* small screens */
-      @media (max-width: 980px) {
+      @media (max-width: 1100px) {
         .grid,
         .lower-grid {
           grid-template-columns: 1fr;
         }
+        .hero {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .coin-wrap {
+          align-self: center;
+        }
         .widgets {
           order: 2;
         }
-        .panel {
-          min-height: 0;
+      }
+
+      @media (max-width: 780px) {
+        .container {
+          padding: 20px;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .cta-row {
+          flex-wrap: wrap;
         }
         .ecosystem-grid {
           grid-template-columns: 1fr;
         }
-        .container {
-          padding: 18px;
+        .services {
+          grid-template-columns: 1fr;
         }
-        .h-title {
-          font-size: 34px;
+        .hero-metrics {
+          flex-direction: column;
         }
-        .coin-wrap {
-          width: 180px;
-          height: 180px;
+        .hero-links {
+          width: 100%;
         }
         .node-map-frame {
           height: 280px;
@@ -835,10 +979,10 @@
               <div class="hero-left">
                 <h2 class="h-title">Bitcoin II — The Second Chance.</h2>
                 <p class="h-sub">
-                  A proof-of-work sister chain with a brand new genesis block,
-                  mirroring Bitcoin's battle-tested design so everyday users can
-                  mine with CPUs, secure payments, and track the network in real
-                  time.
+                  The community-run sister chain that mirrors Bitcoin's
+                  first-principle rules: SHA-256 Proof-of-Work, a fresh genesis
+                  block, and CPU-accessible mining so anyone can secure BC2 from
+                  day one.
                 </p>
                 <div class="cta-row">
                   <a class="cta-primary" href="#markets">View live markets</a>
@@ -852,16 +996,9 @@
                   </a>
                 </div>
 
-                <div
-                  style="
-                    display: flex;
-                    gap: 18px;
-                    margin-top: 18px;
-                    align-items: center;
-                  "
-                >
-                  <div style="min-width: 240px">
-                    <h4 style="margin: 0">Live market snapshot</h4>
+                <div class="hero-metrics">
+                  <div class="hero-market-card">
+                    <h4>Live market snapshot</h4>
                     <div class="price">
                       <div class="value" id="live-price">--</div>
                       <div class="change" id="live-change">--</div>
@@ -871,15 +1008,21 @@
                       id="mini-chart"
                       aria-hidden="true"
                     ></div>
+                    <p class="as-of" id="market-as-of">
+                      Fetching CoinPaprika data…
+                    </p>
                   </div>
-                  <div style="flex: 1">
-                    <h4 style="margin: 0">Network status</h4>
+                  <div class="hero-network-card">
+                    <h4>Network status</h4>
                     <p class="muted" style="margin: 6px 0">
                       Height: <strong id="height">--</strong> · Difficulty:
                       <strong id="difficulty">--</strong>
                     </p>
                     <p class="muted" style="margin: 6px 0">
                       Last block: <strong id="last-block-time">--</strong>
+                    </p>
+                    <p class="as-of" id="network-as-of">
+                      Sourcing explorer telemetry…
                     </p>
                   </div>
                 </div>
@@ -892,48 +1035,36 @@
               </div>
             </div>
 
-            <div
-              style="
-                display: flex;
-                gap: 18px;
-                margin-top: 18px;
-                align-items: flex-start;
-              "
-            >
-              <div style="flex: 1">
+            <div class="hero-metrics">
+              <div class="hero-feature">
                 <h3 id="features">What Bitcoin II offers</h3>
-                <ul class="muted">
+                <ul class="feature-list">
                   <li>
-                    Proof-of-Work security with the same SHA-256 algorithm
-                    trusted by Bitcoin.
+                    <strong>SHA-256 Proof-of-Work:</strong> Same hashing
+                    algorithm and security assumptions as Bitcoin Core.
                   </li>
                   <li>
-                    Fixed 21,000,000 BC2 supply and halving schedule every
-                    210,000 blocks to preserve scarcity.
+                    <strong>Fixed 21,000,000 BC2 supply:</strong> Mining subsidy
+                    halves every 210,000 blocks, echoing Bitcoin-II.org
+                    guidance.
                   </li>
                   <li>
-                    Difficulty retargeting every 2,016 blocks to keep block
-                    production steady as hashrate shifts.
+                    <strong>Difficulty retargeting:</strong> Adjusts every 2,016
+                    blocks so block times stay close to ten minutes.
                   </li>
                   <li>
-                    A brand new genesis block so anyone can join from the
-                    beginning without legacy baggage.
+                    <strong>Difficulty restart at 1:</strong> Launch conditions
+                    were tuned for CPUs, matching the official mining primer.
+                  </li>
+                  <li>
+                    <strong>Fresh genesis block:</strong> A brand new chain so
+                    miners, holders, and builders start on equal footing.
                   </li>
                 </ul>
               </div>
-              <aside style="width: 200px">
+              <aside class="hero-links" aria-label="Essential resources">
                 <h4>Quick links</h4>
-                <ul
-                  class="muted"
-                  style="
-                    list-style: none;
-                    padding: 0;
-                    margin: 6px 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 6px;
-                  "
-                >
+                <ul class="hero-quicklinks">
                   <li>
                     <a
                       href="https://bitcoinii.space/"
@@ -964,6 +1095,14 @@
                       target="_blank"
                       rel="noreferrer"
                       >LiveCoinWatch price tracker</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://Bitcoin-II.org/#mining"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Official mining guide</a
                     >
                   </li>
                 </ul>
@@ -1401,24 +1540,24 @@
             </p>
             <ul class="fundamentals">
               <li>
-                <strong>Consensus</strong>Proof-of-Work secured by the SHA-256
+                <strong>Consensus</strong> Proof-of-Work secured by the SHA-256
                 hashing algorithm.
               </li>
               <li>
-                <strong>Max supply</strong>21,000,000 BC2 with the same halving
+                <strong>Max supply</strong> 21,000,000 BC2 with the same halving
                 cadence of every 210,000 blocks.
               </li>
               <li>
-                <strong>Difficulty retarget</strong>Adjusts every 2,016 blocks
+                <strong>Difficulty retarget</strong> Adjusts every 2,016 blocks
                 so block times remain consistent as hashrate changes.
               </li>
               <li>
-                <strong>Fresh genesis</strong>Bitcoin II starts from a brand new
-                blockchain, giving miners an even playing field.
+                <strong>Fresh genesis</strong> Bitcoin II starts from a brand
+                new blockchain, giving miners an even playing field.
               </li>
               <li>
-                <strong>Mining accessibility</strong>Launch difficulty was reset
-                to 1, making CPU mining viable for early supporters.
+                <strong>Mining accessibility</strong> Launch difficulty was
+                reset to 1, making CPU mining viable for early supporters.
               </li>
             </ul>
 
@@ -1426,6 +1565,24 @@
               Looking to mine? Recommended tooling includes Pooler's
               <code>cpuminer</code> with community pools listed below.
             </p>
+            <div class="callout">
+              <strong>Seed a new node</strong>
+              <p class="muted" style="margin: 0">
+                Until the DNS seeds propagate, manually add the community node
+                from the Bitcoin-II.org guide:
+              </p>
+              <code>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M12 5v14" />
+                  <path d="m5 12 7-7 7 7" />
+                </svg>
+                addnode bitcoinII.ddns.net:8338 add
+              </code>
+              <p class="muted" style="margin: 0">
+                Run the command in BitcoinII-Qt's console or via
+                <code>bitcoin-cli</code> to connect instantly.
+              </p>
+            </div>
           </section>
 
           <aside class="panel card">
@@ -1676,17 +1833,37 @@
         </section>
 
         <footer>
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              gap: 12px;
-              flex-wrap: wrap;
-            "
-          >
-            <div>© BC2 Protocol — Built with privacy-first design.</div>
-            <div class="muted">Terms · Privacy · Docs · Contact</div>
+          <div class="footer-links">
+            <a href="https://bitcoinii.space/" target="_blank" rel="noreferrer"
+              >Explorer</a
+            >
+            <a
+              href="https://github.com/Bitcoin-II/BitcoinII-Core"
+              target="_blank"
+              rel="noreferrer"
+              >GitHub</a
+            >
+            <a
+              href="https://Bitcoin-II.org/#mining"
+              target="_blank"
+              rel="noreferrer"
+              >Mining guide</a
+            >
+            <a
+              href="https://bitcoinii.ddns.net/DailyReport.html"
+              target="_blank"
+              rel="noreferrer"
+              >Daily report</a
+            >
+            <a
+              href="https://discord.gg/zUSkQHNVyG"
+              target="_blank"
+              rel="noreferrer"
+              >Community Discord</a
+            >
+          </div>
+          <div class="footer-meta">
+            © BC2 Protocol — Data sourced from CoinPaprika & bitcoinii.space.
           </div>
         </footer>
       </main>
@@ -1709,6 +1886,8 @@
           blockList: document.getElementById("block-list"),
           chart: document.getElementById("mini-chart"),
           sideMini: document.getElementById("side-mini"),
+          marketAsOf: document.getElementById("market-as-of"),
+          networkAsOf: document.getElementById("network-as-of"),
           blockReward: document.getElementById("block-reward"),
           supplyMinted: document.getElementById("supply-minted"),
           supplyPercent: document.getElementById("supply-percent"),
@@ -1866,6 +2045,7 @@
               dom.tradeTotal.textContent =
               dom.tradeDelta.textContent =
                 "—";
+            dom.tradeDelta?.classList.remove("negative");
             if (dom.tradeStatus) {
               dom.tradeStatus.textContent = "Waiting for live price data…";
             }
@@ -2222,6 +2402,10 @@
               ? new Date(data.last_updated)
               : new Date();
             dom.updated.textContent = updated.toLocaleString();
+            if (dom.marketAsOf) {
+              const relative = formatTimeAgo(updated);
+              dom.marketAsOf.textContent = `CoinPaprika • updated ${relative}`;
+            }
 
             state.lastPrice = Number(usd.price);
             state.change24h = Number(usd.percent_change_24h);
@@ -2243,6 +2427,10 @@
             state.lastPrice = null;
             state.change24h = null;
             updateTradeSimulation();
+            if (dom.marketAsOf) {
+              dom.marketAsOf.textContent =
+                "CoinPaprika • unable to fetch live data";
+            }
           }
         }
 
@@ -2257,9 +2445,12 @@
             dom.difficulty.textContent = formatNumber(latest.difficulty, {
               maximumFractionDigits: 2,
             });
-            dom.lastBlock.textContent = formatTimeAgo(
-              new Date(Number(latest.timestamp) * 1000),
-            );
+            const latestTime = new Date(Number(latest.timestamp) * 1000);
+            dom.lastBlock.textContent = formatTimeAgo(latestTime);
+            if (dom.networkAsOf) {
+              const relative = formatTimeAgo(latestTime);
+              dom.networkAsOf.textContent = `bitcoinii.space • updated ${relative}`;
+            }
 
             renderBlockList(blocks);
             const avgSeconds = computeAvgBlockTime(blocks);
@@ -2271,6 +2462,10 @@
                 "<li><span>Unable to load blocks. Visit the explorer for the latest data.</span></li>";
             }
             updateBlockFollow(null);
+            if (dom.networkAsOf) {
+              dom.networkAsOf.textContent =
+                "bitcoinii.space • unable to reach explorer";
+            }
           }
         }
 
