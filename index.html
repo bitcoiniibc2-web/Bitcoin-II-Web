@@ -824,6 +824,13 @@
         width: 14px;
         height: 14px;
       }
+      .callout a {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .callout a:hover {
+        color: #fff;
+      }
 
       /* markets table */
       .market-table-wrap {
@@ -965,8 +972,8 @@
                 <p class="h-sub">
                   The community-run sister chain that mirrors Bitcoin's
                   first-principle rules: SHA-256 Proof-of-Work, a fresh genesis
-                  block, and CPU-accessible mining so anyone can secure BC2 from
-                  day one.
+                  block, and transparent supply tracking backed by
+                  community-operated explorers.
                 </p>
                 <div class="cta-row">
                   <a class="cta-primary" href="#markets">View live markets</a>
@@ -1037,8 +1044,9 @@
                     blocks so block times stay close to ten minutes.
                   </li>
                   <li>
-                    <strong>Difficulty restart at 1:</strong> Launch conditions
-                    were tuned for CPUs, matching the official mining primer.
+                    <strong>Integrated DNS seeding:</strong> Core releases ship
+                    with community DNS seeds so fresh installs discover peers
+                    automatically.
                   </li>
                   <li>
                     <strong>Fresh genesis block:</strong> A brand new chain so
@@ -1329,7 +1337,7 @@
                   </svg>
                   <div>
                     <h4>Mining</h4>
-                    <div class="muted">CPU friendly pools</div>
+                    <div class="muted">Pool dashboards & stats</div>
                   </div>
                 </div>
                 <div class="service">
@@ -1495,31 +1503,33 @@
                 new blockchain, giving miners an even playing field.
               </li>
               <li>
-                <strong>Mining accessibility</strong> Launch difficulty was
-                reset to 1, making CPU mining viable for early supporters.
+                <strong>Mining cadence</strong> Launch difficulty reset to 1 for
+                fairness, while today's security relies on SHA-256 ASIC hash
+                power.
               </li>
             </ul>
 
             <p class="muted">
-              Looking to mine? Recommended tooling includes Pooler's
-              <code>cpuminer</code> with community pools listed below.
+              Looking to mine? Pair SHA-256 ASIC hardware with the pool list on
+              MiningPoolStats and confirm wallet compatibility via the official
+              releases below.
             </p>
             <div class="callout">
-              <strong>Seed a new node</strong>
+              <strong>DNS seeder is live</strong>
               <p class="muted" style="margin: 0">
-                Until the DNS seeds propagate, manually add the community node
-                from the Bitcoin-II.org guide:
+                Bitcoin II Core now discovers peers automatically through the
+                community DNS seeder, eliminating the need for manual
+                <code>addnode</code> commands.
               </p>
-              <code>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M12 5v14" />
-                  <path d="m5 12 7-7 7 7" />
-                </svg>
-                addnode bitcoinII.ddns.net:8338 add
-              </code>
               <p class="muted" style="margin: 0">
-                Run the command in BitcoinII-Qt's console or via
-                <code>bitcoin-cli</code> to connect instantly.
+                Review peer counts and propagation stats in the
+                <a
+                  href="https://bitcoinii.ddns.net/DailyReport.html"
+                  target="_blank"
+                  rel="noreferrer"
+                  >Daily Network Report</a
+                >
+                when troubleshooting syncs.
               </p>
             </div>
           </section>
