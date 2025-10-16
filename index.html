@@ -395,42 +395,7 @@
         gap: clamp(12px, 2vw, 24px);
         font-size: 15px;
         color: var(--text-muted);
-      }
-
-      nav.top-links a,
-      details.nav-dropdown > summary {
-        padding: 10px 16px;
-        border-radius: 999px;
-        background: transparent;
-        border: 1px solid transparent;
-        position: relative;
-        transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease,
-          box-shadow 0.3s ease;
-      }
-
-      nav.top-links a::after {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        border-radius: 999px;
-        border: 1px solid transparent;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      nav.top-links a:hover,
-      details.nav-dropdown > summary:hover,
-      details.nav-dropdown:focus-within > summary,
-      details.nav-dropdown[open] > summary {
-        color: var(--text-strong);
-        border-color: var(--accent-outline);
-        background: var(--accent-glass);
-        box-shadow: 0 0 20px rgba(245, 182, 59, 0.2);
-      }
-
-      nav.top-links a:hover::after {
-        border-color: rgba(245, 182, 59, 0.28);
-        opacity: 1;
+        flex-wrap: wrap;
       }
 
       details.nav-dropdown {
@@ -440,12 +405,28 @@
       }
 
       details.nav-dropdown > summary {
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: transparent;
+        border: 1px solid transparent;
+        position: relative;
+        transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease,
+          box-shadow 0.3s ease;
         list-style: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
         color: var(--text-muted);
+      }
+
+      details.nav-dropdown > summary:hover,
+      details.nav-dropdown:focus-within > summary,
+      details.nav-dropdown[open] > summary {
+        color: var(--text-strong);
+        border-color: var(--accent-outline);
+        background: var(--accent-glass);
+        box-shadow: 0 0 20px rgba(245, 182, 59, 0.2);
       }
 
       details.nav-dropdown > summary::-webkit-details-marker {
@@ -482,16 +463,17 @@
 
       details.nav-dropdown .nav-dropdown-panel {
         position: absolute;
-        top: calc(100% + 18px);
-        right: 0;
-        min-width: clamp(320px, 42vw, 640px);
-        padding: 24px;
+        top: calc(100% + 16px);
+        left: 0;
+        right: auto;
+        min-width: clamp(220px, 28vw, 320px);
+        padding: 20px;
         border-radius: var(--radius-md);
         border: 1px solid rgba(245, 182, 59, 0.18);
         background: linear-gradient(160deg, rgba(18, 18, 18, 0.96), rgba(6, 6, 6, 0.92));
         box-shadow: 0 28px 68px rgba(0, 0, 0, 0.5);
         display: grid;
-        gap: 20px;
+        gap: 14px;
         z-index: 40;
       }
 
@@ -499,32 +481,7 @@
         display: none;
       }
 
-      .nav-dropdown-panel strong {
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-soft);
-      }
-
-      .nav-dropdown-grid {
-        display: grid;
-        gap: 18px;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-
-      .nav-dropdown-group {
-        display: grid;
-        gap: 12px;
-      }
-
-      .nav-dropdown-group h4 {
-        margin: 0;
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--text-strong);
-      }
-
-      .nav-dropdown-group ul {
+      .nav-dropdown-panel ul {
         margin: 0;
         padding: 0;
         list-style: none;
@@ -532,7 +489,7 @@
         gap: 10px;
       }
 
-      .nav-dropdown-group a {
+      .nav-dropdown-panel a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -541,13 +498,13 @@
         transition: color 0.2s ease;
       }
 
-      .nav-dropdown-group a::before {
+      .nav-dropdown-panel a::before {
         content: "→";
         font-size: 12px;
         color: var(--accent);
       }
 
-      .nav-dropdown-group a:hover {
+      .nav-dropdown-panel a:hover {
         color: var(--accent);
       }
 
@@ -1399,115 +1356,112 @@
           </div>
         </div>
         <nav class="top-links">
-          <a href="#network-intel">Network</a>
-          <a href="#market-intel">Markets</a>
-          <a href="#trade-lab">Trade lab</a>
           <details class="nav-dropdown">
-            <summary>Essential links</summary>
+            <summary>General</summary>
             <div class="nav-dropdown-panel">
-              <strong>BC2 ecosystem</strong>
-              <div class="nav-dropdown-grid">
-                <div class="nav-dropdown-group">
-                  <h4>General</h4>
-                  <ul>
-                    <li>
-                      <a href="https://coinpaprika.com/coin/bc2-bitcoin-ii/" target="_blank" rel="noreferrer"
-                        >CoinPaprika asset overview</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://github.com/Bitcoin-II/BitcoinII-Core" target="_blank" rel="noreferrer"
-                        >GitHub repository</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://bitcoinii.space/" target="_blank" rel="noreferrer">BC2 explorer</a>
-                    </li>
-                    <li>
-                      <a href="https://bitcoinii.ddns.net/NodeMap.html" target="_blank" rel="noreferrer">Node map</a>
-                    </li>
-                    <li>
-                      <a href="https://bitcoinii.ddns.net/DailyReport.html" target="_blank" rel="noreferrer"
-                        >Daily network report</a
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <div class="nav-dropdown-group">
-                  <h4>Exchanges</h4>
-                  <ul>
-                    <li>
-                      <a href="https://www.coinex.com/en/info/BC2" target="_blank" rel="noreferrer"
-                        >CoinEx — BC2 overview</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://rabid-rabbit.org/account/trade/BC2-USDT" target="_blank" rel="noreferrer"
-                        >Rabid Rabbit — BC2/USDT</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://trade.nestex.one/spot/BC2" target="_blank" rel="noreferrer">NestEX spot</a>
-                    </li>
-                    <li>
-                      <a href="https://klingex.io/trade/BC2-USDT" target="_blank" rel="noreferrer"
-                        >Kling Exchange — BC2/USDT</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://nonkyc.io/market/BC2_USDT" target="_blank" rel="noreferrer">nonKYC market</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="nav-dropdown-group">
-                  <h4>Wallets &amp; tools</h4>
-                  <ul>
-                    <li>
-                      <a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" rel="noreferrer"
-                        >Core wallet (desktop)</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://wallet-bc2.nitopool.fr/" target="_blank" rel="noreferrer"
-                        >NitoPool hosted web wallet</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US"
-                        target="_blank"
-                        rel="noreferrer"
-                        >Android wallet by the organization</a
-                      >
-                    </li>
-                    <li>
-                      <a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer"
-                        >Wallet setup support (Telegram)</a
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <div class="nav-dropdown-group">
-                  <h4>Community</h4>
-                  <ul>
-                    <li>
-                      <a href="https://discord.gg/aGJa8WpV2Y" target="_blank" rel="noreferrer">Discord</a>
-                    </li>
-                    <li>
-                      <a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer">Telegram</a>
-                    </li>
-                    <li>
-                      <a href="https://bitcoinii.org/" target="_blank" rel="noreferrer">Bitcoin II Organization</a>
-                    </li>
-                    <li>
-                      <a href="https://www.reddit.com/r/BitcoinIIOfficial/" target="_blank" rel="noreferrer">Reddit</a>
-                    </li>
-                    <li>
-                      <a href="https://x.com/@TheBitcoinIIOrg" target="_blank" rel="noreferrer">X (Twitter)</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <ul>
+                <li>
+                  <a href="https://coinpaprika.com/coin/bc2-bitcoin-ii/" target="_blank" rel="noreferrer"
+                    >CoinPaprika asset overview</a
+                  >
+                </li>
+                <li>
+                  <a href="https://github.com/Bitcoin-II/BitcoinII-Core" target="_blank" rel="noreferrer"
+                    >GitHub repository</a
+                  >
+                </li>
+                <li>
+                  <a href="https://bitcoinii.space/" target="_blank" rel="noreferrer">BC2 explorer</a>
+                </li>
+                <li>
+                  <a href="https://bitcoinii.ddns.net/NodeMap.html" target="_blank" rel="noreferrer">Node map</a>
+                </li>
+                <li>
+                  <a href="https://bitcoinii.ddns.net/DailyReport.html" target="_blank" rel="noreferrer"
+                    >Daily network report</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="nav-dropdown">
+            <summary>Exchanges</summary>
+            <div class="nav-dropdown-panel">
+              <ul>
+                <li>
+                  <a href="https://www.coinex.com/en/info/BC2" target="_blank" rel="noreferrer"
+                    >CoinEx — BC2 overview</a
+                  >
+                </li>
+                <li>
+                  <a href="https://rabid-rabbit.org/account/trade/BC2-USDT" target="_blank" rel="noreferrer"
+                    >Rabid Rabbit — BC2/USDT</a
+                  >
+                </li>
+                <li>
+                  <a href="https://trade.nestex.one/spot/BC2" target="_blank" rel="noreferrer">NestEX spot</a>
+                </li>
+                <li>
+                  <a href="https://klingex.io/trade/BC2-USDT" target="_blank" rel="noreferrer"
+                    >Kling Exchange — BC2/USDT</a
+                  >
+                </li>
+                <li>
+                  <a href="https://nonkyc.io/market/BC2_USDT" target="_blank" rel="noreferrer">nonKYC market</a>
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="nav-dropdown">
+            <summary>Wallets &amp; Tools</summary>
+            <div class="nav-dropdown-panel">
+              <ul>
+                <li>
+                  <a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" rel="noreferrer"
+                    >Core wallet (desktop)</a
+                  >
+                </li>
+                <li>
+                  <a href="https://wallet-bc2.nitopool.fr/" target="_blank" rel="noreferrer"
+                    >NitoPool hosted web wallet</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Android wallet by the organization</a
+                  >
+                </li>
+                <li>
+                  <a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer"
+                    >Wallet setup support (Telegram)</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="nav-dropdown">
+            <summary>Community</summary>
+            <div class="nav-dropdown-panel">
+              <ul>
+                <li>
+                  <a href="https://discord.gg/aGJa8WpV2Y" target="_blank" rel="noreferrer">Discord</a>
+                </li>
+                <li>
+                  <a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer">Telegram</a>
+                </li>
+                <li>
+                  <a href="https://bitcoinii.org/" target="_blank" rel="noreferrer">Bitcoin II Organization</a>
+                </li>
+                <li>
+                  <a href="https://www.reddit.com/r/BitcoinIIOfficial/" target="_blank" rel="noreferrer">Reddit</a>
+                </li>
+                <li>
+                  <a href="https://x.com/@TheBitcoinIIOrg" target="_blank" rel="noreferrer">X (Twitter)</a>
+                </li>
+              </ul>
             </div>
           </details>
         </nav>
@@ -1836,7 +1790,7 @@
             </table>
           </div>
           <p style="margin-top: 12px; color: var(--text-muted)">
-            Need direct links? Explore CoinEx, Rabid Rabbit, NestEX, KlingEX, and nonKYC listings from the Essential links menu in the navigation bar.
+            Need direct links? Explore CoinEx, Rabid Rabbit, NestEX, KlingEX, and nonKYC listings from the Exchanges menu in the navigation bar.
           </p>
         </section>
 
