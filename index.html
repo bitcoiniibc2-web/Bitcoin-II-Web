@@ -18,6 +18,7 @@
       :root {
         color-scheme: dark;
         --page-max: 1100px;
+        --space-1: 0.35rem;
         --space-2: 0.5rem;
         --space-3: 0.75rem;
         --space-4: 1rem;
@@ -26,12 +27,12 @@
         --radius-sm: 0.75rem;
         --radius-md: 1.25rem;
         --radius-lg: 2rem;
-        --bg: radial-gradient(circle at 10% -10%, rgba(255, 190, 92, 0.18), transparent 55%),
-          radial-gradient(circle at 85% 20%, rgba(255, 206, 126, 0.2), transparent 60%),
-          linear-gradient(160deg, #0c0c0f 0%, #040405 55%, #000000 100%);
-        --surface: rgba(17, 17, 19, 0.86);
-        --surface-strong: rgba(22, 22, 24, 0.92);
-        --surface-soft: rgba(12, 12, 15, 0.78);
+        --bg: radial-gradient(circle at 10% -10%, rgba(255, 190, 92, 0.12), transparent 55%),
+          radial-gradient(circle at 85% 20%, rgba(255, 206, 126, 0.16), transparent 60%),
+          linear-gradient(165deg, #070708 0%, #050506 55%, #020202 100%);
+        --surface: rgba(18, 18, 20, 0.9);
+        --surface-strong: rgba(23, 23, 26, 0.94);
+        --surface-soft: rgba(12, 12, 15, 0.74);
         --border: rgba(247, 187, 78, 0.22);
         --border-strong: rgba(247, 187, 78, 0.4);
         --border-soft: rgba(247, 187, 78, 0.12);
@@ -62,6 +63,19 @@
         line-height: 1.55;
         letter-spacing: 0.01em;
         scroll-behavior: smooth;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at 20% 0%, rgba(250, 200, 120, 0.08), transparent 45%),
+          radial-gradient(circle at 80% 20%, rgba(255, 221, 140, 0.06), transparent 55%),
+          linear-gradient(120deg, rgba(255, 196, 105, 0.08), rgba(0, 0, 0, 0));
+        pointer-events: none;
+        z-index: -1;
       }
 
       a {
@@ -92,6 +106,18 @@
         max-width: var(--page-max);
         margin: 0 auto;
         padding: var(--space-4) var(--space-4) var(--space-6);
+        position: relative;
+        z-index: 1;
+      }
+
+      .page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(160deg, rgba(255, 214, 128, 0.04), rgba(0, 0, 0, 0));
+        pointer-events: none;
+        opacity: 0.9;
       }
 
       header.top-nav {
@@ -99,11 +125,11 @@
         top: 0;
         z-index: 40;
         backdrop-filter: blur(18px);
-        background: rgba(6, 6, 7, 0.8);
-        border: 1px solid var(--border-soft);
+        background: rgba(6, 6, 7, 0.84);
+        border: 1px solid var(--border);
         border-radius: var(--radius-lg);
         margin-bottom: var(--space-5);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         padding: var(--space-3) var(--space-4);
       }
 
@@ -130,12 +156,12 @@
         border-radius: 18px;
         display: grid;
         place-items: center;
-        background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 204, 102, 0.25), transparent 60%),
-          rgba(20, 20, 24, 0.8);
+        background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 204, 102, 0.3), transparent 60%),
+          rgba(20, 20, 24, 0.82);
         border: 1px solid var(--border);
-        box-shadow: inset 0 0 0 1px rgba(255, 214, 128, 0.08), 0 18px 28px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 0 0 1px rgba(255, 214, 128, 0.12), 0 18px 28px rgba(0, 0, 0, 0.48);
         transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-        transition: box-shadow 0.3s ease;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
       }
 
       .brand-logo img {
@@ -150,7 +176,7 @@
       }
 
       .brand-meta h1 {
-        font-size: 1.1rem;
+        font-size: clamp(1.05rem, 2.6vw, 1.25rem);
         margin: 0;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -159,7 +185,7 @@
       .brand-meta p {
         margin: 0;
         color: var(--text-soft);
-        font-size: 0.75rem;
+        font-size: clamp(0.68rem, 2vw, 0.78rem);
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
@@ -196,16 +222,16 @@
         position: relative;
         display: grid;
         grid-template-columns: auto;
-        gap: 0.4rem;
-        padding: 0.65rem 1.1rem;
+        gap: 0.45rem;
+        padding: 0.7rem 1.2rem;
         border-radius: var(--radius-md);
         border: 1px solid var(--border);
-        background: linear-gradient(140deg, rgba(34, 25, 10, 0.88), rgba(12, 9, 4, 0.88));
+        background: linear-gradient(140deg, rgba(34, 25, 10, 0.88), rgba(12, 9, 4, 0.82));
         color: var(--text-strong);
         text-transform: uppercase;
         font-size: 0.75rem;
         letter-spacing: 0.14em;
-        box-shadow: inset 0 0 0 1px rgba(255, 214, 128, 0.12), var(--shadow);
+        box-shadow: inset 0 0 0 1px rgba(255, 214, 128, 0.16), 0 24px 36px rgba(0, 0, 0, 0.55);
         text-align: left;
       }
 
@@ -268,6 +294,7 @@
         border: 1px solid var(--border);
         padding: var(--space-3);
         box-shadow: var(--shadow);
+        transition: transform 0.3s ease, opacity 0.3s ease;
       }
 
       nav#primary-navigation[aria-hidden="true"] {
@@ -335,6 +362,11 @@
         color: var(--text-muted);
       }
 
+      .nav-dropdown-panel a:hover,
+      .nav-dropdown-panel a:focus-visible {
+        color: var(--accent-strong);
+      }
+
       main {
         display: grid;
         gap: var(--space-5);
@@ -343,6 +375,17 @@
       .hero {
         display: grid;
         gap: var(--space-4);
+        position: relative;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: -30% 10% auto 5%;
+        height: 180%;
+        background: radial-gradient(circle at top, rgba(255, 201, 108, 0.08), transparent 65%);
+        pointer-events: none;
+        z-index: 0;
       }
 
       .hero-intro {
@@ -353,6 +396,8 @@
         border-radius: var(--radius-md);
         padding: var(--space-4);
         box-shadow: var(--shadow);
+        position: relative;
+        z-index: 1;
       }
 
       .eyebrow {
@@ -361,6 +406,10 @@
         font-size: 0.7rem;
         color: var(--text-muted);
         margin: 0;
+      }
+
+      .eyebrow--wide {
+        letter-spacing: 0.24em;
       }
 
       .hero-intro h2 {
@@ -379,6 +428,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: var(--space-2);
+        align-items: center;
       }
 
       .btn {
@@ -413,6 +463,13 @@
         font-size: 0.8rem;
       }
 
+      .hero-panels {
+        display: grid;
+        gap: var(--space-3);
+        position: relative;
+        z-index: 1;
+      }
+
       .hero-market {
         display: grid;
         gap: var(--space-3);
@@ -421,6 +478,7 @@
         border: 1px solid var(--border);
         background: var(--surface-strong);
         box-shadow: var(--shadow);
+        min-height: 100%;
       }
 
       .price-row {
@@ -464,6 +522,26 @@
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       }
 
+      .quick-glance {
+        display: grid;
+        gap: var(--space-3);
+      }
+
+      .quick-glance.section-card {
+        background: var(--surface);
+      }
+
+      .quick-glance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: var(--space-2);
+      }
+
+      .quick-glance strong {
+        font-size: clamp(1.3rem, 4vw, 1.8rem);
+      }
+
       .stat-tile {
         background: var(--surface);
         border-radius: var(--radius-sm);
@@ -488,26 +566,6 @@
         color: var(--text-muted);
       }
 
-      .quick-glance {
-        display: grid;
-        gap: var(--space-3);
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border);
-        padding: var(--space-4);
-        background: var(--surface);
-        box-shadow: var(--shadow);
-      }
-
-      .quick-glance-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-      }
-
-      .quick-glance-header strong {
-        font-size: 1.4rem;
-      }
-
       .negative {
         color: var(--danger);
       }
@@ -518,7 +576,7 @@
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       }
 
-      .progress-card {
+      .section-card {
         background: var(--surface-strong);
         border-radius: var(--radius-md);
         border: 1px solid var(--border);
@@ -526,6 +584,60 @@
         display: grid;
         gap: var(--space-3);
         box-shadow: var(--shadow);
+      }
+
+      .hero-intro.section-card {
+        background: var(--surface);
+      }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-2);
+        align-items: baseline;
+        flex-wrap: wrap;
+      }
+
+      .section-heading h3 {
+        margin: 0;
+        font-size: clamp(1.05rem, 3vw, 1.3rem);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .section-subtitle {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .section-title {
+        margin: 0;
+        font-size: clamp(1.05rem, 3vw, 1.25rem);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .metric-title {
+        margin: 0;
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        letter-spacing: 0.04em;
+      }
+
+      .metric-subtitle {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .metric-details {
+        display: grid;
+        gap: 0.35rem;
+        margin-top: 0.75rem;
+      }
+
+      .progress-card {
+        display: grid;
+        gap: var(--space-3);
       }
 
       .progress-bar {
@@ -552,6 +664,7 @@
         display: grid;
         gap: var(--space-3);
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        margin-top: var(--space-3);
       }
 
       .network-card {
@@ -731,6 +844,16 @@
         padding: var(--space-3);
       }
 
+      .help-text {
+        color: var(--text-soft);
+        font-size: 0.85rem;
+      }
+
+      .trade-note {
+        color: var(--text-soft);
+        font-size: 0.85rem;
+      }
+
       .trade-meta-row {
         display: flex;
         justify-content: space-between;
@@ -775,6 +898,8 @@
 
       footer {
         margin-top: var(--space-6);
+        padding: var(--space-4);
+        border-top: 1px solid var(--border-soft);
         color: var(--text-soft);
         font-size: 0.75rem;
         letter-spacing: 0.1em;
@@ -805,23 +930,16 @@
         }
 
         .hero {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+          align-items: stretch;
         }
 
-        .hero-intro {
-          min-height: 100%;
-        }
-
-        .hero-market {
-          min-height: 100%;
-        }
-
-        .network-shell {
-          grid-template-columns: 2fr 1fr;
+        .hero-panels {
+          grid-template-columns: 1fr;
         }
 
         .block-shell {
-          grid-template-columns: 2fr 1fr;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr);
         }
 
         nav#primary-navigation[aria-hidden="true"] {
@@ -874,6 +992,7 @@
         details.nav-dropdown:focus-within {
           border-color: var(--border);
           box-shadow: inset 0 0 0 1px rgba(255, 214, 128, 0.12);
+          background: rgba(18, 18, 20, 0.95);
         }
 
         nav#primary-navigation {
@@ -1037,7 +1156,7 @@
       </header>
       <main>
         <section class="hero">
-          <div class="hero-intro">
+          <div class="hero-intro section-card">
             <p class="eyebrow">Live bc2 intelligence</p>
             <h2>What if you had a second chance?</h2>
             <p>
@@ -1052,55 +1171,54 @@
               <span id="market-as-of">CoinPaprika • syncing…</span>
             </div>
           </div>
-          <div class="hero-market">
-            <div class="price-row">
-              <strong id="live-price">--</strong>
-              <div class="change-label">
-                <span id="live-change">--</span>
-                <small>24h</small>
+          <div class="hero-panels">
+            <div class="hero-market section-card">
+              <div class="price-row">
+                <strong id="live-price">--</strong>
+                <div class="change-label">
+                  <span id="live-change">--</span>
+                  <small>24h</small>
+                </div>
+              </div>
+              <div class="sparkline" id="mini-chart" aria-hidden="true"></div>
+              <div class="hero-stats">
+                <div class="stat-tile">
+                  <span>Market cap</span>
+                  <strong id="market-cap">--</strong>
+                </div>
+                <div class="stat-tile">
+                  <span>24h volume</span>
+                  <strong id="market-volume">--</strong>
+                </div>
+                <div class="stat-tile">
+                  <span>7d change</span>
+                  <strong id="market-change-7d">--</strong>
+                </div>
+                <div class="stat-tile">
+                  <span>Updated</span>
+                  <strong id="market-updated">—</strong>
+                </div>
               </div>
             </div>
-            <div class="sparkline" id="mini-chart" aria-hidden="true"></div>
-            <div class="hero-stats">
-              <div class="stat-tile">
-                <span>Market cap</span>
-                <strong id="market-cap">--</strong>
+            <div class="quick-glance section-card">
+              <div class="quick-glance-header">
+                <div>
+                  <p class="eyebrow eyebrow--wide">Spot pulse</p>
+                  <strong id="side-price">--</strong>
+                </div>
+                <span id="side-change">--</span>
               </div>
-              <div class="stat-tile">
-                <span>24h volume</span>
-                <strong id="market-volume">--</strong>
-              </div>
-              <div class="stat-tile">
-                <span>7d change</span>
-                <strong id="market-change-7d">--</strong>
-              </div>
-              <div class="stat-tile">
-                <span>Updated</span>
-                <strong id="market-updated">—</strong>
-              </div>
+              <div class="sparkline" id="side-mini" aria-hidden="true"></div>
             </div>
           </div>
         </section>
 
-        <section class="quick-glance">
-          <div class="quick-glance-header">
-            <div>
-              <p class="eyebrow" style="letter-spacing: 0.24em">Spot pulse</p>
-              <strong id="side-price">--</strong>
-            </div>
-            <span id="side-change">--</span>
-          </div>
-          <div class="sparkline" id="side-mini" aria-hidden="true"></div>
-        </section>
-
-        <section class="progress-card">
+        <section class="progress-card section-card">
           <div>
             <p class="eyebrow">Circulation</p>
-            <h3 style="margin: 0; font-size: 1.4rem">
+            <h3 class="metric-title">
               <span id="supply-minted">--</span>
-              <small style="display: block; font-size: 0.9rem; color: var(--text-muted)"
-                >Minted • <span id="supply-percent">--</span> of 21M</small
-              >
+              <small class="metric-subtitle">Minted • <span id="supply-percent">--</span> of 21M</small>
             </h3>
           </div>
           <div>
@@ -1108,7 +1226,7 @@
             <div class="progress-bar" role="progressbar" aria-labelledby="halving-progress-label">
               <span id="halving-progress"></span>
             </div>
-            <div style="display: grid; gap: 0.35rem; margin-top: 0.75rem">
+            <div class="metric-details">
               <strong id="halving-progress-label">—</strong>
               <span class="network-meta">Next reward drop at block <span id="next-halving-height">--</span></span>
               <span class="network-meta">ETA <span id="halving-eta">—</span> • countdown <span id="halving-countdown">—</span></span>
@@ -1132,9 +1250,9 @@
 
         <section class="network-shell">
           <div class="block-shell">
-            <div class="block-feed-wrapper">
+            <div class="block-feed-wrapper section-card">
               <div class="network-meta" id="network-as-of">bitcoinii.space • syncing…</div>
-              <div class="network-summary" style="margin-top: var(--space-3)">
+              <div class="network-summary">
                 <div class="network-card">
                   <span>Height</span>
                   <strong id="height">--</strong>
@@ -1152,8 +1270,8 @@
                 <li>Waiting for the latest blocks…</li>
               </ul>
             </div>
-            <aside class="follow-card">
-              <h3 style="margin: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.2em">Block spotlight</h3>
+            <aside class="follow-card section-card">
+              <h3 class="section-title">Block spotlight</h3>
               <div class="follow-grid">
                 <div class="follow-row">
                   <span class="follow-label">Height</span>
@@ -1180,12 +1298,10 @@
           </div>
         </section>
 
-        <section class="markets-card">
-          <div class="section-header" style="display: flex; justify-content: space-between; align-items: baseline">
-            <h3 style="margin: 0; font-size: 1.1rem">Active markets</h3>
-            <span style="color: var(--text-soft); font-size: 0.8rem"
-              >See also the Exchanges menu for direct trading venues.</span
-            >
+        <section class="markets-card section-card">
+          <div class="section-heading">
+            <h3>Active markets</h3>
+            <span class="section-subtitle">See also the Exchanges menu for direct trading venues.</span>
           </div>
           <div class="table-wrapper">
             <table>
@@ -1206,8 +1322,8 @@
           </div>
         </section>
 
-        <section class="trade-card">
-          <h3 style="margin: 0; font-size: 1.1rem">Trade impact estimator</h3>
+        <section class="trade-card section-card">
+          <h3 class="section-title">Trade impact estimator</h3>
           <form id="trade-form" class="trade-form">
             <div class="input-group">
               <label for="trade-amount">Amount (BC2)</label>
@@ -1223,7 +1339,7 @@
             <div class="input-group">
               <label for="trade-slippage">Expected impact (%)</label>
               <input id="trade-slippage" type="number" step="0.01" value="0.5" />
-              <small style="color: var(--text-soft)">Impact reference <span id="trade-impact">--</span></small>
+              <small class="help-text">Impact reference <span id="trade-impact">--</span></small>
             </div>
             <button class="btn primary" type="submit">Estimate order</button>
           </form>
@@ -1244,16 +1360,16 @@
               <span>Delta</span>
               <strong id="trade-delta">--</strong>
             </div>
-            <div style="color: var(--text-soft); font-size: 0.85rem" id="trade-status">Waiting for live price data…</div>
+            <div class="trade-note" id="trade-status">Waiting for live price data…</div>
           </div>
         </section>
 
-        <section class="resources-card">
-          <div>
-            <h3 style="margin: 0; font-size: 1.1rem">Essential BC2 links</h3>
-            <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem">
-              Everything in the navigation drawer is mirrored here for quick access on mobile.
-            </p>
+        <section class="resources-card section-card">
+          <div class="section-heading">
+            <h3>Essential BC2 links</h3>
+            <span class="section-subtitle"
+              >Everything in the navigation drawer is mirrored here for quick access on mobile.</span
+            >
           </div>
           <div class="resource-grid">
             <div class="resource-group">
