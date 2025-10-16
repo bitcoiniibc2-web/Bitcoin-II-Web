@@ -2299,29 +2299,82 @@
         nav.top-links {
           padding: 18px;
           border-radius: 24px;
-          max-height: min(72vh, calc(100vh - 140px));
+          max-height: min(68vh, calc(100vh - 132px));
         }
 
         details.nav-dropdown > summary {
           font-size: 12px;
           letter-spacing: 0.08em;
-          padding: 14px 18px;
+          padding: 13px 18px;
         }
 
         details.nav-dropdown .nav-dropdown-panel {
           padding: 16px;
         }
 
+        .explorer-launch {
+          padding: 16px 18px;
+          gap: 14px;
+        }
+
+        .launch-title {
+          font-size: 12px;
+          letter-spacing: 0.14em;
+        }
+
+        .hero-grid {
+          gap: 18px;
+        }
+
+        .hero-primary {
+          gap: 18px;
+        }
+
         .hero-primary h2 {
-          font-size: clamp(30px, 9vw, 40px);
+          font-size: clamp(28px, 8vw, 36px);
         }
 
         .hero-primary p {
-          font-size: 15px;
+          font-size: 14px;
+        }
+
+        .hero-actions .btn {
+          font-size: 13px;
+          padding: 11px 16px;
         }
 
         .hero-ticker {
-          padding: 18px;
+          padding: 16px;
+          gap: 14px;
+        }
+
+        .ticker-row {
+          gap: 10px;
+        }
+
+        .ticker-label {
+          font-size: 12px;
+          letter-spacing: 0.24em;
+        }
+
+        .ticker-value {
+          font-size: clamp(24px, 8vw, 32px);
+        }
+
+        .delta {
+          font-size: 14px;
+        }
+
+        .ticker-grid {
+          gap: 12px;
+        }
+
+        .ticker-grid dd {
+          font-size: 13px;
+        }
+
+        .coin-sphere {
+          width: min(64vw, 200px);
         }
 
         .stat-tile,
@@ -2329,15 +2382,67 @@
         .market-card,
         .trade-summary,
         .follow-card {
-          padding: 16px;
+          padding: 14px;
         }
 
         .block-feed li {
-          padding: 14px 16px;
+          padding: 12px 14px;
+        }
+
+        .prestige-head h3 {
+          font-size: clamp(22px, 6.5vw, 28px);
+        }
+
+        .prestige-head p {
+          font-size: 13px;
+        }
+
+        .prestige-badges span {
+          padding: 8px 16px;
+          font-size: 11px;
+          letter-spacing: 0.16em;
+        }
+
+        .prestige-grid {
+          gap: 16px;
+        }
+
+        .prestige-card {
+          padding: 18px;
+          gap: 10px;
+        }
+
+        .prestige-icon {
+          width: 44px;
+          height: 44px;
+          font-size: 20px;
+        }
+
+        .prestige-card h4 {
+          font-size: 16px;
+        }
+
+        .prestige-card p {
+          font-size: 13px;
+        }
+
+        .prestige-card a {
+          font-size: 12px;
+          letter-spacing: 0.16em;
         }
 
         main {
-          gap: 32px;
+          padding: 0 clamp(14px, 6vw, 24px) 52px;
+          gap: 28px;
+        }
+
+        .shell {
+          gap: 18px;
+        }
+
+        .panel {
+          border-radius: 20px;
+          padding: 20px;
         }
 
         footer {
@@ -2363,74 +2468,155 @@
         }
 
         details.nav-dropdown > summary {
-          padding: 12px 16px;
+          padding: 11px 15px;
           letter-spacing: 0.08em;
         }
 
         .chip {
-          font-size: 11px;
-          letter-spacing: 0.22em;
-          padding: 6px 14px;
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          padding: 5px 12px;
         }
 
         .explorer-launch {
-          padding: 18px 20px;
+          padding: 14px 16px;
           flex-wrap: wrap;
-          row-gap: 12px;
+          row-gap: 10px;
+          gap: 12px;
         }
 
         .launch-copy {
-          gap: 4px;
+          gap: 2px;
         }
 
         .launch-title {
-          font-size: 13px;
-          letter-spacing: 0.16em;
+          font-size: 11px;
+          letter-spacing: 0.14em;
         }
 
         .launch-telemetry {
-          font-size: 11px;
+          font-size: 10px;
+        }
+
+        .hero-grid {
+          gap: 16px;
+        }
+
+        .hero-primary {
+          gap: 16px;
         }
 
         .hero-primary h2 {
-          font-size: clamp(28px, 10vw, 36px);
+          font-size: clamp(24px, 9vw, 30px);
         }
 
         .hero-primary p {
-          font-size: 14px;
+          font-size: 13px;
         }
 
         .hero-actions {
-          gap: 10px;
+          gap: 8px;
         }
 
         .hero-actions .btn {
-          font-size: 14px;
-          padding: 12px 18px;
+          font-size: 13px;
+          padding: 10px 16px;
+        }
+
+        .hero-ticker {
+          padding: 12px 14px;
+          gap: 10px;
+        }
+
+        .ticker-label {
+          font-size: 11px;
+        }
+
+        .ticker-value {
+          font-size: clamp(22px, 9vw, 28px);
+        }
+
+        .ticker-grid {
+          gap: 8px;
+        }
+
+        .ticker-grid dd {
+          font-size: 11px;
         }
 
         .coin-sphere {
-          width: min(68vw, 220px);
+          width: min(58vw, 170px);
         }
 
         .stat-tile strong {
-          font-size: 20px;
-        }
-
-        .block-feed li {
-          padding: 12px 14px;
+          font-size: 18px;
         }
 
         .node-frame {
-          min-height: 240px;
+          min-height: 200px;
         }
 
         .market-table-wrapper {
-          border-radius: 20px;
+          border-radius: 18px;
         }
 
         table {
-          font-size: 13px;
+          font-size: 12px;
+        }
+
+        .prestige-head h3 {
+          font-size: clamp(20px, 9vw, 26px);
+        }
+
+        .prestige-head p {
+          font-size: 12px;
+        }
+
+        .prestige-badges span {
+          padding: 7px 12px;
+          font-size: 10px;
+          letter-spacing: 0.14em;
+        }
+
+        .prestige-grid {
+          gap: 12px;
+        }
+
+        .prestige-card {
+          padding: 15px;
+          gap: 10px;
+        }
+
+        .prestige-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+
+        .prestige-card h4 {
+          font-size: 15px;
+        }
+
+        .prestige-card p {
+          font-size: 12px;
+        }
+
+        .prestige-card a {
+          font-size: 11px;
+        }
+
+        main {
+          padding: 0 clamp(12px, 6vw, 18px) 44px;
+          gap: 22px;
+        }
+
+        .panel {
+          padding: 16px;
+          border-radius: 18px;
+        }
+
+        .shell {
+          gap: 16px;
         }
 
         footer {
