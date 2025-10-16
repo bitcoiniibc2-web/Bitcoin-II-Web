@@ -2074,15 +2074,18 @@
           if (dom.nextHalvingHeight) {
             dom.nextHalvingHeight.textContent = formatNumber(nextHalvingHeight);
           }
+          const emitted = computeEmitted(height);
           if (dom.supplyMinted) {
-            const emitted = MAX_SUPPLY - computeRemainingSupply(nextHalvingHeight, remainingBlocks);
-            dom.supplyMinted.textContent = emitted.toLocaleString(undefined, {
-              maximumFractionDigits: 0,
-            });
+            dom.supplyMinted.textContent = Number.isFinite(emitted)
+              ? emitted.toLocaleString(undefined, {
+                  maximumFractionDigits: 0,
+                })
+              : "--";
           }
           if (dom.supplyPercent) {
-            const emitted = MAX_SUPPLY - computeRemainingSupply(nextHalvingHeight, remainingBlocks);
-            dom.supplyPercent.textContent = ((emitted / MAX_SUPPLY) * 100).toFixed(2) + "%";
+            dom.supplyPercent.textContent = Number.isFinite(emitted)
+              ? ((emitted / MAX_SUPPLY) * 100).toFixed(2) + "%"
+              : "--";
           }
           if (dom.halvingEta) {
             const secondsRemaining = Number.isFinite(avgSeconds)
@@ -2098,19 +2101,18 @@
           }
         }
 
-        function computeRemainingSupply(nextHalvingHeight, remainingBlocks) {
-          let total = 0;
+        function computeEmitted(height) {
+          if (!Number.isFinite(Number(height))) return 0;
+          let remaining = Math.max(0, Math.floor(Number(height)) + 1);
           let reward = INITIAL_REWARD;
-          let height = 0;
-          while (reward > 0 && height < nextHalvingHeight) {
-            const span = Math.min(HALVING_INTERVAL, nextHalvingHeight - height);
-            total += span * reward;
+          let emitted = 0;
+          while (remaining > 0 && reward > 0) {
+            const span = Math.min(HALVING_INTERVAL, remaining);
+            emitted += span * reward;
+            remaining -= span;
             reward /= 2;
-            height += span;
           }
-          const currentReward = computeReward(nextHalvingHeight - remainingBlocks);
-          total -= remainingBlocks * currentReward;
-          return total;
+          return Math.min(emitted, MAX_SUPPLY);
         }
 
         async function updateHistory() {
