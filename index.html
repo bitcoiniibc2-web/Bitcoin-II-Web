@@ -2010,7 +2010,7 @@
         details.nav-dropdown {
           position: static;
           display: block;
-        }
+          width: 100%;
         }
 
         .explorer-launch {
@@ -2034,9 +2034,7 @@
         .launch-telemetry {
           flex-wrap: wrap;
           gap: 6px;
-        }
-
-        details.nav-dropdown {
+          align-items: flex-start;
           width: 100%;
         }
 
@@ -2067,6 +2065,40 @@
           box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 24px rgba(245, 182, 59, 0.18);
         }
 
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .hero-actions .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .ticker-grid,
+        .network-summary,
+        .trade-row.inline,
+        .service-grid,
+        .follow-grid,
+        .prestige-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .ticker-row {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .block-feed li {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
         .prestige-head {
           flex-direction: column;
           align-items: flex-start;
@@ -2084,6 +2116,64 @@
 
         .panel {
           border-radius: 22px;
+        }
+      }
+
+      @media (max-width: 540px) {
+        header.top-nav {
+          padding: 20px clamp(12px, 6vw, 24px);
+        }
+
+        .brand {
+          justify-items: start;
+          gap: 10px;
+        }
+
+        .brand-logo {
+          width: 56px;
+          height: 56px;
+        }
+
+        .brand-meta h1 {
+          font-size: 22px;
+        }
+
+        details.nav-dropdown > summary {
+          font-size: 12px;
+          letter-spacing: 0.08em;
+          padding: 14px 18px;
+        }
+
+        details.nav-dropdown .nav-dropdown-panel {
+          padding: 16px;
+        }
+
+        .hero-primary h2 {
+          font-size: clamp(30px, 9vw, 40px);
+        }
+
+        .hero-primary p {
+          font-size: 15px;
+        }
+
+        .hero-ticker {
+          padding: 18px;
+        }
+
+        .stat-tile,
+        .summary-card,
+        .market-card,
+        .trade-summary,
+        .follow-card {
+          padding: 16px;
+        }
+
+        .block-feed li {
+          padding: 14px 16px;
+        }
+
+        footer {
+          font-size: 12px;
         }
       }
     </style>
