@@ -67,6 +67,10 @@
         overflow-x: hidden;
       }
 
+      body.nav-open {
+        overflow: hidden;
+      }
+
       body::before {
         content: "";
         position: fixed;
@@ -131,6 +135,7 @@
         margin-bottom: var(--space-5);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         padding: var(--space-3) var(--space-4);
+        overflow: visible;
       }
 
       .nav-bar {
@@ -278,6 +283,7 @@
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.2s ease;
+        z-index: 45;
       }
 
       header.top-nav.is-nav-open .nav-overlay {
@@ -286,7 +292,10 @@
       }
 
       nav#primary-navigation {
-        margin-top: var(--space-3);
+        position: absolute;
+        top: calc(100% + var(--space-3));
+        left: 0;
+        right: 0;
         display: grid;
         gap: var(--space-2);
         background: var(--surface);
@@ -294,11 +303,22 @@
         border: 1px solid var(--border);
         padding: var(--space-3);
         box-shadow: var(--shadow);
-        transition: transform 0.3s ease, opacity 0.3s ease;
+        max-height: min(70vh, 480px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-12px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        z-index: 50;
       }
 
-      nav#primary-navigation[aria-hidden="true"] {
-        display: none;
+      nav#primary-navigation[aria-hidden="false"] {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
       }
 
       details.nav-dropdown {
@@ -877,42 +897,6 @@
         font-size: 0.9rem;
       }
 
-      .resources-card {
-        background: var(--surface);
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border);
-        padding: var(--space-4);
-        box-shadow: var(--shadow);
-        display: grid;
-        gap: var(--space-3);
-      }
-
-      .resource-grid {
-        display: grid;
-        gap: var(--space-3);
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-
-      .resource-group {
-        display: grid;
-        gap: 0.5rem;
-      }
-
-      .resource-group h3 {
-        margin: 0;
-        font-size: 0.9rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      .resource-group ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        gap: 0.4rem;
-      }
-
       footer {
         margin-top: var(--space-6);
         padding: var(--space-4);
@@ -942,7 +926,16 @@
         }
 
         nav#primary-navigation {
-          display: grid !important;
+          position: relative;
+          top: 0;
+          margin-top: var(--space-3);
+          max-height: none;
+          overflow: visible;
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: none;
+          transition: none;
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
@@ -959,8 +952,12 @@
           grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr);
         }
 
-        nav#primary-navigation[aria-hidden="true"] {
-          display: grid !important;
+        nav#primary-navigation[aria-hidden="true"],
+        nav#primary-navigation[aria-hidden="false"] {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: none;
         }
       }
 
@@ -982,7 +979,7 @@
 
         nav#primary-navigation {
           position: relative;
-          display: grid !important;
+          display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
           padding: var(--space-2);
           gap: var(--space-2);
@@ -991,10 +988,13 @@
           background: linear-gradient(160deg, rgba(18, 16, 12, 0.82), rgba(8, 7, 6, 0.9));
           backdrop-filter: blur(18px);
           box-shadow: 0 22px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        nav#primary-navigation[aria-hidden="true"] {
-          display: grid !important;
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: none;
+          transition: none;
+          max-height: none;
+          overflow: visible;
         }
 
         details.nav-dropdown {
@@ -1429,52 +1429,6 @@
           </div>
         </section>
 
-        <section class="resources-card section-card">
-          <div class="section-heading">
-            <h3>Essential BC2 links</h3>
-            <span class="section-subtitle"
-              >Everything in the navigation drawer is mirrored here for quick access on mobile.</span
-            >
-          </div>
-          <div class="resource-grid">
-            <div class="resource-group">
-              <h3>General</h3>
-              <ul>
-                <li><a href="https://bitcoinii.space/" target="_blank" rel="noreferrer">Explorer</a></li>
-                <li><a href="https://coinpaprika.com/coin/bc2-bitcoin-ii/" target="_blank" rel="noreferrer">Asset overview</a></li>
-                <li><a href="https://bitcoinii.ddns.net/DailyReport.html" target="_blank" rel="noreferrer">Daily report</a></li>
-              </ul>
-            </div>
-            <div class="resource-group">
-              <h3>Exchanges</h3>
-              <ul>
-                <li><a href="https://www.coinex.com/en/info/BC2" target="_blank" rel="noreferrer">CoinEx</a></li>
-                <li><a href="https://trade.nestex.one/spot/BC2" target="_blank" rel="noreferrer">NestEX</a></li>
-                <li><a href="https://rabid-rabbit.org/account/trade/BC2-USDT" target="_blank" rel="noreferrer">Rabid Rabbit</a></li>
-              </ul>
-            </div>
-            <div class="resource-group">
-              <h3>Wallets</h3>
-              <ul>
-                <li><a href="https://github.com/Bitcoin-II/BitcoinII-Core/releases" target="_blank" rel="noreferrer">Core wallet</a></li>
-                <li><a href="https://wallet-bc2.nitopool.fr/" target="_blank" rel="noreferrer">Web wallet</a></li>
-                <li>
-                  <a href="https://play.google.com/store/apps/details?id=network.bitcoinii.bluewallet&hl=en_US" target="_blank" rel="noreferrer"
-                    >Android wallet</a
-                  >
-                </li>
-              </ul>
-            </div>
-            <div class="resource-group">
-              <h3>Community</h3>
-              <ul>
-                <li><a href="https://discord.gg/aGJa8WpV2Y" target="_blank" rel="noreferrer">Discord</a></li>
-                <li><a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer">Telegram</a></li>
-                <li><a href="https://x.com/@TheBitcoinIIOrg" target="_blank" rel="noreferrer">X (Twitter)</a></li>
-              </ul>
-            </div>
-          </div>
-        </section>
       </main>
       <footer>
         <div>
