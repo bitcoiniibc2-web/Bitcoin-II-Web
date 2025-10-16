@@ -465,19 +465,81 @@
       }
 
       .brand-logo {
-        width: 60px;
-        height: 60px;
-        border-radius: 18px;
-        background: linear-gradient(140deg, rgba(245, 182, 59, 0.82), rgba(90, 64, 8, 0.92));
+        --tilt-x: 0deg;
+        --tilt-y: 0deg;
+        --glow-x: 50%;
+        --glow-y: 50%;
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background:
+          radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 225, 160, 0.45), transparent 55%),
+          linear-gradient(140deg, rgba(245, 182, 59, 0.82), rgba(90, 64, 8, 0.92));
         display: grid;
         place-items: center;
-        box-shadow: 0 18px 42px rgba(12, 7, 0, 0.65), 0 0 0 1px rgba(245, 182, 59, 0.22);
+        box-shadow:
+          0 22px 48px rgba(12, 7, 0, 0.68),
+          0 0 0 1px rgba(245, 182, 59, 0.22),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.45s ease, box-shadow 0.45s ease;
+        transform: perspective(600px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      }
+
+      .brand-logo::before,
+      .brand-logo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      .brand-logo::before {
+        background: radial-gradient(circle, rgba(255, 240, 210, 0.35), transparent 60%);
+        mix-blend-mode: screen;
+        animation: logo-orbit 8s linear infinite;
+      }
+
+      .brand-logo::after {
+        background:
+          radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 223, 149, 0.7), transparent 55%);
+        opacity: 0.75;
+        transition: opacity 0.4s ease;
+        mix-blend-mode: screen;
       }
 
       .brand-logo img {
-        width: 36px;
-        height: 36px;
-        filter: drop-shadow(0 10px 24px rgba(245, 182, 59, 0.5));
+        width: 40px;
+        height: 40px;
+        filter: drop-shadow(0 12px 26px rgba(245, 182, 59, 0.55));
+        transition: transform 0.45s ease;
+        pointer-events: none;
+      }
+
+      .brand-logo:hover {
+        box-shadow:
+          0 26px 58px rgba(12, 7, 0, 0.72),
+          0 0 0 1px rgba(255, 208, 125, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      }
+
+      .brand-logo:hover img {
+        transform: scale(1.05);
+      }
+
+      @keyframes logo-orbit {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(180deg) scale(1.02);
+        }
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
       }
 
       .brand h1 {
@@ -492,17 +554,19 @@
         flex: 1 1 0;
         min-width: 0;
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: clamp(12px, 2vw, 22px);
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: clamp(16px, 3vw, 28px);
         font-size: 15px;
         color: var(--text-muted);
-        padding: clamp(14px, 2vw, 18px);
-        border-radius: 36px;
-        border: 1px solid rgba(245, 182, 59, 0.14);
-        background: radial-gradient(circle at 12% 10%, rgba(245, 182, 59, 0.1), transparent 55%),
-          rgba(8, 6, 3, 0.52);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 42px rgba(0, 0, 0, 0.45);
-        backdrop-filter: blur(18px);
+        padding: clamp(16px, 2.4vw, 22px);
+        border-radius: 40px;
+        border: 1px solid rgba(245, 182, 59, 0.16);
+        background:
+          radial-gradient(circle at 12% 10%, rgba(245, 182, 59, 0.1), transparent 55%),
+          radial-gradient(circle at 85% 30%, rgba(245, 182, 59, 0.08), transparent 60%),
+          rgba(8, 6, 3, 0.54);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 22px 48px rgba(0, 0, 0, 0.48);
+        backdrop-filter: blur(20px);
         position: relative;
         overflow: hidden;
         align-self: stretch;
@@ -539,13 +603,17 @@
       }
 
       details.nav-dropdown > summary {
-        padding: 14px 22px;
-        border-radius: 24px;
-        background: linear-gradient(145deg, rgba(24, 18, 8, 0.75), rgba(12, 8, 2, 0.94));
-        border: 1px solid rgba(245, 182, 59, 0.18);
+        padding: clamp(14px, 2vw, 20px) clamp(18px, 2.6vw, 28px);
+        border-radius: 28px;
+        background: linear-gradient(150deg, rgba(26, 20, 10, 0.78), rgba(10, 8, 3, 0.94));
+        border: 1px solid rgba(245, 182, 59, 0.2);
         position: relative;
-        transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease,
-          box-shadow 0.3s ease, transform 0.3s ease;
+        transition:
+          color 0.3s ease,
+          border-color 0.3s ease,
+          background 0.3s ease,
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
         list-style: none;
         display: flex;
         align-items: center;
@@ -554,16 +622,18 @@
         cursor: pointer;
         color: var(--text-muted);
         width: 100%;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 32px rgba(0, 0, 0, 0.42);
         text-transform: uppercase;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.12em;
         font-weight: 600;
+        text-wrap: balance;
       }
 
       details.nav-dropdown > summary span {
         letter-spacing: inherit;
         flex: 1;
         text-align: left;
+        padding-right: 12px;
       }
 
       details.nav-dropdown > summary:hover,
@@ -585,6 +655,7 @@
         font-size: 12px;
         opacity: 0.82;
         transition: transform 0.25s ease, opacity 0.3s ease;
+        flex-shrink: 0;
       }
 
       details.nav-dropdown > summary::before {
@@ -793,7 +864,7 @@
         background: rgba(18, 12, 4, 0.65);
         font-size: 12px;
         text-transform: uppercase;
-        letter-spacing: 0.28em;
+        letter-spacing: 0.18em;
       }
 
       .prestige-grid {
@@ -862,7 +933,7 @@
         color: var(--accent-strong);
         font-size: 13px;
         text-transform: uppercase;
-        letter-spacing: 0.24em;
+        letter-spacing: 0.18em;
         transition: color 0.3s ease;
       }
 
@@ -1583,7 +1654,7 @@
 
       @media (max-width: 1260px) {
         nav.top-links {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         }
       }
 
@@ -1599,13 +1670,13 @@
 
       @media (max-width: 900px) {
         nav.top-links {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         details.nav-dropdown > summary {
-          letter-spacing: 0.14em;
+          letter-spacing: 0.12em;
           font-size: 14px;
-          padding: 12px 18px;
+          padding: 14px 20px;
         }
       }
 
@@ -1634,8 +1705,8 @@
         details.nav-dropdown > summary {
           width: 100%;
           justify-content: space-between;
-          padding: 14px 18px;
-          letter-spacing: 0.12em;
+          padding: 16px 20px;
+          letter-spacing: 0.1em;
           font-size: 13px;
         }
 
@@ -1897,59 +1968,47 @@
         <section class="panel signal-ribbon">
           <div class="prestige-head">
             <div>
-              <span class="chip">Premium vantage</span>
-              <h3>Experience Bitcoin II with concierge clarity</h3>
+              <span class="chip">Second chance highlights</span>
+              <h3>A premium shell with practical intent</h3>
             </div>
             <p>
-              Every surface now glows with the Bitcoin II palette, layering glass, gold, and
-              motion so traders, miners, and builders feel the prestige of a second chance
-              network the moment they arrive.
+              The refreshed navigation stretches across the ribbon with generous breathing room,
+              so every essential link stays crisp, legible, and within easy reach.
             </p>
           </div>
           <div class="prestige-badges">
-            <span>Live telemetry</span>
-            <span>Gold-tier styling</span>
-            <span>Market ready</span>
-            <span>Community concierge</span>
+            <span>Network telemetry</span>
+            <span>Market pulse</span>
+            <span>Trusted exchanges</span>
+            <span>Community hubs</span>
           </div>
           <div class="prestige-grid">
             <article class="prestige-card">
               <span class="prestige-icon" aria-hidden="true">📡</span>
-              <h4>Network telemetry spotlight</h4>
+              <h4>Real-time network pulse</h4>
               <p>
-                Glide into block cadence, hash rate swings, and node visibility with explorer
-                data staged in luxe, legible cards.
+                Block cadence, reward dynamics, and node visibility stream directly from the
+                explorer without leaving the dashboard.
               </p>
-              <a href="#network-intel">View network pulse</a>
+              <a href="#network-intel">Check the data</a>
             </article>
             <article class="prestige-card">
               <span class="prestige-icon" aria-hidden="true">📈</span>
-              <h4>Market intelligence lounge</h4>
+              <h4>Focused market console</h4>
               <p>
-                A refined pricing console keeps CoinPaprika spot metrics and sparkline trends at
-                your fingertips for quicker conviction.
+                Price, change, and micro-trends from CoinPaprika stay framed in a gold-glass card
+                that reads clearly on any display.
               </p>
-              <a href="#market-intel">Open market deck</a>
-            </article>
-            <article class="prestige-card">
-              <span class="prestige-icon" aria-hidden="true">💱</span>
-              <h4>Liquidity runway</h4>
-              <p>
-                Navigate leading BC2 listings across global exchanges with curated, ready-to-trade
-                pairings and live spreads.
-              </p>
-              <a href="#markets">Browse exchanges</a>
+              <a href="#market-intel">Review the market</a>
             </article>
             <article class="prestige-card">
               <span class="prestige-icon" aria-hidden="true">🤝</span>
-              <h4>Community concierge desk</h4>
+              <h4>Actionable next steps</h4>
               <p>
-                Tap straight into support, wallet provisioning, and discussion hubs powered by the
-                Bitcoin II collective.
+                Jump straight to exchanges, wallets, or community support through the curated
+                dropdowns in the header.
               </p>
-              <a href="https://t.me/BitcoinIIOrganization" target="_blank" rel="noreferrer"
-                >Join the conversation</a
-              >
+              <a href="#markets">Explore resources</a>
             </article>
           </div>
         </section>
@@ -2249,6 +2308,33 @@
           followMiner: document.getElementById("follow-miner"),
           followReward: document.getElementById("follow-reward"),
         };
+
+        const brandLogo = document.querySelector(".brand-logo");
+        if (brandLogo) {
+          const setLogoTilt = (event) => {
+            const rect = brandLogo.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width;
+            const y = (event.clientY - rect.top) / rect.height;
+            const rotateX = (0.5 - y) * 16;
+            const rotateY = (x - 0.5) * 16;
+            brandLogo.style.setProperty("--tilt-x", `${rotateX.toFixed(2)}deg`);
+            brandLogo.style.setProperty("--tilt-y", `${rotateY.toFixed(2)}deg`);
+            brandLogo.style.setProperty("--glow-x", `${(x * 100).toFixed(2)}%`);
+            brandLogo.style.setProperty("--glow-y", `${(y * 100).toFixed(2)}%`);
+          };
+
+          const resetLogoTilt = () => {
+            brandLogo.style.setProperty("--tilt-x", "0deg");
+            brandLogo.style.setProperty("--tilt-y", "0deg");
+            brandLogo.style.setProperty("--glow-x", "50%");
+            brandLogo.style.setProperty("--glow-y", "50%");
+          };
+
+          resetLogoTilt();
+          brandLogo.addEventListener("pointermove", setLogoTilt);
+          brandLogo.addEventListener("pointerleave", resetLogoTilt);
+          brandLogo.addEventListener("pointerup", resetLogoTilt);
+        }
 
         const API = {
           ticker: "https://api.coinpaprika.com/v1/tickers/bc2-bitcoin-ii",
