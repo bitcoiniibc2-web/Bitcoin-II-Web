@@ -507,6 +507,10 @@
         align-self: start;
       }
 
+      .nav-overlay {
+        display: none;
+      }
+
       .nav-toggle {
         display: none;
         align-items: center;
@@ -1056,6 +1060,11 @@
         padding: 0 clamp(20px, 8vw, 80px) 80px;
         display: grid;
         gap: 44px;
+      }
+
+      main section[id],
+      main .panel[id] {
+        scroll-margin-top: clamp(120px, 18vh, 180px);
       }
 
       .shell {
@@ -1960,10 +1969,13 @@
         overflow: hidden;
         background: linear-gradient(160deg, rgba(12, 12, 12, 0.9), rgba(8, 8, 8, 0.86));
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       table {
         width: 100%;
+        min-width: 480px;
         border-collapse: collapse;
         font-size: 14px;
         color: var(--text-muted);
@@ -2044,16 +2056,18 @@
 
       @media (max-width: 780px) {
         header.top-nav {
+          position: sticky;
+          top: clamp(8px, 4vw, 18px);
           grid-template-columns: 1fr;
-          grid-template-rows: auto auto auto;
+          grid-template-rows: auto auto;
           grid-template-areas:
             "brand"
-            "nav"
             "explorer";
-          padding: 24px clamp(16px, 8vw, 32px);
-          margin: clamp(12px, 6vw, 24px);
+          padding: 22px clamp(16px, 7vw, 30px);
+          margin: clamp(8px, 5vw, 20px) clamp(12px, 6vw, 24px) 18px;
           column-gap: 0;
-          row-gap: 18px;
+          row-gap: 16px;
+          z-index: 320;
         }
 
         .brand {
@@ -2069,29 +2083,54 @@
           align-self: stretch;
         }
 
+        .nav-overlay {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: radial-gradient(circle at 20% 20%, rgba(245, 182, 59, 0.14), transparent 55%),
+            rgba(5, 5, 5, 0.72);
+          backdrop-filter: blur(6px);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+          z-index: 180;
+        }
+
+        header.top-nav.is-nav-open .nav-overlay {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
         nav.top-links {
-          display: none;
-          width: 100%;
+          position: absolute;
+          top: calc(100% + 14px);
+          left: clamp(12px, 6vw, 24px);
+          right: clamp(12px, 6vw, 24px);
+          grid-area: auto;
+          display: flex;
           flex-direction: column;
           flex-wrap: nowrap;
           gap: 12px;
           border-radius: 28px;
-          padding: 18px;
-          background: linear-gradient(160deg, rgba(22, 18, 10, 0.9), rgba(8, 6, 3, 0.92));
+          padding: 20px;
+          background: linear-gradient(160deg, rgba(22, 18, 10, 0.94), rgba(8, 6, 3, 0.9));
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.55);
           border: 1px solid rgba(245, 182, 59, 0.22);
           opacity: 0;
-          transform: translateY(-8px);
+          visibility: hidden;
+          transform: translate3d(0, -12px, 0);
           pointer-events: none;
-          transition: opacity 0.3s ease, transform 0.3s ease;
-          max-height: calc(100vh - 220px);
+          transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+          max-height: min(70vh, calc(100vh - 160px));
           overflow-y: auto;
+          overscroll-behavior: contain;
+          z-index: 220;
         }
 
         header.top-nav.is-nav-open nav.top-links {
-          display: flex;
           opacity: 1;
-          transform: translateY(0);
+          visibility: visible;
+          transform: translate3d(0, 0, 0);
           pointer-events: auto;
         }
 
@@ -2233,6 +2272,8 @@
       @media (max-width: 540px) {
         header.top-nav {
           padding: 20px clamp(12px, 6vw, 24px);
+          margin: clamp(6px, 5vw, 16px) clamp(10px, 5vw, 20px) 16px;
+          top: clamp(6px, 4vw, 14px);
         }
 
         .brand {
@@ -2253,6 +2294,12 @@
           font-size: 12px;
           letter-spacing: 0.1em;
           padding: 12px 16px;
+        }
+
+        nav.top-links {
+          padding: 18px;
+          border-radius: 24px;
+          max-height: min(72vh, calc(100vh - 140px));
         }
 
         details.nav-dropdown > summary {
@@ -2289,8 +2336,105 @@
           padding: 14px 16px;
         }
 
+        main {
+          gap: 32px;
+        }
+
         footer {
           font-size: 12px;
+        }
+      }
+
+      @media (max-width: 420px) {
+        header.top-nav {
+          padding: 18px clamp(10px, 6vw, 18px);
+        }
+
+        .nav-toggle {
+          font-size: 11px;
+          padding: 11px 14px;
+          letter-spacing: 0.12em;
+        }
+
+        nav.top-links {
+          padding: 16px;
+          border-radius: 22px;
+          gap: 10px;
+        }
+
+        details.nav-dropdown > summary {
+          padding: 12px 16px;
+          letter-spacing: 0.08em;
+        }
+
+        .chip {
+          font-size: 11px;
+          letter-spacing: 0.22em;
+          padding: 6px 14px;
+        }
+
+        .explorer-launch {
+          padding: 18px 20px;
+          flex-wrap: wrap;
+          row-gap: 12px;
+        }
+
+        .launch-copy {
+          gap: 4px;
+        }
+
+        .launch-title {
+          font-size: 13px;
+          letter-spacing: 0.16em;
+        }
+
+        .launch-telemetry {
+          font-size: 11px;
+        }
+
+        .hero-primary h2 {
+          font-size: clamp(28px, 10vw, 36px);
+        }
+
+        .hero-primary p {
+          font-size: 14px;
+        }
+
+        .hero-actions {
+          gap: 10px;
+        }
+
+        .hero-actions .btn {
+          font-size: 14px;
+          padding: 12px 18px;
+        }
+
+        .coin-sphere {
+          width: min(68vw, 220px);
+        }
+
+        .stat-tile strong {
+          font-size: 20px;
+        }
+
+        .block-feed li {
+          padding: 12px 14px;
+        }
+
+        .node-frame {
+          min-height: 240px;
+        }
+
+        .market-table-wrapper {
+          border-radius: 20px;
+        }
+
+        table {
+          font-size: 13px;
+        }
+
+        footer {
+          font-size: 11px;
         }
       }
     </style>
@@ -2438,6 +2582,7 @@
             </div>
           </details>
         </nav>
+        <div class="nav-overlay" aria-hidden="true"></div>
         <a
           class="explorer-launch"
           href="https://bitcoinii.space/"
@@ -2944,6 +3089,7 @@
         const header = document.querySelector("header.top-nav");
         const nav = document.getElementById("primary-navigation");
         const navToggle = document.querySelector(".nav-toggle");
+        const navOverlay = header ? header.querySelector(".nav-overlay") : null;
         const navDropdowns = nav
           ? Array.from(nav.querySelectorAll("details.nav-dropdown"))
           : [];
@@ -2961,6 +3107,10 @@
           header.classList.toggle("is-nav-open", open);
           document.body.classList.toggle("nav-open", open && mobileQuery.matches);
           navToggle.setAttribute("aria-expanded", String(open));
+          if (nav) {
+            const shouldHide = mobileQuery.matches && !open;
+            nav.setAttribute("aria-hidden", shouldHide ? "true" : "false");
+          }
           if (!open && mobileQuery.matches) {
             navDropdowns.forEach((dropdown) => dropdown.removeAttribute("open"));
           }
@@ -2978,6 +3128,9 @@
               header.classList.remove("is-nav-open");
             }
           }
+          if (nav) {
+            nav.setAttribute("aria-hidden", event.matches ? "true" : "false");
+          }
         };
 
         if (navToggle && header) {
@@ -2985,6 +3138,12 @@
             const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
             setNavOpen(!isExpanded);
           });
+
+          if (navOverlay) {
+            navOverlay.addEventListener("click", () => {
+              setNavOpen(false);
+            });
+          }
 
           document.addEventListener("click", (event) => {
             if (!mobileQuery.matches) return;
@@ -3012,6 +3171,10 @@
             navToggle.setAttribute("aria-expanded", "false");
             header.classList.remove("is-nav-open");
           }
+        }
+
+        if (nav) {
+          nav.setAttribute("aria-hidden", mobileQuery.matches ? "true" : "false");
         }
 
         if (navDropdowns.length) {
