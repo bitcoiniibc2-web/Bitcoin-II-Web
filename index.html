@@ -127,6 +127,16 @@
         outline-offset: 4px;
       }
 
+      body.nav-open {
+        overflow: hidden;
+      }
+
+      @media (min-width: 781px) {
+        body.nav-open {
+          overflow: auto;
+        }
+      }
+
       a {
         color: inherit;
         text-decoration: none;
@@ -495,6 +505,68 @@
         align-items: start;
         gap: 12px;
         align-self: start;
+      }
+
+      .nav-toggle {
+        display: none;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(245, 182, 59, 0.32);
+        background: linear-gradient(135deg, rgba(18, 18, 18, 0.92), rgba(8, 6, 3, 0.88));
+        color: var(--text-strong);
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease,
+          transform 0.3s ease;
+        justify-self: start;
+      }
+
+      .nav-toggle:hover,
+      .nav-toggle:focus-visible {
+        border-color: rgba(245, 182, 59, 0.45);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        outline: none;
+        transform: translateY(-1px);
+      }
+
+      .nav-toggle[aria-expanded="true"] {
+        border-color: rgba(245, 182, 59, 0.55);
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5);
+      }
+
+      .nav-toggle-icon {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-toggle-icon span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      .nav-toggle[aria-expanded="true"] .nav-toggle-icon span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+      }
+
+      .nav-toggle[aria-expanded="true"] .nav-toggle-icon span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .nav-toggle[aria-expanded="true"] .nav-toggle-icon span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+
+      .nav-toggle-label {
+        font-size: 13px;
       }
 
       .brand-meta {
@@ -1990,7 +2062,15 @@
           row-gap: 12px;
         }
 
+        .nav-toggle {
+          display: inline-flex;
+          width: 100%;
+          justify-content: center;
+          align-self: stretch;
+        }
+
         nav.top-links {
+          display: none;
           width: 100%;
           flex-direction: column;
           flex-wrap: nowrap;
@@ -2000,6 +2080,17 @@
           background: linear-gradient(160deg, rgba(22, 18, 10, 0.9), rgba(8, 6, 3, 0.92));
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.55);
           border: 1px solid rgba(245, 182, 59, 0.22);
+          opacity: 0;
+          transform: translateY(-8px);
+          pointer-events: none;
+          transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        header.top-nav.is-nav-open nav.top-links {
+          display: flex;
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
         }
 
         nav.top-links::before,
@@ -2138,6 +2229,12 @@
           font-size: 22px;
         }
 
+        .nav-toggle {
+          font-size: 12px;
+          letter-spacing: 0.1em;
+          padding: 12px 16px;
+        }
+
         details.nav-dropdown > summary {
           font-size: 12px;
           letter-spacing: 0.08em;
@@ -2197,8 +2294,21 @@
             <h1>Bitcoin II</h1>
             <p>The second chance protocol dashboard</p>
           </div>
+          <button
+            class="nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="primary-navigation"
+          >
+            <span class="nav-toggle-icon" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="nav-toggle-label">Menu</span>
+          </button>
         </div>
-        <nav class="top-links">
+        <nav class="top-links" id="primary-navigation">
           <details class="nav-dropdown">
             <summary><span>General</span></summary>
             <div class="nav-dropdown-panel">
@@ -2810,6 +2920,102 @@
           followMiner: document.getElementById("follow-miner"),
           followReward: document.getElementById("follow-reward"),
         };
+
+        const header = document.querySelector("header.top-nav");
+        const nav = document.getElementById("primary-navigation");
+        const navToggle = document.querySelector(".nav-toggle");
+        const navDropdowns = nav
+          ? Array.from(nav.querySelectorAll("details.nav-dropdown"))
+          : [];
+        const mobileQuery =
+          typeof window !== "undefined" && typeof window.matchMedia === "function"
+            ? window.matchMedia("(max-width: 780px)")
+            : {
+                matches: false,
+                addEventListener: null,
+                addListener: null,
+              };
+
+        const setNavOpen = (open) => {
+          if (!header || !navToggle) return;
+          header.classList.toggle("is-nav-open", open);
+          document.body.classList.toggle("nav-open", open && mobileQuery.matches);
+          navToggle.setAttribute("aria-expanded", String(open));
+          if (!open && mobileQuery.matches) {
+            navDropdowns.forEach((dropdown) => dropdown.removeAttribute("open"));
+          }
+        };
+
+        const handleViewportChange = (event) => {
+          if (event.matches) {
+            setNavOpen(false);
+          } else {
+            document.body.classList.remove("nav-open");
+            if (navToggle) {
+              navToggle.setAttribute("aria-expanded", "false");
+            }
+            if (header) {
+              header.classList.remove("is-nav-open");
+            }
+          }
+        };
+
+        if (navToggle && header) {
+          navToggle.addEventListener("click", () => {
+            const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
+            setNavOpen(!isExpanded);
+          });
+
+          document.addEventListener("click", (event) => {
+            if (!mobileQuery.matches) return;
+            if (!header.contains(event.target)) {
+              setNavOpen(false);
+            }
+          });
+
+          document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+              setNavOpen(false);
+              if (mobileQuery.matches) {
+                navToggle.focus();
+              }
+            }
+          });
+
+          if (typeof mobileQuery.addEventListener === "function") {
+            mobileQuery.addEventListener("change", handleViewportChange);
+          } else if (typeof mobileQuery.addListener === "function") {
+            mobileQuery.addListener(handleViewportChange);
+          }
+
+          if (!mobileQuery.matches) {
+            navToggle.setAttribute("aria-expanded", "false");
+            header.classList.remove("is-nav-open");
+          }
+        }
+
+        if (navDropdowns.length) {
+          navDropdowns.forEach((dropdown) => {
+            dropdown.addEventListener("toggle", () => {
+              if (!dropdown.open || !mobileQuery.matches) return;
+              navDropdowns.forEach((other) => {
+                if (other !== dropdown) other.removeAttribute("open");
+              });
+            });
+          });
+        }
+
+        if (nav) {
+          nav.addEventListener("click", (event) => {
+            if (!mobileQuery.matches) return;
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+            const link = target.closest("a");
+            if (link) {
+              setNavOpen(false);
+            }
+          });
+        }
 
         const brandLogo = document.querySelector(".brand-logo");
         if (brandLogo) {
