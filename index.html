@@ -1996,7 +1996,21 @@
           flex-wrap: nowrap;
           gap: 12px;
           border-radius: 28px;
-          padding: 16px;
+          padding: 18px;
+          background: linear-gradient(160deg, rgba(22, 18, 10, 0.9), rgba(8, 6, 3, 0.92));
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.55);
+          border: 1px solid rgba(245, 182, 59, 0.22);
+        }
+
+        nav.top-links::before,
+        nav.top-links::after {
+          display: none;
+        }
+
+        details.nav-dropdown {
+          position: static;
+          display: block;
+        }
         }
 
         .explorer-launch {
@@ -2032,13 +2046,25 @@
           padding: 16px 20px;
           letter-spacing: 0.1em;
           font-size: 13px;
+          background: linear-gradient(150deg, rgba(28, 22, 12, 0.85), rgba(12, 10, 4, 0.95));
+          border: 1px solid rgba(245, 182, 59, 0.3);
         }
 
         details.nav-dropdown .nav-dropdown-panel {
           position: static;
           margin-top: 12px;
           width: 100%;
-          padding: 20px;
+          padding: 18px;
+          border-radius: 24px;
+          min-width: 0;
+          border: 1px solid rgba(245, 182, 59, 0.16);
+          background: linear-gradient(160deg, rgba(16, 12, 6, 0.95), rgba(8, 6, 3, 0.92));
+          box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5);
+        }
+
+        details.nav-dropdown[open] > summary {
+          transform: none;
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 24px rgba(245, 182, 59, 0.18);
         }
 
         .prestige-head {
