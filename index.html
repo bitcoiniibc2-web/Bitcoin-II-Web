@@ -1494,6 +1494,26 @@
         const navOverlay = header ? header.querySelector(".nav-overlay") : null;
         const navDropdowns = nav ? Array.from(nav.querySelectorAll("details.nav-dropdown")) : [];
         const desktopDropdownHandlers = new Map();
+        const dropdownCloseTimers = new WeakMap();
+
+        const cancelScheduledClose = (dropdown) => {
+          if (!dropdown) return;
+          const timer = dropdownCloseTimers.get(dropdown);
+          if (timer) {
+            clearTimeout(timer);
+            dropdownCloseTimers.delete(dropdown);
+          }
+        };
+
+        const scheduleClose = (dropdown) => {
+          if (!dropdown) return;
+          cancelScheduledClose(dropdown);
+          const timer = setTimeout(() => {
+            dropdown.removeAttribute("open");
+            dropdownCloseTimers.delete(dropdown);
+          }, 180);
+          dropdownCloseTimers.set(dropdown, timer);
+        };
         const mobileQuery =
           typeof window !== "undefined" && typeof window.matchMedia === "function"
             ? window.matchMedia("(max-width: 780px)")
@@ -1505,6 +1525,7 @@
 
         const openDesktopDropdown = (dropdown) => {
           if (!dropdown) return;
+          cancelScheduledClose(dropdown);
           navDropdowns.forEach((other) => {
             if (other !== dropdown) other.removeAttribute("open");
           });
@@ -1513,6 +1534,7 @@
 
         const closeDesktopDropdown = (dropdown) => {
           if (!dropdown) return;
+          cancelScheduledClose(dropdown);
           dropdown.removeAttribute("open");
         };
 
@@ -1520,14 +1542,16 @@
           if (!dropdown || desktopDropdownHandlers.has(dropdown)) return;
           const handleEnter = () => {
             if (mobileQuery.matches) return;
+            cancelScheduledClose(dropdown);
             openDesktopDropdown(dropdown);
           };
           const handleLeave = () => {
             if (mobileQuery.matches) return;
-            closeDesktopDropdown(dropdown);
+            scheduleClose(dropdown);
           };
           const handleFocusIn = () => {
             if (mobileQuery.matches) return;
+            cancelScheduledClose(dropdown);
             openDesktopDropdown(dropdown);
           };
           const handleFocusOut = () => {
@@ -1538,7 +1562,7 @@
                 : (cb) => setTimeout(cb, 16);
             raf(() => {
               if (!dropdown.contains(document.activeElement)) {
-                closeDesktopDropdown(dropdown);
+                scheduleClose(dropdown);
               }
             });
           };
@@ -1561,6 +1585,7 @@
           dropdown.removeEventListener("mouseleave", handlers.handleLeave);
           dropdown.removeEventListener("focusin", handlers.handleFocusIn);
           dropdown.removeEventListener("focusout", handlers.handleFocusOut);
+          cancelScheduledClose(dropdown);
           desktopDropdownHandlers.delete(dropdown);
         };
 
